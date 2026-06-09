@@ -5,7 +5,7 @@ An online U-Fund system built in Java **21** and ___ _replace with other platfor
   
 ## Team
 
-- MEMBER1
+- Sarah Gorczyca
 - MEMBER2
 - MEMBER3
 - MEMBER4
@@ -15,6 +15,7 @@ An online U-Fund system built in Java **21** and ___ _replace with other platfor
 
 - Java **21** (Make sure to have correct JAVA_HOME setup in your environment)
 - Maven
+- Angular
 -  _add any other tech stack requirements_
 
 
