@@ -8,7 +8,7 @@ An online U-Fund system built in Java **21** and ___ _replace with other platfor
 - Sarah Gorczyca
 - Mouza Alameri
 - Pedrocia De-Sosoo
-- MEMBER4
+- Harikleia Sparakis
 
 
 ## Prerequisites
