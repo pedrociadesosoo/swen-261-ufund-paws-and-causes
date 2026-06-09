@@ -6,7 +6,7 @@ An online U-Fund system built in Java **21** and ___ _replace with other platfor
 ## Team
 
 - Sarah Gorczyca
-- MEMBER2
+- Mouza Alameri
 - MEMBER3
 - MEMBER4
 
