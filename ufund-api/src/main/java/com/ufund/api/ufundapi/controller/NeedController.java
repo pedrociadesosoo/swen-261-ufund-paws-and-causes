@@ -16,25 +16,25 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ufund.api.ufundapi.dao.NeedDAO;
+import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.model.Need;
 
 @RestController
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
-    private NeedDAO needDao;
+    private NeedService needService;
 
     /**
      * Creates a REST API controller for responding to requests
      * 
-     * @param needdao The {@link NeedDAO Need link Data Access Object} for CRUD operations
+     * @param needservice The {@link NeedService Need link Service} for CRUD operations
      * <br>
      * This dependency is injected by Spring framework
      */
 
-    public NeedController (NeedDAO needDao){
-        this.needDao = needDao;
+    public NeedController (NeedService needService){
+        this.needService = needService;
     }
 
     @GetMapping("/{id}")
@@ -61,12 +61,12 @@ public class NeedController {
 
     }
 
-    @PutMapping("")
-    public ResponseEntity<Need> updateNeed(@RequestBody Need need){
+    @PutMapping("/{id}")
+    public ResponseEntity<Need> updateNeed(@PathVariable int id, @RequestBody Need need){
         LOG.info("PUT /needs " + need);
 
         try {
-            Need updated = needDao.updateNeed(need);
+            Need updated = needService.updateNeed(id, need);
             if (updated != null)
                 return new ResponseEntity<Need>(updated, HttpStatus.OK);
             else
