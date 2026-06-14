@@ -39,32 +39,49 @@ public class NeedController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Need> getNeed(@PathVariable int id){
+        return null;
 
     }
 
     @GetMapping("")
     public ResponseEntity<Need[]> getNeeds(){
+        return null;
 
     }
 
     @GetMapping("/")
     public ResponseEntity<Need[]> searchNeeds(@RequestParam String name){
+        return null;
 
     }
 
     @PostMapping("")
     public ResponseEntity<Need> createNeed(@RequestBody Need need){
+        return null;
 
     }
 
     @PutMapping("")
     public ResponseEntity<Need> updateNeed(@RequestBody Need need){
+        LOG.info("PUT /needs " + need);
+
+        try {
+            Need updated = needDao.updateNeed(need);
+            if (updated != null)
+                return new ResponseEntity<Need>(updated, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Need> deleteNeed(@PathVariable int id){
-        
+        return null;
     }
 
 }

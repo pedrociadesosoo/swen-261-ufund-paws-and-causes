@@ -2,6 +2,7 @@ package com.ufund.api.ufundapi.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import java.io.IOException;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
@@ -22,11 +23,11 @@ public class NeedService {
         return needDao.getNeedById(id);
     }
 
-    public Need addNeed(Need need) {
+    public Need addNeed(Need need) throws IOException {
         return needDao.addNeed(need);
     }
 
-    public Need updateNeed(int id,Need need) {
+    public Need updateNeed(int id,Need need) throws IOException {
         Need existing = needDao.getNeedById(id);
         if (existing == null) {
             return null;
@@ -35,7 +36,7 @@ public class NeedService {
         return needDao.updateNeed(need);
     }
 
-    public Need deleteNeed(int id) {
+    public boolean deleteNeed(int id) throws IOException {
         return needDao.deleteNeed(id);
     }
 }
