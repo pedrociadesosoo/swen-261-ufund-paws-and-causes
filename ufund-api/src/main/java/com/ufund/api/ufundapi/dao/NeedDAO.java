@@ -8,6 +8,8 @@ import com.ufund.api.ufundapi.model.Need;
 
 public interface NeedDAO {
     List<Need> getAllNeeds();
+    List<Need> findNeeds(String containsText);
+    
 
     Need getNeedById(int id);
     Need addNeed(Need need);
@@ -15,5 +17,5 @@ public interface NeedDAO {
     Need updateNeed(Need need);
 
     Need deleteNeed(int id);
-    
+
 }

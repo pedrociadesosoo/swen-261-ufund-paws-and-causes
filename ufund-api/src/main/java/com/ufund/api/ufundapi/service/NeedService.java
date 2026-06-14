@@ -38,4 +38,8 @@ public class NeedService {
     public Need deleteNeed(int id) {
         return needDao.deleteNeed(id);
     }
+
+    public List<Need> findNeeds(String containsText) {
+        return needDao.findNeeds(containsText);
+    }
 }
