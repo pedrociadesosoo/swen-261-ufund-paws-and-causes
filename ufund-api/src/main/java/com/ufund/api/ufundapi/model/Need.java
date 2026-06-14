@@ -1,10 +1,16 @@
 package com.ufund.api.ufundapi.model;
 
+import java.util.logging.Logger;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Need{
-    private int id;
-    private String name;
-    private int quantity;
-    private String unit;
+
+    private static final Logger LOG = Logger.getLogger(Need.class.getName());
+    @JsonProperty("id") private int id;
+    @JsonProperty("name") private String name;
+    @JsonProperty("quantity") private int quantity;
+    @JsonProperty("unit") private String unit;
 
     public Need() {}
 
