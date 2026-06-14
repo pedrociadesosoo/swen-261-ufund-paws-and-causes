@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.ufund.api.ufundapi.service.NeedService;
+import com.ufund.api.ufundapi.service.NeedServiceImpl;
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
 
@@ -22,18 +28,18 @@ import com.ufund.api.ufundapi.model.Need;
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
-    private NeedDAO needDao;
+    private NeedService  needService;
 
     /**
      * Creates a REST API controller for responding to requests
      * 
-     * @param needdao The {@link NeedDAO Need link Data Access Object} for CRUD operations
+     * @param needservice The {@link NeedServiceImpl Need link Service} for CRUD operations
      * <br>
      * This dependency is injected by Spring framework
      */
 
-    public NeedController (NeedDAO needDao){
-        this.needDao = needDao;
+    public NeedController (NeedService needService2){
+        this.needService = needService2;
     }
 
     @GetMapping("/{id}")
@@ -69,10 +75,22 @@ public class NeedController {
         return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    @PutMapping("")
-    public ResponseEntity<Need> updateNeed(@RequestBody Need need){
-        //implement here
-        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
+    @PutMapping("/{id}")
+    public ResponseEntity<Need> updateNeed(@PathVariable int id, @RequestBody Need need){
+        LOG.info("PUT /needs " + need);
+
+        try {
+            Need updated = needService.updateNeed(id, need);
+            if (updated != null)
+                return new ResponseEntity<Need>(updated, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @DeleteMapping("/{id}")
