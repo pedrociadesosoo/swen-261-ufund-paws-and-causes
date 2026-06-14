@@ -1,5 +1,6 @@
 package com.ufund.api.ufundapi.controller;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.springframework.http.HttpStatus;
@@ -55,6 +56,15 @@ public class NeedController {
 
     @PostMapping("")
     public ResponseEntity<Need> createNeed(@RequestBody Need need){
+        LOG.info("POST /needs " + need);
+
+        try{
+            return new ResponseEntity<Need>(needDao.createNeed(need),HttpStatus.OK);
+        }
+        catch(IOException e){
+            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         //implement here
         return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
     }
