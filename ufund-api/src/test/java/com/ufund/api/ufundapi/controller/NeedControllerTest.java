@@ -7,9 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
-
+import com.ufund.api.ufundapi.service.NeedService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -21,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 @Tag("Controller-tier")
 public class NeedControllerTest {
     private NeedController needController;
-    private NeedDAO needService;
+    private NeedService needService;
 
         /**
      * Before each test, create a new NeedController object and inject
@@ -29,14 +28,14 @@ public class NeedControllerTest {
      */
     @BeforeEach
     public void setupNeedController() {
-        needService = mock(NeedDAO.class);
+        needService = mock(NeedService.class);
         needController = new NeedController(needService);
     }
 
     @Test 
     public void testUpdateNeed() throws Exception{  // getNeed may throw IOException
         Need need = new Need(1, "Corn", 10.97, 100, "food");
-        when(needService.updateNeed(need)).thenReturn(need);
+        when(needService.updateNeed(need.getId(), need)).thenReturn(need);
 
         ResponseEntity<Need> response = needController.updateNeed(need.getId(), need);
 
@@ -53,7 +52,7 @@ public class NeedControllerTest {
 
         // when updateNeed is called, return null simulating failed
         // update and save
-        when(needService.updateNeed(need)).thenReturn(null);
+        when(needService.updateNeed(need.getId(), need)).thenReturn(null);
 
         // Invoke
         ResponseEntity<Need> response = needController.updateNeed(need.getId(), need);
@@ -67,7 +66,7 @@ public class NeedControllerTest {
         Need need = new Need(3, "Corn", 10.97, 100, "food");
 
         // When updateNeed is called on the Mock Need Service, throw an IOException
-        doThrow(new IOException()).when(needService).updateNeed(need);
+        doThrow(new IOException()).when(needService).updateNeed(need.getId(), need);
 
         // Invoke
         ResponseEntity<Need> response = needController.updateNeed(need.getId(), need);
