@@ -18,5 +18,3 @@ public interface NeedDAO {
     boolean deleteNeed(int id) throws IOException;
     
 }
-
-
