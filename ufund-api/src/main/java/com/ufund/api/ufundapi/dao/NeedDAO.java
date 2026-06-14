@@ -12,7 +12,7 @@ public interface NeedDAO {
 
     Need getNeedById(int id);
     Need addNeed(Need need);
-    Need createNeed(Need need);
+    Need createNeed(Need need) throws IOException;
 
     Need updateNeed(Need need) throws IOException;
 

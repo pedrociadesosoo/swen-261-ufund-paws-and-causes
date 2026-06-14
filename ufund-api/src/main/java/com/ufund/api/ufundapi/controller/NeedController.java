@@ -22,13 +22,14 @@ import java.util.logging.Logger;
 import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.service.NeedServiceImpl;
 import com.ufund.api.ufundapi.dao.NeedDAO;
+import com.ufund.api.ufundapi.dao.NeedFileDAO;
 import com.ufund.api.ufundapi.model.Need;
 
 @RestController
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
-    private NeedService  needService;
+    private NeedDAO needDao;
 
     /**
      * Creates a REST API controller for responding to requests
@@ -38,8 +39,8 @@ public class NeedController {
      * This dependency is injected by Spring framework
      */
 
-    public NeedController (NeedService needService2){
-        this.needService = needService2;
+    public NeedController (NeedDAO needDao){
+        this.needDao = needDao;
     }
 
     @GetMapping("/{id}")
@@ -63,7 +64,7 @@ public class NeedController {
     @PostMapping("")
     public ResponseEntity<Need> createNeed(@RequestBody Need need){
         LOG.info("POST /needs " + need);
-
+        
         try{
             return new ResponseEntity<Need>(needDao.createNeed(need),HttpStatus.OK);
         }
@@ -72,7 +73,6 @@ public class NeedController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         //implement here
-        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @PutMapping("/{id}")
@@ -80,7 +80,7 @@ public class NeedController {
         LOG.info("PUT /needs " + need);
 
         try {
-            Need updated = needService.updateNeed(id, need);
+            Need updated = needDao.updateNeed(id, need);
             if (updated != null)
                 return new ResponseEntity<Need>(updated, HttpStatus.OK);
             else
