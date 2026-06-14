@@ -10,6 +10,7 @@ An online U-Fund system built in Java **21** and ___ _replace with other platfor
 - Pedrocia De-Sosoo
 - Harikleia Sparakis
 - Victor Omolo
+- Jackson Singley
 
 
 ## Prerequisites
