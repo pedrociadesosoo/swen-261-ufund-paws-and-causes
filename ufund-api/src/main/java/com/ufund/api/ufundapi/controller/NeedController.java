@@ -14,31 +14,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.service.NeedService;
 
 @RestController
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
-    private NeedDAO needDao;
+    private NeedService needService;
 
-    /**
-     * Creates a REST API controller for responding to requests
-     * 
-     * @param needdao The {@link NeedDAO Need link Data Access Object} for CRUD operations
-     * <br>
-     * This dependency is injected by Spring framework
-     */
-
-    public NeedController (NeedDAO needDao){
-        this.needDao = needDao;
+    public NeedController(NeedService needService) {
+        this.needService = needService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Need> getNeed(@PathVariable int id){
-        //implement here
-        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Need> getNeed(@PathVariable int id) {
+        Need need = needService.getNeedById(id);
+        if (need != null) {
+            return new ResponseEntity<>(need, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("")
