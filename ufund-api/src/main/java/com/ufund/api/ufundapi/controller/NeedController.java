@@ -45,11 +45,17 @@ public class NeedController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Need> getNeed(@PathVariable int id) {
-        Need need = needService.getNeedById(id);
-        if (need != null) {
-            return new ResponseEntity<>(need, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
+        try {
+            Need need = needService.getNeedById(id);
+            if (need != null) {
+                return new ResponseEntity<>(need, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
