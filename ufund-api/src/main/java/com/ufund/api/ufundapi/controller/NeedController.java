@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ufund.api.ufundapi.dao.NeedDAO;
+import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.model.Need;
 
 @RestController
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
-    private NeedDAO needDao;
+    private NeedService needService;
 
     /**
      * Creates a REST API controller for responding to requests
@@ -31,8 +31,8 @@ public class NeedController {
      * This dependency is injected by Spring framework
      */
 
-    public NeedController (NeedDAO needDao){
-        this.needDao = needDao;
+    public NeedController (NeedService needService){
+        this.needService = needService;
     }
 
     @GetMapping("/{id}")
