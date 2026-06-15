@@ -3,8 +3,6 @@ package com.ufund.api.ufundapi.service;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
@@ -18,28 +16,28 @@ public class NeedService{
         this.needDao = needDao;
     }
 
-    public List<Need> getAllNeeds() {
+    public List<Need> getAllNeeds() throws IOException {
         return needDao.getAllNeeds();
     }
 
 
-    public Need getNeedById(int id) {
+    public Need getNeedById(int id) throws IOException{
         return needDao.getNeedById(id);
     }
 
 
-    public Need addNeed(Need need) {
+    public Need addNeed(Need need) throws IOException {
         return needDao.addNeed(need);
     }
 
 
-    public Need updateNeed(int id, Need need) {
+    public Need updateNeed(int id, Need need) throws IOException {
         Need existing = needDao.getNeedById(id);
         if (existing == null) {
             return null;
         }
         need.setId(id);
-        return needDao.updateNeed(id, need);
+        return needDao.updateNeed(need);
     }
 
     public Need deleteNeed(int id) throws IOException {
@@ -51,6 +49,4 @@ public class NeedService{
                 return null;
             }
     }
-
-    
 }
