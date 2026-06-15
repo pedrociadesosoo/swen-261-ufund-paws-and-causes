@@ -44,7 +44,8 @@ public class NeedControllerTest {
 
     }
 
-    @Test void testCreateNeedConflict() throws IOException {
+    @Test 
+    void testCreateNeedConflict() throws IOException {
         Need need = new Need(999, "corn", 10.37, 3, "hunger");
         Need other = new Need(666, "corn", 5, 2, "hunger");
 

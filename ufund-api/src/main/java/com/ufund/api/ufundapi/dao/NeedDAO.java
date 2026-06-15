@@ -13,6 +13,13 @@ public interface NeedDAO {
     Need getNeedById(int id);
     Need[] getNeedArray(String name) throws IOException;
     Need[] getNeedArray();
+
+    /**
+     * Creates a new {@linkplain Need need}
+     * @param need {@link Need need} the need to be created
+     * @return new {@link Need need} if successful, null if otherwise
+     * @throws IOException if an issue with storage occurs
+     */
     Need createNeed(Need need) throws IOException;
 
     Need updateNeed(Need need) throws IOException;

@@ -61,6 +61,13 @@ public class NeedController {
         return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    /**
+     * Create a {@linkplain Need need} with the provided object
+     * @param need The {@link Need need} to create
+     * @return Response Entity with {@link Need need} object and HTTP status of CREATED
+     * Response Entity with HTTP status of CONFLICT if {@link Need need} of the same name already exists
+     * Response Entity with HTTP status of INTERNAL_SERVER_ERROR otherwise
+     */
     @PostMapping("")
     public ResponseEntity<Need> createNeed(@RequestBody Need need){
         LOG.info("POST /needs " + need);
