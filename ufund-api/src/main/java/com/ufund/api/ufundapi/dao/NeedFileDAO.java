@@ -4,17 +4,15 @@ package com.ufund.api.ufundapi.dao;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Need;
 
 
@@ -225,14 +223,6 @@ public class NeedFileDAO implements NeedDAO {
             else
                 return false;
         }
-    }
-
-
-
-    @Override
-    public Need updateNeed(int id, Need need) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateNeed'");
     }
 
 

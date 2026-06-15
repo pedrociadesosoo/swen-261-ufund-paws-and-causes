@@ -1,7 +1,10 @@
 package com.ufund.api.ufundapi.service;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
@@ -39,8 +42,14 @@ public class NeedService{
         return needDao.updateNeed(id, need);
     }
 
-    public Need deleteNeed(int id) {
-        return needDao.deleteNeed(id);
+    public Need deleteNeed(int id) throws IOException {
+
+            Need deletedNeed = needDao.getNeedById(id);
+            if (deletedNeed != null && needDao.deleteNeed(id)) {
+                return deletedNeed;
+            } else {
+                return null;
+            }
     }
 
     
