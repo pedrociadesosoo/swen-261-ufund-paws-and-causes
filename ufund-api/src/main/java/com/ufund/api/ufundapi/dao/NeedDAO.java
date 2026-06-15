@@ -1,6 +1,7 @@
 package com.ufund.api.ufundapi.dao;
 
 import java.util.List;
+import java.io.IOException;
 
 import com.ufund.api.ufundapi.model.Need;
 
@@ -12,10 +13,10 @@ public interface NeedDAO {
     
 
     Need getNeedById(int id);
-    Need addNeed(Need need);
+    Need addNeed(Need need) throws IOException;
 
-    Need updateNeed(Need need);
+    Need updateNeed(Need need) throws IOException;
 
-    Need deleteNeed(int id);
-
+    boolean deleteNeed(int id) throws IOException;
+    
 }

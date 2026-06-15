@@ -1,45 +1,22 @@
 package com.ufund.api.ufundapi.service;
 
-import java.util.List;
-import org.springframework.stereotype.Service;
 
-import com.ufund.api.ufundapi.dao.NeedDAO;
+import java.util.List;
+import java.io.IOException;
+
 import com.ufund.api.ufundapi.model.Need;
 
-@Service
-public class NeedService {
-    private NeedDAO needDao;
 
-    public NeedService(NeedDAO needDao) {
-        this.needDao = needDao;
-    }
 
-    public List<Need> getAllNeeds() {
-        return needDao.getAllNeeds();
-    }
+public interface NeedService {
+    List<Need> getAllNeeds();
+    List<Need> findNeeds(String containsText);
 
-    public Need getNeedById(int id) {
-        return needDao.getNeedById(id);
-    }
+    Need getNeedById(int id);
+    Need addNeed(Need need) throws IOException;
 
-    public Need addNeed(Need need) {
-        return needDao.addNeed(need);
-    }
+    Need updateNeed(int id,Need need) throws IOException;
 
-    public Need updateNeed(int id,Need need) {
-        Need existing = needDao.getNeedById(id);
-        if (existing == null) {
-            return null;
-        }
-        need.setId(id);
-        return needDao.updateNeed(need);
-    }
-
-    public Need deleteNeed(int id) {
-        return needDao.deleteNeed(id);
-    }
-
-    public List<Need> findNeeds(String containsText) {
-        return needDao.findNeeds(containsText);
-    }
+    boolean deleteNeed(int id) throws IOException;
+    
 }

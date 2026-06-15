@@ -9,16 +9,18 @@ public class Need{
     private static final Logger LOG = Logger.getLogger(Need.class.getName());
     @JsonProperty("id") private int id;
     @JsonProperty("name") private String name;
+    @JsonProperty("cost") private double cost;
     @JsonProperty("quantity") private int quantity;
-    @JsonProperty("unit") private String unit;
+    @JsonProperty("type") private String type;
 
     public Need() {}
 
-    public Need(int id, String name, int quantity, String unit) {
+    public Need(int id, String name, double cost, int quantity, String type) {
         this.id = id;
         this.name = name;
+        this.cost = cost;
         this.quantity = quantity;
-        this.unit = unit;
+        this.type = type;
     }
 
     public int getId() {
@@ -45,11 +47,22 @@ public class Need{
         this.quantity = quantity;
     }
 
-    public String getUnit() {
-        return unit;
+
+    public double getCost() {
+        return cost;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
+
+
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
