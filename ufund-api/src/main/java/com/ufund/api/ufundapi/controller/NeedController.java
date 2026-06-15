@@ -16,8 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.service.NeedService;
 
 @RestController
@@ -39,9 +44,13 @@ public class NeedController {
     */
 
     @GetMapping("/{id}")
-    public ResponseEntity<Need> getNeed(@PathVariable int id){
-        //implement here
-        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Need> getNeed(@PathVariable int id) {
+        Need need = needService.getNeedById(id);
+        if (need != null) {
+            return new ResponseEntity<>(need, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("")
