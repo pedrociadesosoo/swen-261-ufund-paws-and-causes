@@ -11,7 +11,8 @@ public interface NeedDAO {
     List<Need> getAllNeeds();
 
     Need getNeedById(int id);
-    Need addNeed(Need need);
+    Need[] getNeedArray(String name) throws IOException;
+    Need[] getNeedArray();
     Need createNeed(Need need) throws IOException;
 
     Need updateNeed(Need need) throws IOException;

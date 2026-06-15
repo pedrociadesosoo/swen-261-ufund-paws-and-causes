@@ -23,8 +23,8 @@ public class NeedServiceImpl implements NeedService {
         return needDao.getNeedById(id);
     }
 
-    public Need addNeed(Need need) throws IOException {
-        return needDao.addNeed(need);
+    public Need createNeed(Need need) throws IOException {
+        return needDao.createNeed(need);
     }
 
     public Need updateNeed(int id,Need need) throws IOException {

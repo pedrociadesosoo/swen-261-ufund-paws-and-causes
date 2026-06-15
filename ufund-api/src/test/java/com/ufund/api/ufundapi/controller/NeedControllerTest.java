@@ -1,9 +1,14 @@
 package com.ufund.api.ufundapi.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
+
 
 
 import java.io.IOException;
@@ -37,5 +42,18 @@ public class NeedControllerTest {
         assertEquals(HttpStatus.CREATED,response.getStatusCode());
         assertEquals(need,response.getBody());
 
+    }
+
+    @Test void testCreateNeedConflict() throws IOException {
+        Need need = new Need(999, "corn", 10.37, 3, "hunger");
+        Need other = new Need(666, "corn", 5, 2, "hunger");
+
+        when(mockNeedDao.getNeedArray("corn")).thenReturn(new Need[] {need});
+
+        ResponseEntity<Need> response = needController.createNeed(other);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertNull(response.getBody());
+
+        verify(mockNeedDao, never()).createNeed(any());
     }
 }

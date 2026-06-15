@@ -34,7 +34,7 @@ public class NeedController {
     /**
      * Creates a REST API controller for responding to requests
      * 
-     * @param needservice The {@link NeedServiceImpl Need link Service} for CRUD operations
+     * @param needDao The {@link NeedDAO Need Data Access Object} for CRUD operations
      * <br>
      * This dependency is injected by Spring framework
      */
@@ -66,7 +66,10 @@ public class NeedController {
         LOG.info("POST /needs " + need);
         
         try{
-            return new ResponseEntity<Need>(needDao.createNeed(need),HttpStatus.OK);
+            if (needDao.getNeedArray(need.getName()) != null && needDao.getNeedArray(need.getName()).length > 0) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT); // Need with the same name already exists
+            }
+            return new ResponseEntity<Need>(needDao.createNeed(need),HttpStatus.CREATED);
         }
         catch(IOException e){
             LOG.log(Level.SEVERE,e.getLocalizedMessage());
@@ -77,19 +80,7 @@ public class NeedController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Need> updateNeed(@PathVariable int id, @RequestBody Need need){
-        LOG.info("PUT /needs " + need);
-
-        try {
-            Need updated = needDao.updateNeed(id, need);
-            if (updated != null)
-                return new ResponseEntity<Need>(updated, HttpStatus.OK);
-            else
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE,e.getLocalizedMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+         return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
 
     }
 

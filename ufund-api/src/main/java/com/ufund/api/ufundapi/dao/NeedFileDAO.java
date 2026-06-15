@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -73,7 +74,7 @@ public class NeedFileDAO implements NeedDAO {
      * 
      * @return  The array of {@link Hero heroes}, may be empty
      */
-    private Need[] getNeedArray() {
+    public Need[] getNeedArray() {
         return getNeedArray(null);
     }
 
@@ -87,7 +88,7 @@ public class NeedFileDAO implements NeedDAO {
      * 
      * @return  The array of {@link Hero heroes}, may be empty
      */
-    private Need[] getNeedArray(String containsText) { // if containsText == null, no filter
+    public Need[] getNeedArray(String containsText) { // if containsText == null, no filter
         ArrayList<Need> needArrayList = new ArrayList<>();
 
         for (Need need : needs.values()) {
@@ -182,17 +183,24 @@ public class NeedFileDAO implements NeedDAO {
      */
 
     @Override
-    public Need addNeed(Need need) throws IOException {
+    public Need createNeed(Need need) {
+        try{
         synchronized(needs) {
+
+            if (getNeedArray(need.getName()) != null && getNeedArray(need.getName()).length > 0) {
+                return null; // Need with the same name already exists
+            }
             // assign the next id to the need an increment the value
             need.setId(nextId());
-
             needs.put(need.getId(), need);
-
             save();
             return need;
-                
+        }}
+        catch(IOException e){
+            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            return null;
         }
+                
     }
 
 
