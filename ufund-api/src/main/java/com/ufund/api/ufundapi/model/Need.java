@@ -14,7 +14,9 @@ public class Need{
 
     public Need() {}
 
-    public Need(int id, String name, int quantity, String unit) {
+    public Need(@JsonProperty("id") int id, @JsonProperty("name") String name, 
+        @JsonProperty("quantity") int quantity, @JsonProperty("unit") String unit) 
+    {
         this.id = id;
         this.name = name;
         this.quantity = quantity;

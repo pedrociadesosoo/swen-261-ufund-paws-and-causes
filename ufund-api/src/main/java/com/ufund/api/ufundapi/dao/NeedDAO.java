@@ -4,15 +4,13 @@ import java.util.List;
 
 import com.ufund.api.ufundapi.model.Need;
 
-
-
 public interface NeedDAO {
     List<Need> getAllNeeds();
 
     Need getNeedById(int id);
     Need addNeed(Need need);
 
-    Need updateNeed(Need need);
+    Need updateNeed(int id, Need need);
 
     Need deleteNeed(int id);
     

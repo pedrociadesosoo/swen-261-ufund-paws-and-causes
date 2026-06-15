@@ -15,29 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.service.NeedService;
 
 @RestController
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
-    private NeedDAO needDao;
+    private NeedService needService;
 
-    /**
-     * Creates a REST API controller for responding to requests
-     * 
-     * @param needdao The {@link NeedDAO Need link Data Access Object} for CRUD operations
-     * <br>
-     * This dependency is injected by Spring framework
-     */
-
-    public NeedController (NeedDAO needDao){
-        this.needDao = needDao;
+    public NeedController (NeedService needService){
+        this.needService = needService;
     }
 
     @GetMapping("/{id}")
@@ -73,19 +61,19 @@ public class NeedController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Need> deleteNeed(@PathVariable int id){
         LOG.info("DELETE /needs/" + id);
-        try { 
-            Need deletedNeed = needDao.getNeedById(id);
+        //try { 
+            Need deletedNeed = needService.getNeedById(id);
             if (deletedNeed != null) {
-                needDao.deleteNeed(id);
+                needService.deleteNeed(id);
                 return new ResponseEntity<Need>(deletedNeed, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        }
-        catch(IOException e) {
+        //}
+        /*catch(IOException e) {
             LOG.log(Level.SEVERE,e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        }*/
     }
 
 }
