@@ -13,7 +13,8 @@ public interface NeedService {
     List<Need> findNeeds(String containsText);
 
     Need getNeedById(int id);
-    Need addNeed(Need need) throws IOException;
+    Need createNeed(Need need) throws IOException;
+    Need[] getNeedArray(String containsText);
 
     Need updateNeed(int id,Need need) throws IOException;
 
