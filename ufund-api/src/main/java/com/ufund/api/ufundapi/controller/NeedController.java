@@ -25,7 +25,7 @@ import com.ufund.api.ufundapi.model.Need;
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
-    private NeedService  needService;
+    private NeedService needService;
 
     /**
      * Creates a REST API controller for responding to requests

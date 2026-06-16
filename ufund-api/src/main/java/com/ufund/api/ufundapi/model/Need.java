@@ -7,7 +7,6 @@ public class Need{
     private String type;
     private double cost;
 
-    public Need() {}
 
     public Need(int id, String name, double cost, int quantity, String type) {
         this.id = id;
