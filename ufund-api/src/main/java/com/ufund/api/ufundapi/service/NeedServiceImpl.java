@@ -20,6 +20,12 @@ public class NeedServiceImpl implements NeedService {
         return needDao.getAllNeeds();
     }
 
+    /**
+     * Finds and retrieves {@linkplain Need need} with the provided id
+     * @param id if of the {@link Need need} to find
+     * @return the {@link Need need} of the need if found, otherwise null
+     * @throws IOException if an issue with storage access occurs
+     */
     public Need getNeedById(int id) throws IOException {
         return needDao.getNeedById(id);
     }
@@ -37,14 +43,20 @@ public class NeedServiceImpl implements NeedService {
         return needDao.updateNeed(need);
     }
 
+    /**
+     * Retrieves and deletes {@linkplain Need need} with the provided id
+     * @param id if of the {@link Need need} to find and delete
+     * @return the {@link Need need} that has been deleted if sucessful, null otherwise
+     * @throws IOException if an issue with storage access occurs
+     */
     public Need deleteNeed(int id) throws IOException {
 
-            Need deletedNeed = needDao.getNeedById(id);
-            if (deletedNeed != null && needDao.deleteNeed(id)) {
-                return deletedNeed;
-            } else {
-                return null;
-            }
+        Need deletedNeed = needDao.getNeedById(id);
+        if (deletedNeed != null && needDao.deleteNeed(id)) {
+            return deletedNeed;
+        } else {
+            return null;
+        }
     }
 
 }

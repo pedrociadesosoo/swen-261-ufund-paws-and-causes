@@ -78,6 +78,13 @@ public class NeedController {
         return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    /**
+     * Deletes the {@link Need need} with the provided id
+     * @param id The id of the {@link Need need} to delete
+     * @return Response Entity with {@link Need need} object and HTTP status of OK
+     * Response Entity with HTTP status of NOT_FOUND if a {@link Need need} with the provided id does not exist
+     * Response Entity with HTTP status of INTERNAL_SERVER_ERROR otherwise
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Need> deleteNeed(@PathVariable int id){        
 
