@@ -1,5 +1,6 @@
 package com.ufund.api.ufundapi.controller;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,10 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ufund.api.ufundapi.service.NeedService;
+import com.ufund.api.ufundapi.service.NeedServiceImpl;
 import com.ufund.api.ufundapi.dao.NeedDAO;
+import com.ufund.api.ufundapi.dao.NeedFileDAO;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.service.NeedService;
 
@@ -26,10 +30,19 @@ import com.ufund.api.ufundapi.service.NeedService;
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
+    private NeedDAO needDao;
+
+    /**
+     * Creates a REST API controller for responding to requests
+     * 
+     * @param needDao The {@link NeedDAO Need Data Access Object} for CRUD operations
+     * <br>
+     * This dependency is injected by Spring framework
+     */
     private NeedService needService;
 
-    public NeedController(NeedService needService) {
-        this.needService = needService;
+    public NeedController (NeedDAO needDao){
+        this.needDao = needDao;
     }
 
     @GetMapping("/{id}")
@@ -54,16 +67,34 @@ public class NeedController {
         return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    /**
+     * Create a {@linkplain Need need} with the provided object
+     * @param need The {@link Need need} to create
+     * @return Response Entity with {@link Need need} object and HTTP status of CREATED
+     * Response Entity with HTTP status of CONFLICT if {@link Need need} of the same name already exists
+     * Response Entity with HTTP status of INTERNAL_SERVER_ERROR otherwise
+     */
     @PostMapping("")
     public ResponseEntity<Need> createNeed(@RequestBody Need need){
+        LOG.info("POST /needs " + need);
+        
+        try{
+            if (needDao.getNeedArray(need.getName()) != null && needDao.getNeedArray(need.getName()).length > 0) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT); // Need with the same name already exists
+            }
+            return new ResponseEntity<Need>(needDao.createNeed(need),HttpStatus.CREATED);
+        }
+        catch(IOException e){
+            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         //implement here
-        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    @PutMapping("")
-    public ResponseEntity<Need> updateNeed(@RequestBody Need need){
-        //implement here
-        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
+    @PutMapping("/{id}")
+    public ResponseEntity<Need> updateNeed(@PathVariable int id, @RequestBody Need need){
+         return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
+
     }
 
     @DeleteMapping("/{id}")
