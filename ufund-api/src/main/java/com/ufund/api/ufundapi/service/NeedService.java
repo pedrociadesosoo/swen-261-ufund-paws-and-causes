@@ -1,6 +1,3 @@
-
-
-
 package com.ufund.api.ufundapi.service;
 
 
@@ -13,9 +10,11 @@ import com.ufund.api.ufundapi.model.Need;
 
 public interface NeedService {
     List<Need> getAllNeeds();
+    List<Need> findNeeds(String containsText);
 
     Need getNeedById(int id);
     Need createNeed(Need need) throws IOException;
+    Need[] getNeedArray(String containsText);
 
     Need updateNeed(int id,Need need) throws IOException;
 

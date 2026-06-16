@@ -5,11 +5,13 @@ import java.util.logging.Logger;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Need{
-    private int id;
-    private String name;
-    private int quantity;
-    private String type;
-    private double cost;
+
+    private static final Logger LOG = Logger.getLogger(Need.class.getName());
+    @JsonProperty("id") private int id;
+    @JsonProperty("name") private String name;
+    @JsonProperty("cost") private double cost;
+    @JsonProperty("quantity") private int quantity;
+    @JsonProperty("type") private String type;
 
     public Need() {}
 

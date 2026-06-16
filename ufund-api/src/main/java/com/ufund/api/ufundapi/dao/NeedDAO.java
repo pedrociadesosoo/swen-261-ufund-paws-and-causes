@@ -9,6 +9,8 @@ import com.ufund.api.ufundapi.model.Need;
 
 public interface NeedDAO {
     List<Need> getAllNeeds();
+    List<Need> findNeeds(String containsText);
+    
 
     Need getNeedById(int id);
     Need[] getNeedArray(String name) throws IOException;

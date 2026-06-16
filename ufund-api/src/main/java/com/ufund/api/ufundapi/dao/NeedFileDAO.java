@@ -21,7 +21,7 @@ import com.ufund.api.ufundapi.model.Need;
 
 
 /**
- * Implements the functionality for JSON file-based peristance for Heroes
+ * Implements the functionality for JSON file-based peristance for Neeeds
  * 
  * {@literal @}Component Spring annotation instantiates a single instance of this
  * class and injects the instance into other classes as needed
@@ -42,7 +42,7 @@ public class NeedFileDAO implements NeedDAO {
     private String filename;    // Filename to read from and write to
 
     /**
-     * Creates a Hero File Data Access Object
+     * Creates a Needs File Data Access Object
      * 
      * @param filename Filename to read from and write to
      * @param objectMapper Provides JSON Object to/from Java Object serialization and deserialization
@@ -58,7 +58,7 @@ public class NeedFileDAO implements NeedDAO {
 
 
     /**
-     * Generates the next id for a new {@linkplain Hero hero}
+     * Generates the next id for a new {@linkplain Need need }
      * 
      * @return The next id
      */
@@ -70,9 +70,9 @@ public class NeedFileDAO implements NeedDAO {
     
 
     /**
-     * Generates an array of {@linkplain Hero heroes} from the tree map
+     * Generates an array of {@linkplain Need needs} from the tree map
      * 
-     * @return  The array of {@link Hero heroes}, may be empty
+     * @return  The array of {@link Need needs}, may be empty
      */
     public Need[] getNeedArray() {
         return getNeedArray(null);
@@ -80,13 +80,13 @@ public class NeedFileDAO implements NeedDAO {
 
 
     /**
-     * Generates an array of {@linkplain Hero heroes} from the tree map for any
-     * {@linkplain Hero heroes} that contains the text specified by containsText
+     * Generates an array of {@linkplain Need needs} from the tree map for any
+     * {@linkplain Need needs} that contains the text specified by containsText
      * <br>
-     * If containsText is null, the array contains all of the {@linkplain Hero heroes}
+     * If containsText is null, the array contains all of the {@linkplain Need needs}
      * in the tree map
      * 
-     * @return  The array of {@link Hero heroes}, may be empty
+     * @return  The array of {@link Need needs}, may be empty
      */
     public Need[] getNeedArray(String containsText) { // if containsText == null, no filter
         ArrayList<Need> needArrayList = new ArrayList<>();
@@ -104,9 +104,9 @@ public class NeedFileDAO implements NeedDAO {
 
 
     /**
-     * Saves the {@linkplain Hero heroes} from the map into the file as an array of JSON objects
+     * Saves the {@linkplain Need needs} from the map into the file as an array of JSON objects
      * 
-     * @return true if the {@link Hero heroes} were written successfully
+     * @return true if the {@link  Need needs} were written successfully
      * 
      * @throws IOException when file cannot be accessed or written to
      */
@@ -123,7 +123,7 @@ public class NeedFileDAO implements NeedDAO {
 
 
     /**
-     * Loads {@linkplain Hero heroes} from the JSON file into the map
+     * Loads {@linkplain Need needs} from the JSON file into the map
      * <br>
      * Also sets next id to one more than the greatest id found in the file
      * 
@@ -235,10 +235,14 @@ public class NeedFileDAO implements NeedDAO {
         }
     }
 
-
-
-
-
-
+    /**
+    * {@inheritDoc}
+     */
+    @Override
+    public List<Need> findNeeds(String containsText) {
+        synchronized(needs) {
+            return new ArrayList<>(Arrays.asList(getNeedArray(containsText)));
+        }
+    }
 
 }

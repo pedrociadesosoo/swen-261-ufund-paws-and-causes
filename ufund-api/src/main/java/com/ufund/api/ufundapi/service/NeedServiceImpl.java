@@ -27,6 +27,10 @@ public class NeedServiceImpl implements NeedService {
         return needDao.createNeed(need);
     }
 
+    public Need[] getNeedArray(String containsText) {
+        return needDao.findNeeds(containsText).toArray(new Need[0]);
+    }
+
     public Need updateNeed(int id,Need need) throws IOException {
         Need existing = needDao.getNeedById(id);
         if (existing == null) {
@@ -38,6 +42,10 @@ public class NeedServiceImpl implements NeedService {
 
     public boolean deleteNeed(int id) throws IOException {
         return needDao.deleteNeed(id);
+    }
+
+    public List<Need> findNeeds(String containsText) {
+        return needDao.findNeeds(containsText);
     }
 
 }
