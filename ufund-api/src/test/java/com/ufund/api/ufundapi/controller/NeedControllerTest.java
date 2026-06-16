@@ -1,15 +1,21 @@
 package com.ufund.api.ufundapi.controller;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,58 +23,78 @@ import org.springframework.http.ResponseEntity;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.service.NeedService;
 
-/**
- * Unit tests for the API layer of the <em>Get Entire Cupboard</em> story.
- * The {@link NeedService} is mocked so the controller is tested in isolation.
- */
-class NeedControllerTest {
-
-    private NeedController controller;
-    private NeedService mockService;
+@Tag("Controller-tier")
+public class NeedControllerTest {
+    private NeedController needController;
+    private NeedService needService;
 
     @BeforeEach
-    void setup() {
-        mockService = mock(NeedService.class);
-        controller = new NeedController(mockService);
+    public void setupNeedController() {
+        needService = mock(NeedService.class);
+        needController = new NeedController(needService);
     }
 
-    /**
-     * Acceptance criterion: Given needs exist in the cupboard, when I get the
-     * needs, then the API returns the full list and status 200.
-     */
     @Test
-    void testGetNeedsReturnsFullListAndOk() {
-        Need[] needs = {
-            new Need(1, "Canned Soup", 50, "cans"),
-            new Need(2, "Rice", 100, "lbs")
-        };
-        when(mockService.getAllNeeds()).thenReturn(Arrays.asList(needs));
-
-        ResponseEntity<Need[]> response = controller.getNeeds();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertArrayEquals(needs, response.getBody());
-        // Value-level checks so the test catches field corruption, not just references.
-        Need[] body = response.getBody();
-        assertEquals(2, body.length);
-        assertEquals(1, body[0].getId());
-        assertEquals("Canned Soup", body[0].getName());
-        assertEquals(50, body[0].getQuantity());
-        assertEquals("cans", body[0].getUnit());
+    public void testCreateNeed() throws IOException {
+        Need need = new Need(999, "corn", 10.37, 3, "hunger");
+        when(needService.createNeed(need)).thenReturn(need);
+        ResponseEntity<Need> response = needController.createNeed(need);
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(need, response.getBody());
     }
 
-    /**
-     * Acceptance criterion: Given no needs exist in the cupboard, when I get the
-     * needs, then the API returns an empty array and status 200.
-     */
+    @Test 
+    void testCreateNeedConflict() throws IOException {
+        Need need = new Need(999, "corn", 10.37, 3, "hunger");
+        Need other = new Need(666, "corn", 5, 2, "hunger");
+        when(needService.getNeedArray("corn")).thenReturn(new Need[] {need});
+        ResponseEntity<Need> response = needController.createNeed(other);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertNull(response.getBody());
+        verify(needService, never()).createNeed(any());
+    }
+
+    @Test 
+    public void testGetNeedFailed() throws Exception {
+        Need need = new Need(3, "Corn", 10.97, 100, "food");
+        when(needService.updateNeed(need.getId(), need)).thenReturn(null);
+        ResponseEntity<Need> response = needController.updateNeed(need.getId(), need);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test 
+    public void testUpdateNeedHandleException() throws Exception {
+        Need need = new Need(3, "Corn", 10.97, 100, "food");
+        doThrow(new IOException()).when(needService).updateNeed(need.getId(), need);
+        ResponseEntity<Need> response = needController.updateNeed(need.getId(), need);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
     @Test
-    void testGetNeedsReturnsEmptyArrayAndOk() {
-        when(mockService.getAllNeeds()).thenReturn(Collections.emptyList());
-
-        ResponseEntity<Need[]> response = controller.getNeeds();
-
+    public void testGetNeeds() throws Exception {
+        List<Need> needs = new ArrayList<>();
+        needs.add(new Need(1, "Corn", 10.97, 100, "food"));
+        needs.add(new Need(2, "Blanket", 5.00, 50, "clothing"));
+        when(needService.getAllNeeds()).thenReturn(needs);
+        ResponseEntity<Need[]> response = needController.getNeeds(null);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(0, response.getBody().length);
+        assertEquals(2, response.getBody().length);
+    }
+
+    @Test
+    public void testSearchNeeds() throws Exception {
+        List<Need> needs = new ArrayList<>();
+        needs.add(new Need(1, "Corn", 10.97, 100, "food"));
+        when(needService.findNeeds("Cor")).thenReturn(needs);
+        ResponseEntity<Need[]> response = needController.getNeeds("Cor");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().length);
+    }
+
+    @Test
+    public void testSearchNeedsHandleException() throws Exception {
+        doThrow(new RuntimeException()).when(needService).findNeeds("Cor");
+        ResponseEntity<Need[]> response = needController.getNeeds("Cor");
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }

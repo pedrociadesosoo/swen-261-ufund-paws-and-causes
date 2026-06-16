@@ -1,84 +1,40 @@
+
+
+
 package com.ufund.api.ufundapi.service;
 
-import java.util.List;
-import org.springframework.stereotype.Service;
 
-import com.ufund.api.ufundapi.dao.NeedDAO;
+import java.io.IOException;
+import java.util.List;
+
 import com.ufund.api.ufundapi.model.Need;
 
-/**
- * Business-layer service for {@link Need} operations. It sits between the REST
- * controller and the {@link NeedDAO} persistence layer so that controllers
- * never depend on the DAO directly, keeping business logic in one place.
- *
- * @author U-Fund Team
- */
-@Service
-public class NeedService {
-    private NeedDAO needDao;
+
+
+public interface NeedService {
+    List<Need> getAllNeeds() throws IOException;
+    List<Need> findNeeds(String containsText);
+
 
     /**
-     * Creates the service.
-     *
-     * @param needDao the {@link NeedDAO} persistence dependency, injected by Spring
+     * Finds and retrieves {@linkplain Need need} with the provided id
+     * @param id if of the {@link Need need} to find
+     * @return the {@link Need need} of the need if found, otherwise null
+     * @throws IOException if an issue with storage access occurs
      */
-    public NeedService(NeedDAO needDao) {
-        this.needDao = needDao;
-    }
+    Need getNeedById(int id) throws IOException;
+    
+    Need createNeed(Need need) throws IOException;
+    Need[] getNeedArray(String containsText);
+
+    Need updateNeed(int id,Need need) throws IOException;
 
     /**
-     * Retrieves all {@linkplain Need needs} in the cupboard.
-     *
-     * @return a list of all needs; an empty list (never {@code null}) when the
-     * cupboard is empty
+     * Deletes {@linkplain Need need} with the provided id
+     * @param id if of the {@link Need need} to find and delete
+     * @return the {@link Need need} that has been deleted if sucessful, null otherwise
+     * @throws IOException if an issue with storage occurs
      */
-    public List<Need> getAllNeeds() {
-        return needDao.getAllNeeds();
-    }
-
-    /**
-     * Retrieves the {@linkplain Need need} with the given id.
-     *
-     * @param id the id of the need
-     * @return the matching need, or {@code null} if none exists
-     */
-    public Need getNeedById(int id) {
-        return needDao.getNeedById(id);
-    }
-
-    /**
-     * Creates and stores a new {@linkplain Need need}.
-     *
-     * @param need the need to create
-     * @return the created need, including its assigned id
-     */
-    public Need addNeed(Need need) {
-        return needDao.addNeed(need);
-    }
-
-    /**
-     * Updates the {@linkplain Need need} with the given id.
-     *
-     * @param id the id of the need to update
-     * @param need the new values for the need
-     * @return the updated need, or {@code null} if no need with that id exists
-     */
-    public Need updateNeed(int id,Need need) {
-        Need existing = needDao.getNeedById(id);
-        if (existing == null) {
-            return null;
-        }
-        need.setId(id);
-        return needDao.updateNeed(need);
-    }
-
-    /**
-     * Deletes the {@linkplain Need need} with the given id.
-     *
-     * @param id the id of the need to delete
-     * @return the deleted need, or {@code null} if no need with that id exists
-     */
-    public Need deleteNeed(int id) {
-        return needDao.deleteNeed(id);
-    }
+    Need deleteNeed(int id) throws IOException;
+    
 }

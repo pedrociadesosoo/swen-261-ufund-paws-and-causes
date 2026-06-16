@@ -1,56 +1,38 @@
 package com.ufund.api.ufundapi.dao;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.ufund.api.ufundapi.model.Need;
 
-/**
- * Defines the persistence contract for {@link Need} objects (the "cupboard").
- * Implementations are responsible for storing and retrieving needs; the rest of
- * the application depends only on this interface, not on any concrete storage.
- *
- * @author U-Fund Team
- */
+
+
 public interface NeedDAO {
-
-    /**
-     * Retrieves all {@linkplain Need needs} in the cupboard.
-     *
-     * @return a list of all needs; an empty list (never {@code null}) when the
-     * cupboard is empty
-     */
     List<Need> getAllNeeds();
+    List<Need> findNeeds(String containsText);
+    
 
-    /**
-     * Retrieves the {@linkplain Need need} with the given id.
-     *
-     * @param id the id of the need to find
-     * @return the matching need, or {@code null} if no need has that id
-     */
     Need getNeedById(int id);
+    Need[] getNeedArray(String name) throws IOException;
+    Need[] getNeedArray();
 
     /**
-     * Creates and stores a new {@linkplain Need need}; the id is assigned by the DAO.
-     *
-     * @param need the need to create
-     * @return the created need, including its newly assigned id
+     * Creates a new {@linkplain Need need}
+     * @param need {@link Need need} the need to be created
+     * @return new {@link Need need} if successful, null if otherwise
+     * @throws IOException if an issue with storage occurs
      */
-    Need addNeed(Need need);
+    Need createNeed(Need need) throws IOException;
+
+    Need updateNeed(Need need) throws IOException;
+
 
     /**
-     * Updates an existing {@linkplain Need need}, identified by its id.
-     *
-     * @param need the need to update
-     * @return the updated need, or {@code null} if no need with that id exists
+     * Deletes {@linkplain Need need} with the provided id
+     * @param id if of the {@link Need need} to find and delete
+     * @return true if successful, false if otherwise
+     * @throws IOException if an issue with storage access occurs
      */
-    Need updateNeed(Need need);
-
-    /**
-     * Deletes the {@linkplain Need need} with the given id.
-     *
-     * @param id the id of the need to delete
-     * @return the deleted need, or {@code null} if no need with that id exists
-     */
-    Need deleteNeed(int id);
-
+    boolean deleteNeed(int id) throws IOException;
+    
 }

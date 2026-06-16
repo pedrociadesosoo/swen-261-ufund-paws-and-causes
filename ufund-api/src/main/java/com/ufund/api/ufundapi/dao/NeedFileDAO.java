@@ -1,149 +1,247 @@
 package com.ufund.api.ufundapi.dao;
 
+
 import java.io.File;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Need;
 
+
+
 /**
- * File-based implementation of the {@linkplain NeedDAO} interface.
- * <p>
- * Needs are kept in an in-memory cache and persisted to a JSON file using
- * Jackson. The cache is the source of truth at runtime so read operations
- * (such as {@link #getAllNeeds()}) require no file I/O.
- *
- * @author U-Fund Team
+ * Implements the functionality for JSON file-based peristance for Neeeds
+ * 
+ * {@literal @}Component Spring annotation instantiates a single instance of this
+ * class and injects the instance into other classes as needed
+ * 
+ * @author SWEN Faculty
  */
-@Repository
+
+
+@Component
 public class NeedFileDAO implements NeedDAO {
-
-    /** In-memory cache of needs, keyed by id and kept ordered for stable reads. */
-    private final Map<Integer, Need> needs;
-
-    /** Jackson mapper used to (de)serialize the JSON data file. */
-    private final ObjectMapper objectMapper;
-
-    /** Path to the JSON file that backs the cache. */
-    private final String filename;
-
-    /** Next id to assign to a newly created need. */
-    private int nextId;
+    private static final Logger LOG = Logger.getLogger(NeedFileDAO.class.getName());
+    
+    private Map<Integer, Need> needs = new TreeMap<>();
+    private ObjectMapper objectMapper;  // Provides conversion between Need
+                                        // objects and JSON text format written
+                                        // to the file
+    private static int nextId;  // The next Id to assign to a new need
+    private String filename;    // Filename to read from and write to
 
     /**
-     * Creates a file-based Need Data Access Object.
-     *
-     * @param filename     path to the JSON data file (from {@code needs.file})
-     * @param objectMapper Jackson mapper injected by Spring
-     * @throws IOException if the data file cannot be read on startup
+     * Creates a Needs File Data Access Object
+     * 
+     * @param filename Filename to read from and write to
+     * @param objectMapper Provides JSON Object to/from Java Object serialization and deserialization
+     * 
+     * @throws IOException when file cannot be accessed or read from
      */
-    public NeedFileDAO(@Value("${needs.file:data/needs.json}") String filename,
-                       ObjectMapper objectMapper) throws IOException {
+    public NeedFileDAO(@Value("${needs.file}") String filename,ObjectMapper objectMapper) throws IOException {
         this.filename = filename;
         this.objectMapper = objectMapper;
-        this.needs = new TreeMap<>();
-        load();
+        load();  // load the needs from the file
     }
 
+
+
     /**
-     * Loads the needs from the JSON file into the in-memory cache and
-     * determines the next id to assign.
-     *
-     * @throws IOException if the file cannot be read or deserialized
+     * Generates the next id for a new {@linkplain Need need }
+     * 
+     * @return The next id
      */
-    private void load() throws IOException {
-        needs.clear();
-        nextId = 0;
-        Need[] needArray = objectMapper.readValue(new File(filename), Need[].class);
-        for (Need need : needArray) {
-            needs.put(need.getId(), need);
-            if (need.getId() > nextId) {
-                nextId = need.getId();
+    private synchronized static int nextId() {
+        int id = nextId;
+        ++nextId;
+        return id;
+    }
+    
+
+    /**
+     * Generates an array of {@linkplain Need needs} from the tree map
+     * 
+     * @return  The array of {@link Need needs}, may be empty
+     */
+    public Need[] getNeedArray() {
+        return getNeedArray(null);
+    }
+
+
+    /**
+     * Generates an array of {@linkplain Need needs} from the tree map for any
+     * {@linkplain Need needs} that contains the text specified by containsText
+     * <br>
+     * If containsText is null, the array contains all of the {@linkplain Need needs}
+     * in the tree map
+     * 
+     * @return  The array of {@link Need needs}, may be empty
+     */
+    public Need[] getNeedArray(String containsText) { // if containsText == null, no filter
+        ArrayList<Need> needArrayList = new ArrayList<>();
+
+        for (Need need : needs.values()) {
+            if (containsText == null || need.getName().contains(containsText)) {
+                needArrayList.add(need);
             }
         }
-        ++nextId;
+
+        Need[] needArray = new Need[needArrayList.size()];
+        needArrayList.toArray(needArray);
+        return needArray;
     }
 
-    /**
-     * Saves the current in-memory cache back to the JSON file.
-     *
-     * @throws IOException if the file cannot be written
-     */
-    private void save() throws IOException {
-        Need[] needArray = needs.values().toArray(new Need[0]);
-        objectMapper.writeValue(new File(filename), needArray);
-    }
 
     /**
-     * Persists the cache, converting the checked {@link IOException} into an
-     * unchecked one so the method signatures match the {@link NeedDAO} contract.
+     * Saves the {@linkplain Need needs} from the map into the file as an array of JSON objects
+     * 
+     * @return true if the {@link  Need needs} were written successfully
+     * 
+     * @throws IOException when file cannot be accessed or written to
      */
-    private void persist() {
-        try {
-            save();
-        } catch (IOException e) {
-            throw new UncheckedIOException("Unable to persist needs to " + filename, e);
+    private boolean save() throws IOException {
+        Need[] needArray = getNeedArray();
+
+        // Serializes the Java Objects to JSON objects into the file
+        // writeValue will thrown an IOException if there is an issue
+        // with the file or reading from the file
+        objectMapper.writeValue(new File(filename),needArray);
+        return true;
+    }
+
+
+
+    /**
+     * Loads {@linkplain Need needs} from the JSON file into the map
+     * <br>
+     * Also sets next id to one more than the greatest id found in the file
+     * 
+     * @return true if the file was read successfully
+     * 
+     * @throws IOException when file cannot be accessed or read from
+     */
+
+    private boolean load() throws IOException {
+        needs = new TreeMap<>();
+        nextId = 0;
+
+
+        // Deserializes the JSON objects in the file to Java Objects
+        // readValue will thrown an IOException if there is an issue
+        // with the file or reading from the file
+        Need[] needArray = objectMapper.readValue(new File(filename), Need[].class);
+        
+        // Add each need to the tree map and keep track of the greatest id
+        for (Need need : needArray) {
+            needs.put(need.getId(), need);
+            if (need.getId() >= nextId)
+                nextId = need.getId();
         }
+        // make the next id one greater than the maximum from the file
+        ++nextId;
+        return true;
     }
 
+
     /**
-     * {@inheritDoc}
-     * <p>
-     * Returns every need in the cupboard. When the cupboard is empty an empty
-     * list is returned (never {@code null}).
+    ** {@inheritDoc}
      */
     @Override
     public List<Need> getAllNeeds() {
-        synchronized (needs) {
+        synchronized(needs) {
             return new ArrayList<>(needs.values());
         }
     }
 
+
+    /**
+    ** {@inheritDoc}
+     */
     @Override
     public Need getNeedById(int id) {
-        synchronized (needs) {
-            return needs.get(id);
-        }
-    }
-
-    @Override
-    public Need addNeed(Need need) {
-        synchronized (needs) {
-            Need created = new Need(nextId++, need.getName(), need.getQuantity(), need.getUnit());
-            needs.put(created.getId(), created);
-            persist();
-            return created;
-        }
-    }
-
-    @Override
-    public Need updateNeed(Need need) {
-        synchronized (needs) {
-            if (!needs.containsKey(need.getId())) {
+        synchronized(needs) {
+            if (needs.containsKey(id))
+                return needs.get(id);
+            else
                 return null;
+        }
+    }
+
+   /**
+    ** {@inheritDoc}
+     */
+
+    @Override
+    public Need createNeed(Need need) {
+        try{
+        synchronized(needs) {
+
+            if (getNeedArray(need.getName()) != null && getNeedArray(need.getName()).length > 0) {
+                return null; // Need with the same name already exists
             }
+            // assign the next id to the need an increment the value
+            need.setId(nextId());
             needs.put(need.getId(), need);
-            persist();
+            save();
+            return need;
+        }}
+        catch(IOException e){
+            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            return null;
+        }
+                
+    }
+
+
+    /**
+    ** {@inheritDoc}
+     */
+    @Override
+    public Need updateNeed(Need need) throws IOException {
+        synchronized(needs) {
+            if (needs.containsKey(need.getId()) == false)
+                return null;  // need does not exist
+
+            needs.put(need.getId(), need);
+            save(); // may throw an IOException
             return need;
         }
     }
 
+
+    /**
+    ** {@inheritDoc}
+     */
     @Override
-    public Need deleteNeed(int id) {
-        synchronized (needs) {
-            Need removed = needs.remove(id);
-            if (removed != null) {
-                persist();
+    public boolean deleteNeed(int id) throws IOException {
+        synchronized(needs) {
+            if (needs.containsKey(id)) {
+                needs.remove(id);
+                return save();
             }
-            return removed;
+            else
+                return false;
         }
     }
+
+    /**
+    * {@inheritDoc}
+     */
+    @Override
+    public List<Need> findNeeds(String containsText) {
+        synchronized(needs) {
+            return new ArrayList<>(Arrays.asList(getNeedArray(containsText)));
+        }
+    }
+
 }
