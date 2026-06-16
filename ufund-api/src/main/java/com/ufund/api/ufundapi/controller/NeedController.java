@@ -24,6 +24,7 @@ import com.ufund.api.ufundapi.service.NeedServiceImpl;
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.dao.NeedFileDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.service.NeedService;
 
 @RestController
 @RequestMapping("needs")
@@ -38,15 +39,20 @@ public class NeedController {
      * <br>
      * This dependency is injected by Spring framework
      */
+    private NeedService needService;
 
     public NeedController (NeedDAO needDao){
         this.needDao = needDao;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Need> getNeed(@PathVariable int id){
-        //implement here
-        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Need> getNeed(@PathVariable int id) {
+        Need need = needService.getNeedById(id);
+        if (need != null) {
+            return new ResponseEntity<>(need, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("")
