@@ -1,16 +1,20 @@
-# PROJECT Home
+# U-Fund Home
 
-Welcome to the PROJECT Project!
+Welcome to the **U-Fund** project! _(TODO (team): add your specific fundraising focus, e.g. "U-Fund: Food Pantry".)_
 
 ## Team
 
-* MEMBER1
-* MEMBER2
+* Mouza Alameri
+* _TODO: teammate — add your name_
+* _TODO: teammate — add your name_
+* _TODO: teammate — add your name_
+* _TODO: teammate — add your name_
+* _TODO: teammate — add your name_
 
-## [Design Documentation](DesignDoc)
+## [Design Documentation](DesignDoc.md)
 
-Click above for details of the PROJECT design documentation.
+Click above for details of the U-Fund design documentation.
 
-## [Setup Guide](SetupGuide)
+## Setup Guide
 
-Click above for details about how to setup your development environment to work on this project.
+See the project [README](../README.md) for prerequisites and instructions on how to build, run, and test the application.
