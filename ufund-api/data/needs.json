@@ -1,0 +1,5 @@
+[
+  {"id":1,"name":"Canned Soup","quantity":50,"unit":"cans"},
+  {"id":2,"name":"Rice","quantity":100,"unit":"lbs"},
+  {"id":3,"name":"Blankets","quantity":25,"unit":"items"}
+]
