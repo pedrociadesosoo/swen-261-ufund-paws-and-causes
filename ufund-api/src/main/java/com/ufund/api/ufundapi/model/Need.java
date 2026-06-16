@@ -13,7 +13,6 @@ public class Need{
     @JsonProperty("quantity") private int quantity;
     @JsonProperty("type") private String type;
 
-    public Need() {}
 
     public Need(int id, String name, double cost, int quantity, String type) {
         this.id = id;
