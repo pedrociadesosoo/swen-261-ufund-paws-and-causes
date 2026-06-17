@@ -1,23 +1,40 @@
+
+
+
 package com.ufund.api.ufundapi.service;
 
 
-import java.util.List;
 import java.io.IOException;
+import java.util.List;
 
 import com.ufund.api.ufundapi.model.Need;
 
 
 
 public interface NeedService {
-    List<Need> getAllNeeds();
+    List<Need> getAllNeeds() throws IOException;
     List<Need> findNeeds(String containsText);
 
-    Need getNeedById(int id);
+
+    /**
+     * Finds and retrieves {@linkplain Need need} with the provided id
+     * @param id if of the {@link Need need} to find
+     * @return the {@link Need need} of the need if found, otherwise null
+     * @throws IOException if an issue with storage access occurs
+     */
+    Need getNeedById(int id) throws IOException;
+    
     Need createNeed(Need need) throws IOException;
     Need[] getNeedArray(String containsText);
 
     Need updateNeed(int id,Need need) throws IOException;
 
-    boolean deleteNeed(int id) throws IOException;
+    /**
+     * Deletes {@linkplain Need need} with the provided id
+     * @param id if of the {@link Need need} to find and delete
+     * @return the {@link Need need} that has been deleted if sucessful, null otherwise
+     * @throws IOException if an issue with storage occurs
+     */
+    Need deleteNeed(int id) throws IOException;
     
 }
