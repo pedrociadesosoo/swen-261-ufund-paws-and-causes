@@ -1,6 +1,5 @@
 package com.ufund.api.ufundapi.dao;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,11 +33,9 @@ public class NeedFileDAO implements NeedDAO {
     private static final Logger LOG = Logger.getLogger(NeedFileDAO.class.getName());
     
     private Map<Integer, Need> needs = new TreeMap<>();
-    private ObjectMapper objectMapper;  // Provides conversion between Need
-                                        // objects and JSON text format written
-                                        // to the file
-    private static int nextId;  // The next Id to assign to a new need
-    private String filename;    // Filename to read from and write to
+    private ObjectMapper objectMapper;
+    private static int nextId; 
+    private String filename;    
 
     /**
      * Creates a Needs File Data Access Object
@@ -48,10 +45,11 @@ public class NeedFileDAO implements NeedDAO {
      * 
      * @throws IOException when file cannot be accessed or read from
      */
+
     public NeedFileDAO(@Value("${needs.file}") String filename,ObjectMapper objectMapper) throws IOException {
         this.filename = filename;
         this.objectMapper = objectMapper;
-        load();  // load the needs from the file
+        load();  
     }
 
 
@@ -66,17 +64,11 @@ public class NeedFileDAO implements NeedDAO {
         ++nextId;
         return id;
     }
-    
 
-    /**
-     * Generates an array of {@linkplain Need needs} from the tree map
-     * 
-     * @return  The array of {@link Need needs}, may be empty
-     */
     public Need[] getNeedArray() {
         return getNeedArray(null);
     }
-
+    
 
     /**
      * Generates an array of {@linkplain Need needs} from the tree map for any
@@ -87,11 +79,11 @@ public class NeedFileDAO implements NeedDAO {
      * 
      * @return  The array of {@link Need needs}, may be empty
      */
-    public Need[] getNeedArray(String containsText) { // if containsText == null, no filter
+    public Need[] getNeedArray(String containsText) { 
         ArrayList<Need> needArrayList = new ArrayList<>();
 
         for (Need need : needs.values()) {
-            if (containsText == null || need.getName().contains(containsText)) {
+            if (containsText == null || need.getName().toLowerCase().contains(containsText.toLowerCase())) {
                 needArrayList.add(need);
             }
         }
@@ -135,19 +127,13 @@ public class NeedFileDAO implements NeedDAO {
         needs = new TreeMap<>();
         nextId = 0;
 
-
-        // Deserializes the JSON objects in the file to Java Objects
-        // readValue will thrown an IOException if there is an issue
-        // with the file or reading from the file
         Need[] needArray = objectMapper.readValue(new File(filename), Need[].class);
         
-        // Add each need to the tree map and keep track of the greatest id
         for (Need need : needArray) {
             needs.put(need.getId(), need);
             if (need.getId() >= nextId)
                 nextId = need.getId();
         }
-        // make the next id one greater than the maximum from the file
         ++nextId;
         return true;
     }
@@ -187,9 +173,9 @@ public class NeedFileDAO implements NeedDAO {
         synchronized(needs) {
 
             if (getNeedArray(need.getName()) != null && getNeedArray(need.getName()).length > 0) {
-                return null; // Need with the same name already exists
+                return null; 
             }
-            // assign the next id to the need an increment the value
+
             need.setId(nextId());
             needs.put(need.getId(), need);
             save();
@@ -210,10 +196,10 @@ public class NeedFileDAO implements NeedDAO {
     public Need updateNeed(Need need) throws IOException {
         synchronized(needs) {
             if (needs.containsKey(need.getId()) == false)
-                return null;  // need does not exist
+                return null;  
 
             needs.put(need.getId(), need);
-            save(); // may throw an IOException
+            save(); 
             return need;
         }
     }
