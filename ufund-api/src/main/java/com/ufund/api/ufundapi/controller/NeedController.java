@@ -65,8 +65,11 @@ public class NeedController {
         LOG.info("GET /needs" + (name != null ? "?name=" + name : ""));
         try {
             List<Need> needs;
-            if (name != null)
+            if (name != null) {
+                if (name.isBlank())
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 needs = needService.findNeeds(name);
+            }
             else
                 needs = needService.getAllNeeds();
             return new ResponseEntity<>(needs.toArray(new Need[0]), HttpStatus.OK);
