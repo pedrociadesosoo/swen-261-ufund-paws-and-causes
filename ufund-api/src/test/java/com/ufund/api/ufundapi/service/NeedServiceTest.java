@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.io.IOException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,41 +17,36 @@ import org.junit.jupiter.api.Test;
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
 
-/**
- * Unit tests for the business layer of the <em>Get Entire Cupboard</em> story.
- * The {@link NeedDAO} is mocked so the service is tested in isolation.
- */
 class NeedServiceTest {
 
-    private NeedService service;
+    private NeedServiceImpl service;
     private NeedDAO mockDao;
 
     @BeforeEach
     void setup() {
         mockDao = mock(NeedDAO.class);
-        service = new NeedService(mockDao);
+        service = new NeedServiceImpl(mockDao);
     }
 
     @Test
-    void testGetAllNeedsReturnsAll() {
+    void testGetAllNeedsReturnsAll() throws IOException {
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 50, "cans"),
-            new Need(2, "Rice", 100, "lbs"));
+            new Need(1, "Canned Soup", 2.50, 50, "food"),
+            new Need(2, "Rice", 1.99, 100, "food"));
         when(mockDao.getAllNeeds()).thenReturn(needs);
 
         List<Need> result = service.getAllNeeds();
 
         assertEquals(2, result.size());
-        // Value-level checks so the test catches field corruption, not just references.
         assertEquals(1, result.get(0).getId());
         assertEquals("Canned Soup", result.get(0).getName());
         assertEquals(50, result.get(0).getQuantity());
-        assertEquals("cans", result.get(0).getUnit());
+        assertEquals("food", result.get(0).getType());
         verify(mockDao).getAllNeeds();
     }
 
     @Test
-    void testGetAllNeedsWhenEmpty() {
+    void testGetAllNeedsWhenEmpty() throws IOException {
         when(mockDao.getAllNeeds()).thenReturn(Collections.emptyList());
 
         List<Need> result = service.getAllNeeds();
