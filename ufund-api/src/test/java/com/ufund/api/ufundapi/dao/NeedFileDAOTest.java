@@ -17,17 +17,13 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Need;
 
-/**
- * Unit tests for the persistence layer of the <em>Get Entire Cupboard</em>
- * story. The {@link ObjectMapper} is mocked so no real file is read.
- */
 class NeedFileDAOTest {
 
     private Need[] sampleNeeds() {
         return new Need[] {
-            new Need(1, "Canned Soup", 50, "cans"),
-            new Need(2, "Rice", 100, "lbs"),
-            new Need(3, "Blankets", 25, "items")
+            new Need(1, "Canned Soup", 2.50, 50, "food"),
+            new Need(2, "Rice", 1.99, 100, "food"),
+            new Need(3, "Blankets", 15.00, 25, "clothing")
         };
     }
 
@@ -41,24 +37,19 @@ class NeedFileDAOTest {
         List<Need> result = dao.getAllNeeds();
 
         assertEquals(needs.length, result.size());
-        // Value-level checks so the test catches field corruption, not just references.
         assertEquals(1, result.get(0).getId());
         assertEquals("Canned Soup", result.get(0).getName());
         assertEquals(50, result.get(0).getQuantity());
-        assertEquals("cans", result.get(0).getUnit());
+        assertEquals("food", result.get(0).getType());
     }
 
-    /**
-     * Verifies the DAO's documented contract that needs are returned ordered by
-     * id, even when the backing file supplies them out of order.
-     */
     @Test
     void testGetAllNeedsReturnsNeedsOrderedById() throws IOException {
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] unordered = {
-            new Need(3, "Blankets", 25, "items"),
-            new Need(1, "Canned Soup", 50, "cans"),
-            new Need(2, "Rice", 100, "lbs")
+            new Need(3, "Blankets", 15.00, 25, "clothing"),
+            new Need(1, "Canned Soup", 2.50, 50, "food"),
+            new Need(2, "Rice", 1.99, 100, "food")
         };
         when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(unordered);
 
