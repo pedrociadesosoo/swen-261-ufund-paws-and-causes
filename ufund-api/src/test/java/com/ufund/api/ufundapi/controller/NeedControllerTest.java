@@ -9,7 +9,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
@@ -96,5 +96,16 @@ public class NeedControllerTest {
         doThrow(new RuntimeException()).when(needService).findNeeds("Cor");
         ResponseEntity<Need[]> response = needController.getNeeds("Cor");
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    public void testGetNeedsBlankNameReturnsAll() throws Exception {
+        List<Need> needs = new ArrayList<>();
+        needs.add(new Need(1, "Corn", 10.97, 100, "food"));
+        needs.add(new Need(2, "Blanket", 5.00, 50, "clothing"));
+        when(needService.getAllNeeds()).thenReturn(needs);
+        ResponseEntity<Need[]> response = needController.getNeeds("");
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, response.getBody().length);
     }
 }
