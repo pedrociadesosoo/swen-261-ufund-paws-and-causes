@@ -11,35 +11,48 @@ import com.ufund.api.ufundapi.model.Need;
 @Service
 public class NeedServiceImpl implements NeedService {
     private NeedDAO needDao;
-
+    
+    /**
+     * Creates a NeedServiceImpl with the provided {@link NeedDAO}
+     *
+     * @param needDao The {@link NeedDAO} to use for data access
+     */
     public NeedServiceImpl(NeedDAO needDao) {
         this.needDao = needDao;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<Need> getAllNeeds() throws IOException {
         return needDao.getAllNeeds();
     }
 
     /**
-     * Finds and retrieves {@linkplain Need need} with the provided id
-     * @param id if of the {@link Need need} to find
-     * @return the {@link Need need} of the need if found, otherwise null
-     * @throws IOException if an issue with storage access occurs
+     * {@inheritDoc}
      */
     public Need getNeedById(int id) throws IOException {
         return needDao.getNeedById(id);
     }
 
-    
+    /**
+     * {@inheritDoc}
+     */
     public Need createNeed(Need need) throws IOException {
         return needDao.createNeed(need);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public Need[] getNeedArray(String containsText) {
         return needDao.findNeeds(containsText).toArray(new Need[0]);
     }
 
-    public Need updateNeed(int id,Need need) throws IOException {
+    /**
+     * {@inheritDoc}
+     */
+    public Need updateNeed(int id, Need need) throws IOException {
         Need existing = needDao.getNeedById(id);
         if (existing == null) {
             return null;
@@ -49,13 +62,9 @@ public class NeedServiceImpl implements NeedService {
     }
 
     /**
-     * Retrieves and deletes {@linkplain Need need} with the provided id
-     * @param id if of the {@link Need need} to find and delete
-     * @return the {@link Need need} that has been deleted if sucessful, null otherwise
-     * @throws IOException if an issue with storage access occurs
+     * {@inheritDoc}
      */
     public Need deleteNeed(int id) throws IOException {
-
         Need deletedNeed = needDao.getNeedById(id);
         if (deletedNeed != null && needDao.deleteNeed(id)) {
             return deletedNeed;
@@ -64,8 +73,10 @@ public class NeedServiceImpl implements NeedService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<Need> findNeeds(String containsText) {
         return needDao.findNeeds(containsText);
     }
-
 }

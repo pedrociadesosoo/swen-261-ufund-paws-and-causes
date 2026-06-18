@@ -36,18 +36,24 @@ public class NeedController {
         this.needService = needService;
     }
 
+    /**
+     * Responds to GET request for a {@linkplain Need need} for the given id
+     *
+     * @param id The id used to locate the {@link Need need}
+     * @return ResponseEntity with {@link Need need} and HTTP status OK if found,
+     * NOT_FOUND if not found, INTERNAL_SERVER_ERROR otherwise
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Need> getNeed(@PathVariable int id) {
-        
+        LOG.info("GET /needs/" + id);
         try {
             Need need = needService.getNeedById(id);
-            if (need != null) {
+            if (need != null) 
                 return new ResponseEntity<>(need, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+            else 
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);  
         } catch (IOException e) {
-            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -69,12 +75,11 @@ public class NeedController {
                 if (name.isBlank())
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 needs = needService.findNeeds(name);
-            }
-            else
+            } else {
                 needs = needService.getAllNeeds();
+            }
             return new ResponseEntity<>(needs.toArray(new Need[0]), HttpStatus.OK);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -95,8 +100,7 @@ public class NeedController {
             if (existing != null && existing.length > 0)
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             return new ResponseEntity<>(needService.createNeed(need), HttpStatus.CREATED);
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -119,8 +123,7 @@ public class NeedController {
                 return new ResponseEntity<>(updated, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -134,21 +137,17 @@ public class NeedController {
      * NOT_FOUND if not found, INTERNAL_SERVER_ERROR otherwise
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Need> deleteNeed(@PathVariable int id){        
-
+    public ResponseEntity<Need> deleteNeed(@PathVariable int id) {        
         LOG.info("DELETE /needs/" + id);
         try { 
             Need deletedNeed = needService.deleteNeed(id);
-            if(deletedNeed != null){
+            if (deletedNeed != null) 
                 return new ResponseEntity<Need>(deletedNeed, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }     
-        }
-        catch(IOException e) {
-            LOG.log(Level.SEVERE,e.getLocalizedMessage());
+            else 
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);     
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
