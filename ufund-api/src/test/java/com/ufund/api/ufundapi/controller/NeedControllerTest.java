@@ -54,6 +54,19 @@ public class NeedControllerTest {
         verify(needService, never()).createNeed(any());
     }
 
+    @Test
+    void testCreateNeedIOE() throws IOException{        
+         Need need = new Need(999, "corn", 10.37, 3, "hunger");
+         when(needService.getNeedArray("corn")).thenReturn(new Need[0]);
+         when(needService.createNeed(need)).thenThrow(new IOException("IO Failure"));
+
+        ResponseEntity<Need> response = needController.createNeed(need);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNull(response.getBody());
+        verify(needService, never()).createNeed(any());
+    }
+
     @Test 
     public void testGetNeedFailed() throws Exception {
         Need need = new Need(3, "Corn", 10.97, 100, "food");
