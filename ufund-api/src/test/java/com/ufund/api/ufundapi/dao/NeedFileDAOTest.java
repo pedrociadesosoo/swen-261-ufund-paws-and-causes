@@ -28,6 +28,35 @@ class NeedFileDAOTest {
     }
 
     @Test
+    void testCreateNeedReturnsNeed() throws IOException {
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = sampleNeeds();
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        Need n = dao.createNeed(new Need(3, "Coat", 15.00, 25, "clothing"));
+        Need expected = new Need(4, "Coat", 15.00, 25, "clothing");
+
+        assertEquals(expected.getId(), n.getId());
+        assertEquals(expected.getName(), n.getName());
+        assertEquals(expected.getCost(), n.getCost());
+        assertEquals(expected.getQuantity(), n.getQuantity());
+        assertEquals(expected.getType(), n.getType());
+
+    }
+
+    @Test
+    void testCreateNeedFail() throws IOException{
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = sampleNeeds();
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        Need n = dao.createNeed(new Need(3, "Blankets", 15.00, 25, "clothing"));
+        assertEquals(null, n);
+    }
+
+    @Test
     void testGetAllNeedsReturnsAll() throws IOException {
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] needs = sampleNeeds();
@@ -101,5 +130,5 @@ class NeedFileDAOTest {
         Need result = dao.getNeedById(4);
         assertEquals(null, result);
     }
-    
+
 }
