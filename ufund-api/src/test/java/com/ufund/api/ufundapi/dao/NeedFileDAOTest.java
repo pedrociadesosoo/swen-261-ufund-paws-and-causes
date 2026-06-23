@@ -73,4 +73,33 @@ class NeedFileDAOTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void testGetNeedByIdReturnsNeed() throws IOException{
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = sampleNeeds();
+
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        Need result = dao.getNeedById(1);
+        Need expected = new Need(1, "Canned Soup", 2.50, 50, "food");
+        assertEquals(expected.getName(), result.getName());
+        assertEquals(expected.getType(), result.getType());
+        assertEquals(expected.getId(), result.getId());
+
+    }
+
+    @Test
+    void testGetNeedByIdFailure() throws IOException {
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = sampleNeeds();
+
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        Need result = dao.getNeedById(4);
+        assertEquals(null, result);
+    }
+    
 }
