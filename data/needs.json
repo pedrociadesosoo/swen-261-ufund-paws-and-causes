@@ -1,4 +1,1 @@
-[
-    {"id": 1, "name": "Corn", "cost": 10.97, "quantity": 100, "type": "food"}
-
-]
+[{"id":1,"name":"Corn","cost":10.97,"quantity":100,"type":"food"},{"id":2,"name":"Winter Coats","cost":50.0,"quantity":10,"type":"clothing"}]
