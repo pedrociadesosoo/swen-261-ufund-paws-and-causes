@@ -110,7 +110,7 @@ public class NeedControllerTest {
     /************* deleteNeed() unit tests, implemented by Harikleia Sparakis*************/
 
     /**
-     * Tests if NeedController.deleteNeed() returns HttpStatus.INTERNAL_SERVER_ERROR 
+     * Tests if needController.deleteNeed() returns HttpStatus.INTERNAL_SERVER_ERROR 
      *  when IOException is thown.
      * 
      * @throws IOException
@@ -129,7 +129,7 @@ public class NeedControllerTest {
     }
 
     /**
-     * Tests if NeedController.deleteNeed() returns HttpStatus.NOT_FOUND when
+     * Tests if needController.deleteNeed() returns HttpStatus.NOT_FOUND when
      * indicated need does not exist.
      * 
      * @throws IOException
@@ -149,7 +149,7 @@ public class NeedControllerTest {
     }
 
     /**
-     * Tests if NeedController.deleteNeed() returns HttpStatus.OK when indicated
+     * Tests if needController.deleteNeed() returns HttpStatus.OK when indicated
      *  need is found and deleted
      * 
      * @throws IOException

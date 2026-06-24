@@ -7,6 +7,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -17,6 +18,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Need;
 
 class NeedFileDAOTest {
+
+    NeedFileDAO needFileDAO;
+    Need[] testNeeds;
+    ObjectMapper mockObjectMapper;
+
+    /**
+     * Before each test, we will create and inject a Mock Object Mapper to
+     * isolate the tests from the underlying file
+     * @throws IOException
+     */
+    @BeforeEach
+    public void setupHeroFileDAO() throws IOException {
+        mockObjectMapper = mock(ObjectMapper.class);
+        testNeeds = sampleNeeds();
+
+        when(mockObjectMapper
+            .readValue(new File("testfile.txt"),Need[].class))
+                .thenReturn(testNeeds);
+        needFileDAO = new NeedFileDAO("testfile.txt",mockObjectMapper);
+    }
 
     private Need[] sampleNeeds() {
         return new Need[] {
@@ -74,4 +95,34 @@ class NeedFileDAOTest {
     }
 
     /************* deleteNeed() unit tests, implemented by Harikleia Sparakis*************/
+
+    /**
+     * Tests if 
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedNull() throws IOException {
+        //setting up test data
+
+        //force 
+
+        //test
+
+    }
+
+    /**
+     * Tests if 
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedExists() throws IOException {
+        //setting up test data
+
+        //force 
+
+        //test
+        
+    }
 }

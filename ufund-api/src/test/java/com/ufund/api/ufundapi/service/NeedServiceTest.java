@@ -1,7 +1,6 @@
 package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -57,27 +56,39 @@ class NeedServiceTest {
 
     /************* deleteNeed() unit tests, implemented by Harikleia Sparakis*************/
 
-    @Test
-    public void testDeleteNeedIOException() throws Exception {
-        // TODO: how to check if exception was thrown
-    }
-
+    /**
+     * Tests if NeedService.deleteNeed() 
+     * 
+     * @throws IOException
+     */
     @Test
     public void testDeleteNeedNull() throws IOException {
-        when(mockDao.getNeedById(1)).thenReturn(null);
-        Need needToDelete = service.deleteNeed(1);
-        assertEquals(null, needToDelete);
-        
+        //set up test data
+        Need testNeed = new Need(1, "Canned Soup", 2.50, 50, "food");
+
+        //force mockDao.getNeedById() to return null 
+        when(mockDao.getNeedById(testNeed.getId())).thenReturn(null);
+
+        //check if method returns null
+        Need deletedNeed = service.deleteNeed(testNeed.getId());
+        assertEquals(testNeed, deletedNeed);
     }
 
+    /**
+     * Tests if NeedService.deleteNeed() returns 
+     * 
+     * @throws IOException
+     */
     @Test
     public void testDeleteNeedExists() throws IOException {
-        List<Need> testNeedsList = new ArrayList<>();
-        testNeedsList.add(new Need(1, "Corn", 10.97, 100, "food"));
-        testNeedsList.add(new Need(2, "Blanket", 5.00, 50, "clothing"));
-        when(mockDao.getNeedById(1)).thenReturn(testNeedsList.get(1));
-        Need needToDelete = service.deleteNeed(1);
-        assertEquals(testNeedsList.get(1), needToDelete);
+        //set up test data
+        Need testNeed = new Need(1, "Canned Soup", 2.50, 50, "food");
         
+        //force mockDao.getNeedById() to return test need
+        when(mockDao.getNeedById(testNeed.getId())).thenReturn(testNeed);
+
+        //check if method returns deleted need
+        Need deletedNeed = service.deleteNeed(testNeed.getId());
+        assertEquals(null, deletedNeed);
     }
 }
