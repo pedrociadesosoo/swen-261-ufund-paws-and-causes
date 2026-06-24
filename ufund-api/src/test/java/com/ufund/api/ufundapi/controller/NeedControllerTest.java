@@ -1,22 +1,20 @@
 package com.ufund.api.ufundapi.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-
-import java.io.IOException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -108,4 +106,65 @@ public class NeedControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().length);
     }
+
+    /************* deleteNeed() unit tests, implemented by Harikleia Sparakis*************/
+
+    /**
+     * Tests if NeedController.deleteNeed() returns HttpStatus.INTERNAL_SERVER_ERROR 
+     *  when IOException is thown.
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedIOException() throws IOException {
+        //setting up test data
+        int needTestIndex = 1;
+        
+        //force exception to be thrown
+        doThrow(new IOException()).when(needService).deleteNeed(needTestIndex);
+
+        //check if method returns HttpStatus.INTERNAL_SERVER_ERROR
+        ResponseEntity<Need> response = needController.deleteNeed(needTestIndex);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    /**
+     * Tests if NeedController.deleteNeed() returns HttpStatus.NOT_FOUND when
+     * indicated need does not exist.
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedNull() throws IOException {
+        //setting up test data
+        int needTestId = 1;
+
+        //force needService.deleteNeed() to return null
+        when(needService.deleteNeed(1)).thenReturn(null);
+
+        //check if method returns HttpStatus.NOTFOUND
+        ResponseEntity<Need> response = needController.deleteNeed(needTestId);
+        assertEquals((HttpStatus.NOT_FOUND), response.getStatusCode());   
+        
+    }
+
+    /**
+     * Tests if NeedController.deleteNeed() returns HttpStatus.OK when indicated
+     *  need is found and deleted
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedExists() throws IOException {
+        //setting up test data
+        Need testNeed = new Need(1, "Corn", 10.97, 100, "food");
+        
+        //force needService.deleteNeed() to return the test need
+        when(needService.deleteNeed(testNeed.getId())).thenReturn(testNeed);
+        
+        //check if method returns HttpStatus.OK 
+        ResponseEntity<Need> response = needController.deleteNeed(testNeed.getId());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
 }
