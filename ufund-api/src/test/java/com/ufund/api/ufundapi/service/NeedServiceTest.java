@@ -57,7 +57,8 @@ class NeedServiceTest {
     /************* deleteNeed() unit tests, implemented by Harikleia Sparakis*************/
 
     /**
-     * Tests if NeedService.deleteNeed() 
+     * Tests if NeedService.deleteNeed() returns null when NeedDao.getNeedById() returns
+     * null.
      * 
      * @throws IOException
      */
@@ -71,11 +72,12 @@ class NeedServiceTest {
 
         //check if method returns null
         Need deletedNeed = service.deleteNeed(testNeed.getId());
-        assertEquals(testNeed, deletedNeed);
+        assertEquals(testNeed, null);
     }
 
     /**
-     * Tests if NeedService.deleteNeed() returns 
+     * Tests if NeedService.deleteNeed() returns the test need when NeedDao.getNeedById()
+     * returns null.
      * 
      * @throws IOException
      */

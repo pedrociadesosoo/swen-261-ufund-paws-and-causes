@@ -3,6 +3,7 @@ package com.ufund.api.ufundapi.dao;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,9 +20,10 @@ import com.ufund.api.ufundapi.model.Need;
 
 class NeedFileDAOTest {
 
-    NeedFileDAO needFileDAO;
-    Need[] testNeeds;
-    ObjectMapper mockObjectMapper;
+    private NeedFileDAO needFileDAO;
+    private Need[] testNeeds;
+    private ObjectMapper mockObjectMapper;
+    private Map<Integer, Need> mockNeeds;
 
     /**
      * Before each test, we will create and inject a Mock Object Mapper to
@@ -29,14 +31,17 @@ class NeedFileDAOTest {
      * @throws IOException
      */
     @BeforeEach
-    public void setupHeroFileDAO() throws IOException {
+    public void setupNeedFileDAO() throws IOException {
         mockObjectMapper = mock(ObjectMapper.class);
         testNeeds = sampleNeeds();
+        mockNeeds = mock(Map.class);
 
         when(mockObjectMapper
             .readValue(new File("testfile.txt"),Need[].class))
                 .thenReturn(testNeeds);
         needFileDAO = new NeedFileDAO("testfile.txt",mockObjectMapper);
+        
+        
     }
 
     private Need[] sampleNeeds() {
@@ -97,32 +102,41 @@ class NeedFileDAOTest {
     /************* deleteNeed() unit tests, implemented by Harikleia Sparakis*************/
 
     /**
-     * Tests if 
+     * Tests if NeedDao.deleteNeed() returns false when the map of needs does not contain the 
+     * specified id
      * 
      * @throws IOException
      */
     @Test
-    public void testDeleteNeedNull() throws IOException {
+    public void testDeleteNeedFalse() throws IOException {
         //setting up test data
+        int needTestId = 1;
 
         //force 
-
+        when(mockNeeds.containsKey(needTestId)).thenReturn(false);
+        
         //test
-
+        boolean result = needFileDAO.deleteNeed(needTestId);
+        assertEquals(false, result);
     }
 
     /**
-     * Tests if 
+     * Tests if NeedDao.deleteNeed() returns true when the map of needs contains the 
+     * specified id
      * 
      * @throws IOException
      */
     @Test
     public void testDeleteNeedExists() throws IOException {
         //setting up test data
+        int needTestId = 1;
 
         //force 
+        when(mockNeeds.containsKey(needTestId)).thenReturn(true);
 
         //test
+        boolean result = needFileDAO.deleteNeed(needTestId);
+        assertEquals(true, result);
         
     }
 }
