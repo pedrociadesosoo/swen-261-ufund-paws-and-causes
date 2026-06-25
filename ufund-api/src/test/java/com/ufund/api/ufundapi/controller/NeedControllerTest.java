@@ -55,7 +55,7 @@ public class NeedControllerTest {
     }
 
     @Test 
-    public void testGetNeedFailed() throws Exception {
+    public void testUpdateNeedGetNeedFailed() throws Exception {
         Need need = new Need(3, "Corn", 10.97, 100, "food");
         when(needService.updateNeed(need.getId(), need)).thenReturn(null);
         ResponseEntity<Need> response = needController.updateNeed(need.getId(), need);
@@ -107,5 +107,34 @@ public class NeedControllerTest {
         ResponseEntity<Need[]> response = needController.getNeeds("");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().length);
+    }
+    
+    @Test
+    public void testGetNeed() throws Exception {
+	Need need = new Need(1, "Corn", 10.97, 100, "food");
+        when(needService.getNeedById(1)).thenReturn(need);
+	
+	ResponseEntity<Need> response = needController.getNeed(1);
+
+	assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(need, response.getBody());
+    }
+    
+    @Test
+    public void testGetNeedNotFound() throws Exception {
+        when(needService.getNeedById(1)).thenReturn(null);
+	
+	ResponseEntity<Need> response = needController.getNeed(1);
+
+	assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void testGetNeedIOERR() throws Exception {
+        doThrow(new IOException()).when(needService).getNeedById(1);
+	
+	ResponseEntity<Need> response = needController.getNeed(1);
+	
+	assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }
