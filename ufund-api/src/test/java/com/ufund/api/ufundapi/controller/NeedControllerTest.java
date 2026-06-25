@@ -109,6 +109,9 @@ public class NeedControllerTest {
         assertEquals(2, response.getBody().length);
     }
     
+    /**
+     * Tests that getNeed returns HTTP 200 OK and the correct Need body when the service finds it.
+     */
     @Test
     public void testGetNeed() throws Exception {
 	Need need = new Need(1, "Corn", 10.97, 100, "food");
@@ -120,6 +123,9 @@ public class NeedControllerTest {
         assertEquals(need, response.getBody());
     }
     
+    /**
+     * Tests that getNeed returns HTTP 404 NOT_FOUND when the service returns null.
+     */
     @Test
     public void testGetNeedNotFound() throws Exception {
         when(needService.getNeedById(1)).thenReturn(null);
@@ -129,6 +135,9 @@ public class NeedControllerTest {
 	assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    /**
+     * Tests that getNeed returns HTTP 500 INTERNAL_SERVER_ERROR when the service throws an IOException.
+     */
     @Test
     public void testGetNeedIOERR() throws Exception {
         doThrow(new IOException()).when(needService).getNeedById(1);
