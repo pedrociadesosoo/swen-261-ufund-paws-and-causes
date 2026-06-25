@@ -13,10 +13,12 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Need;
 
+@Tag("Persistence-tier")
 class NeedFileDAOTest {
 
     private Need[] sampleNeeds() {
@@ -73,4 +75,70 @@ class NeedFileDAOTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
+
+    // Pedrocia's unit tests - findNeeds
+
+    /**
+     *Verifies that findNeeds returns needs whose name contains the search term.
+     */
+    @Test
+    void testFindNeeds() throws IOException {
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = sampleNeeds();
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+        List<Need> result = dao.findNeeds("Canned");
+
+        assertEquals(1, result.size());
+        assertEquals("Canned Soup", result.get(0).getName());
+    }
+
+    /**
+     * Verifies that findNeeds is case-insensitive.
+     */
+    @Test
+    void testFindNeedsCaseInsensitive() throws IOException {
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = sampleNeeds();
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+        List<Need> result = dao.findNeeds("canned");
+
+        assertEquals(1, result.size());
+        assertEquals("Canned Soup", result.get(0).getName());
+    }
+
+    /**
+     * Verifies that findNeeds returns empty list when no needs match the search term
+     */
+    @Test
+    void testFindNeedsNoMatch() throws IOException {
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = sampleNeeds();
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+        List<Need> result = dao.findNeeds("xyz");
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    /**
+     * Verifies that findNeeds with null returns all needs
+     */
+    @Test
+    void testFindNeedsNullReturnsAll() throws IOException {
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = sampleNeeds();
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+        List<Need> result = dao.findNeeds(null);
+
+        assertEquals(3, result.size());
+    }
+
 }
