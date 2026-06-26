@@ -53,7 +53,7 @@ public class NeedControllerTest {
     }
 
     @Test 
-    public void testGetNeedFailed() throws Exception {
+    public void testUpdateNeedGetNeedFailed() throws Exception {
         Need need = new Need(3, "Corn", 10.97, 100, "food");
         when(needService.updateNeed(need.getId(), need)).thenReturn(null);
         ResponseEntity<Need> response = needController.updateNeed(need.getId(), need);
@@ -105,6 +105,44 @@ public class NeedControllerTest {
         ResponseEntity<Need[]> response = needController.getNeeds("");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().length);
+    }
+    
+    /**
+     * Tests that getNeed returns HTTP 200 OK and the correct Need body when the service finds it.
+     */
+    @Test
+    public void testGetNeed() throws Exception {
+	Need need = new Need(1, "Corn", 10.97, 100, "food");
+        when(needService.getNeedById(1)).thenReturn(need);
+	
+	ResponseEntity<Need> response = needController.getNeed(1);
+
+	assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(need, response.getBody());
+    }
+    
+    /**
+     * Tests that getNeed returns HTTP 404 NOT_FOUND when the service returns null.
+     */
+    @Test
+    public void testGetNeedNotFound() throws Exception {
+        when(needService.getNeedById(1)).thenReturn(null);
+	
+	ResponseEntity<Need> response = needController.getNeed(1);
+
+	assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    /**
+     * Tests that getNeed returns HTTP 500 INTERNAL_SERVER_ERROR when the service throws an IOException.
+     */
+    @Test
+    public void testGetNeedIOERR() throws Exception {
+        doThrow(new IOException()).when(needService).getNeedById(1);
+	
+	ResponseEntity<Need> response = needController.getNeed(1);
+	
+	assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     /************* deleteNeed() unit tests, implemented by Harikleia Sparakis*************/
