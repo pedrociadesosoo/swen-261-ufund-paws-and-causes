@@ -14,7 +14,11 @@ public class Need{
     @JsonProperty("type") private String type;
 
 
-    public Need(int id, String name, double cost, int quantity, String type) {
+    public Need(@JsonProperty("id") int id,
+                @JsonProperty("name") String name,
+                @JsonProperty("cost") double cost,
+                @JsonProperty("quantity") int quantity,
+                @JsonProperty("type") String type) {
         this.id = id;
         this.name = name;
         this.cost = cost;
