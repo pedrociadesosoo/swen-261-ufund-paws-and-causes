@@ -1,5 +1,6 @@
 package com.ufund.api.ufundapi.model;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,10 +8,10 @@ public class FundingBasket {
 
     private static final Logger LOG = Logger.getLogger(FundingBasket.class.getName());
     @JsonProperty("id") private int id;
-    @JsonProperty("needs") private Need[] needs;
+    @JsonProperty("needs") Map<Integer, Need> needs;
 
     public FundingBasket(@JsonProperty("id") int id, 
-                         @JsonProperty("needs") Need[] needs){
+                         @JsonProperty("needs") Map<Integer, Need> needs){
         this.id = id;
         this.needs = needs;
     }
@@ -23,8 +24,16 @@ public class FundingBasket {
         this.id = id;
     }
 
-    public Need[] getNeeds(){
+    public Map<Integer, Need> getNeeds(){
         return this.needs;
+    }
+
+    public void addNeed(Need need){
+        this.needs.put(need.getId(), need);
+    }
+
+    public void removeNeed(Need need){
+        this.needs.remove(need.getId());
     }
 
 }
