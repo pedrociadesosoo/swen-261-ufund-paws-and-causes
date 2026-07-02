@@ -43,19 +43,15 @@ public class Checkout {
         totalCost = calculateTotalCost();
     }
 
-    
-    
     /**
      * Constructor from array of needs
      * @param the FundingBasket object with needs being checked out
      */
-/*     public Checkout(FundingBasket basket){
+     public Checkout(FundingBasket basket){
         //needsToCheckout = basket.getNeeds();
         //needsToCheckout = (Need[]) basket.getNeeds().toArray();
     }
     
-*/
-
     //#endregion
 
 
@@ -106,7 +102,7 @@ public class Checkout {
         //sum the costs of all the needs in checkout
         double cost = 0;
         for(Need need : needsToCheckout){
-            cost += need.getCost();
+            cost += (need.getCost() * need.getQuantity());
         }
 
         //round to nearest hundreth place and return (Delete if redundant)

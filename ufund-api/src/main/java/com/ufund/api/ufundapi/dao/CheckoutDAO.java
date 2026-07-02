@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ufund.api.ufundapi.model.Checkout;
+import com.ufund.api.ufundapi.model.FundingBasket;
 import com.ufund.api.ufundapi.model.Need;
 
 public interface CheckoutDAO {
@@ -25,7 +26,7 @@ public interface CheckoutDAO {
      * @return new {@link Checkout checkout} if successful, null if otherwise
      * @throws IOException if an issue with storage occurs
      */
-    //public Checkout createCheckout(FundingBasket basket) throws IOException;
+    public Checkout createCheckout(FundingBasket basket) throws IOException;
 
     /**
      * Creates a new {@linkplain Checkout checkout} from Needs array
