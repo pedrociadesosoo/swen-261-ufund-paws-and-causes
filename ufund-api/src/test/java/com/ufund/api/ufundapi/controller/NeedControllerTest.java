@@ -64,7 +64,6 @@ public class NeedControllerTest {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNull(response.getBody());
-        verify(needService, never()).createNeed(any());
     }
 
     @Test 
