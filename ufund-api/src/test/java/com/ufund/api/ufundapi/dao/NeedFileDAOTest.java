@@ -177,7 +177,7 @@ class NeedFileDAOTest {
     @Test
     public void testDeleteNeedFalse() throws IOException {
         //setting up test data
-        int needTestId = 1;
+        int needTestId = 10;
 
         //force 
         when(mockNeeds.containsKey(needTestId)).thenReturn(false);

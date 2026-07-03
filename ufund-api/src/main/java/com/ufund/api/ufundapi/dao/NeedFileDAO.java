@@ -205,7 +205,7 @@ public class NeedFileDAO implements NeedDAO {
                 needs.remove(id);
                 return save();
             }
-            else
+            else 
                 return false;
         }
     }
