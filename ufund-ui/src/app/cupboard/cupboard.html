@@ -20,7 +20,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let need of needs">
+      <tr *ngFor="let need of needs" (click)="viewNeed(need.id)" style="cursor: pointer;">
         <td>{{ need.id }}</td>
         <td>{{ need.name }}</td>
         <td>{{ need.cost | currency }}</td>

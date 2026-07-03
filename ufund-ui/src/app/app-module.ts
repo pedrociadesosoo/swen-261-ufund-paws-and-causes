@@ -7,12 +7,14 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { Cupboard } from './cupboard/cupboard';
 import { AddNeed } from './add-need/add-need';
+import { NeedDetail } from './need-detail/need-detail';
 
 @NgModule({
   declarations: [
     App,
     Cupboard,
-    AddNeed
+    AddNeed,
+    NeedDetail
   ],
   imports: [
     BrowserModule,

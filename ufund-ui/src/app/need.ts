@@ -27,4 +27,12 @@ export class NeedService {
   createNeed(need: Need): Observable<Need> {
     return this.http.post<Need>(this.apiUrl, need);
   }
+
+  /**
+   * Gets a single need by id
+   */
+  getNeedById(id: number): Observable<Need> {
+    return this.http.get<Need>(`${this.apiUrl}/${id}`);
+  }
+  
 }
