@@ -1,0 +1,34 @@
+<div class="need-detail-container">
+  <h2>Need Details</h2>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="need">
+    <table>
+      <tr>
+        <th>ID</th>
+        <td>{{ need.id }}</td>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <td>{{ need.name }}</td>
+      </tr>
+      <tr>
+        <th>Cost</th>
+        <td>{{ need.cost | currency }}</td>
+      </tr>
+      <tr>
+        <th>Quantity</th>
+        <td>{{ need.quantity }}</td>
+      </tr>
+      <tr>
+        <th>Type</th>
+        <td>{{ need.type }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <button (click)="goBack()">Back to Cupboard</button>
+</div>
