@@ -64,9 +64,11 @@ public class NeedServiceImpl implements NeedService {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Need deleteNeed(int id) throws IOException {
         Need deletedNeed = needDao.getNeedById(id);
-        if (deletedNeed != null && needDao.deleteNeed(id)) {
+        if (deletedNeed != null) {
+            needDao.deleteNeed(id);
             return deletedNeed;
         } else {
             return null;

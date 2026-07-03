@@ -138,6 +138,6 @@ class NeedServiceTest {
 
         //check if method returns deleted need
         Need deletedNeed = service.deleteNeed(testNeed.getId());
-        assertEquals(null, deletedNeed);
+        assertEquals(testNeed, deletedNeed);
     }
 }
