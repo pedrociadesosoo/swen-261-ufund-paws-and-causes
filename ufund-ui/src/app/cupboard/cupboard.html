@@ -1,0 +1,36 @@
+<div class="cupboard-container">
+  <h2>Needs Cupboard</h2>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="needs.length === 0 && !errorMessage">
+    <p>No needs in the cupboard yet.</p>
+  </div>
+
+  <table *ngIf="needs.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Cost</th>
+        <th>Quantity</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let need of needs" (click)="viewNeed(need.id)" style="cursor: pointer;">
+        <td>{{ need.id }}</td>
+        <td>{{ need.name }}</td>
+        <td>{{ need.cost | currency }}</td>
+        <td>{{ need.quantity }}</td>
+        <td>{{ need.type }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <a routerLink="/add-need">
+    <button>Add Need</button>
+  </a>
+</div>
