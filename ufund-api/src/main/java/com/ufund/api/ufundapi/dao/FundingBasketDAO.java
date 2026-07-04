@@ -3,7 +3,8 @@ package com.ufund.api.ufundapi.dao;
 import java.io.IOException;
 import java.util.List;
 
-import com.ufund.api.ufundapi.model.FundingBasket;;
+import com.ufund.api.ufundapi.model.FundingBasket;
+import com.ufund.api.ufundapi.model.Need;;
 
 public interface FundingBasketDAO {
 
@@ -12,9 +13,9 @@ public interface FundingBasketDAO {
      * @param id {@link int id} the id of the FundingBasket
      * @return {@link FundingBasket fb} the Funding basket with the same id
      */
-    FundingBasket getFundingBasket(int id);
+    FundingBasket getFundingBasket(int id) throws IOException;
 
-    FundingBasket[] getFundingBasketArray();
+    FundingBasket[] getFundingBasketArray() throws IOException;
     
     /**
      * Creates a new {@linkplain FundingBasket fb}
@@ -31,5 +32,9 @@ public interface FundingBasketDAO {
      * @throws IOException if an issue with storage access occurs
      */
     boolean deleteFundingBasket(int id) throws IOException;
+
+    boolean addNeed(FundingBasket fb, Need need) throws IOException;
+
+    boolean removeNeed(FundingBasket fb, Need need) throws IOException;
 
 }

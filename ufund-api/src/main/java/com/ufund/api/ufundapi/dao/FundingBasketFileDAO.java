@@ -138,5 +138,29 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
         }
     }
 
+    @Override
+    public boolean addNeed(FundingBasket fb, Need need){
+        synchronized (fundingbaskets){
+            Map<Integer, Need> needs = fb.getNeeds();
+            if (needs.containsKey(need.getId())){
+                return false;
+            }
+            fb.addNeed(need);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean removeNeed(FundingBasket fb, Need need){
+                synchronized (fundingbaskets){
+            Map<Integer, Need> needs = fb.getNeeds();
+            if (needs.containsKey(need.getId())){
+                needs.remove(need.getId());
+                return true;
+            }
+            return false;
+        }
+    }
+
 
 }
