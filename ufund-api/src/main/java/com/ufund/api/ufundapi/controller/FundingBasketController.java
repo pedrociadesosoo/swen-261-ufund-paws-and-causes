@@ -84,5 +84,21 @@ public class FundingBasketController {
         }
     }
 
+    public ResponseEntity<Boolean> removeNeed(@PathVariable int idFB, @PathVariable int idNeed){
+        LOG.info("DELETE /fundingbasket/" + idFB + "/" + idNeed);
+        try{
+            FundingBasket fb = fbDao.getFundingBasket(idFB);
+            Map<Integer, Need> needs = fb.getNeeds();
+            if (needs.containsKey(idNeed)){
+                Need need = needService.getNeedById(idNeed);
+                fbDao.removeNeed(fb, need);
+                return new ResponseEntity<>(true, HttpStatus.OK);
+            }
+        } catch (IOException e){
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }
