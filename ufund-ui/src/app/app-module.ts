@@ -8,13 +8,15 @@ import { App } from './app';
 import { Cupboard } from './cupboard/cupboard';
 import { AddNeed } from './add-need/add-need';
 import { NeedDetail } from './need-detail/need-detail';
+import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.component';
 
 @NgModule({
   declarations: [
     App,
     Cupboard,
     AddNeed,
-    NeedDetail
+    NeedDetail,
+    FundingbasketComponent
   ],
   imports: [
     BrowserModule,
