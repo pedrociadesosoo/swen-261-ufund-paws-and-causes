@@ -15,8 +15,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
-import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.persistence.NeedDAO;
 
 @Tag("Service-tier")
 class NeedServiceTest {

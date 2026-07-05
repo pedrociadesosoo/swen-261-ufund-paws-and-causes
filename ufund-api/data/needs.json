@@ -1,6 +1,1 @@
-[
-  {"id": 1, "name": "Winter Coats", "cost": 50.00, "quantity": 10, "type": "clothing"},
-  {"id": 2, "name": "Canned Corn", "cost": 5.00, "quantity": 100, "type": "food"},
-  {"id": 3, "name": "Blankets", "cost": 25.00, "quantity": 30, "type": "clothing"},
-  {"id": 4, "name": "Canned Beans", "cost": 3.00, "quantity": 150, "type": "food"}
-]
+[{"id":1,"name":"Canned Soup","cost":5.0,"quantity":50,"type":"Food"},{"id":2,"name":"Rice","cost":0.0,"quantity":100,"type":"food"},{"id":3,"name":"Blankets","cost":0.0,"quantity":25,"type":"Clothing"}]

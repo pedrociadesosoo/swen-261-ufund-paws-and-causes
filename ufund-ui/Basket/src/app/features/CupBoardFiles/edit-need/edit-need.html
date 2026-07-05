@@ -1,0 +1,35 @@
+<h2>Needs List</h2>
+
+<!-- https://angular.dev/guide/templates/pipes -->
+
+
+  <a (click)="Cupboard()">
+    <button  style="color: Tomato;">CupBoard</button>
+  </a>
+
+  <!-- Need to figure out how to make data load automatically, 
+    currently page need to be reloaded, for items to appear-->
+
+<div *ngFor="let item of data">
+    <pre>{{ item | json }}</pre>
+
+
+    <!-- Need to figure out how to edit the Id and auto adjust id once something is deleted-->
+    <!-- 
+        https://angular.dev/api/forms/NgModel#usage-notes
+    -->
+    
+    <div *ngIf="selectedNeed && selectedNeed.id === item.id" style="cursor: pointer;">
+    <input [(ngModel)]="selectedNeed.name">
+    <input [(ngModel)]="selectedNeed.cost">
+    <input [(ngModel)]="selectedNeed.quantity">
+    <input [(ngModel)]="selectedNeed.type">
+    <button (click)="save()">Save</button>
+    </div>
+
+  
+  <button (click)="edit(item)">Edit</button>
+  <button (click)="remove(item.id)">Delete</button>
+
+  <hr>
+</div>

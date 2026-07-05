@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ufund.api.ufundapi.dao.NeedDAO;
+import com.ufund.api.ufundapi.persistence.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
 
 @Service
