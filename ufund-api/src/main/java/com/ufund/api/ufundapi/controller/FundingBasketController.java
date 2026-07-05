@@ -91,9 +91,9 @@ public class FundingBasketController {
             Map<Integer, Need> needs = fb.getNeeds();
             if (needs.containsKey(idNeed)){
                 Need need = needService.getNeedById(idNeed);
-                fbDao.removeNeed(fb, need);
-                return new ResponseEntity<>(true, HttpStatus.OK);
+                return new ResponseEntity<>(fbDao.removeNeed(fb, need), HttpStatus.OK);
             }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IOException e){
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
