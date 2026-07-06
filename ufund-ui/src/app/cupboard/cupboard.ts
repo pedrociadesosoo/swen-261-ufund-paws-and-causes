@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth';
 
 @Component({
   selector: 'app-cupboard',
@@ -13,7 +14,11 @@ export class Cupboard implements OnInit {
   needs: Need[] = [];
   errorMessage: string = '';
 
-  constructor(private needService: NeedService, private router: Router) {}
+  constructor(
+    private needService: NeedService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadNeeds();
@@ -34,5 +39,19 @@ export class Cupboard implements OnInit {
    */
   viewNeed(id: number): void {
     this.router.navigate(['/cupboard', id]);
+  }
+
+  /**
+   * Returns true if the current user is a manager
+   */
+  isManager(): boolean {
+    return this.authService.isManager();
+  }
+
+  /**
+   * Returns true if the current user is a helper
+   */
+  isHelper(): boolean {
+    return this.authService.isHelper();
   }
 }
