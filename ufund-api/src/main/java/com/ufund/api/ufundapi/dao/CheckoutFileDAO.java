@@ -16,7 +16,6 @@ import com.ufund.api.ufundapi.model.FundingBasket;
 
 @Component
 public class CheckoutFileDAO implements CheckoutDAO {
-
     private static final Logger LOG = Logger.getLogger(CheckoutFileDAO.class.getName());
     
     private Map<Integer, Checkout> checkouts = new TreeMap<>();
