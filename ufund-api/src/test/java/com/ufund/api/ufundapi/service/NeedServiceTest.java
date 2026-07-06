@@ -1,19 +1,18 @@
 package com.ufund.api.ufundapi.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import java.io.IOException;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
@@ -100,5 +99,45 @@ class NeedServiceTest {
 
         assertEquals(2, result.size());
         verify(mockDao).findNeeds("Canned");
+    }
+
+    /************* deleteNeed() unit tests, implemented by Harikleia Sparakis*************/
+
+    /**
+     * Tests if NeedService.deleteNeed() returns null when NeedDao.getNeedById() returns
+     * null.
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedNull() throws IOException {
+        //set up test data
+        Need testNeed = new Need(1, "Canned Soup", 2.50, 50, "food");
+
+        //force mockDao.getNeedById() to return null 
+        when(mockDao.getNeedById(testNeed.getId())).thenReturn(null);
+
+        //check if method returns null
+        Need deletedNeed = service.deleteNeed(testNeed.getId());
+        assertEquals(null, deletedNeed);
+    }
+
+    /**
+     * Tests if NeedService.deleteNeed() returns the test need when NeedDao.getNeedById()
+     * returns null.
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedExists() throws IOException {
+        //set up test data
+        Need testNeed = new Need(1, "Canned Soup", 2.50, 50, "food");
+        
+        //force mockDao.getNeedById() to return test need
+        when(mockDao.getNeedById(testNeed.getId())).thenReturn(testNeed);
+
+        //check if method returns deleted need
+        Need deletedNeed = service.deleteNeed(testNeed.getId());
+        assertEquals(testNeed, deletedNeed);
     }
 }
