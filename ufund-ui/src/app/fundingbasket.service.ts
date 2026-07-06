@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { FundingBasket } from './fundingbasket';
 import { Need } from './need.model';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -12,25 +13,31 @@ import { Need } from './need.model';
 export class FundingbasketService {
 
   constructor(
-    private http: HttpClient,
-    private messageService: MessageService) { }
+    private http: HttpClient,) { }
   /** Log a HeroService message with the MessageService */
-  private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
-  }
 
   getFundingBasket(id: number): Observable<FundingBasket> {
     const url = `${this.fbUrl}/${id}`;
     return this.http.get<FundingBasket>(url).pipe(
-      tap(_ => this.log(`fetched fb id=${id}`)),
-      catchError(this.handleError<FundingBasket>(`getFundingBaskset id=${id}`))
+      tap(() => console.log(`fetched funding basket id=${id}`)),
+      catchError(this.handleError<FundingBasket>(`Get Funding Basket id=${id}`))
     );
   }
 
-  addNeed(need: Need): Observable<Need>{
-    return this.http.post<Need>(this.fbUrl, need, this.httpOptions).pipe(
-    tap((newNeed: Need) => this.log(`added need w/ id=${newNeed.id}`)),
-    catchError(this.handleError<Need>('addneed')));
+  addNeed(idFB: number, idNeed: number): Observable<Boolean>{
+    const url = `${this.fbUrl}/${idFB}/${idNeed}`;
+    return this.http.post<boolean>(url, {}).pipe(
+      tap(() => console.log(`added need ${idNeed} to funding basket ${idFB}`)),
+      catchError(this.handleError<boolean>(`add need`))
+    );
+  }
+
+  removeNeed(idFB: number, idNeed: number): Observable<Boolean>{
+    const url = `${this.fbUrl}/${idFB}/${idNeed}`;
+    return this.http.delete<boolean>(url, {}).pipe(
+      tap(() => console.log(`deleted need ${idNeed} from funding basket ${idFB}`)),
+      catchError(this.handleError<boolean>(`delete need`))
+    );
   }
 
   /**
@@ -41,15 +48,8 @@ export class FundingbasketService {
   * @param result - optional value to return as the observable result
   */
   private handleError<T>(operation = 'operation', result?: T) {
-    return (error: any): Observable<T> => {
-
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      this.log(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
+    return (error: unknown): Observable<T> => {
+      console.error(`${operation} failed`, error);
       return of(result as T);
     };
   }
