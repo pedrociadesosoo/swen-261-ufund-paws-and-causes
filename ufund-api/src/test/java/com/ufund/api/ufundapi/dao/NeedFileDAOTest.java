@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Tag;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.persistence.NeedFileDAO;
 
 @Tag("Persistence-tier")
 class NeedFileDAOTest {

@@ -1,1 +1,6 @@
-[{"id":1,"name":"Canned Soup","cost":5.0,"quantity":50,"type":"Food"},{"id":2,"name":"Rice","cost":0.0,"quantity":100,"type":"food"},{"id":3,"name":"Blankets","cost":0.0,"quantity":25,"type":"Clothing"}]
+[
+    {"id":1,"name":"Canned Soup","cost":5.0,"quantity":50,"type":"Food"},
+    {"id":2,"name":"Rice","cost":0.0,"quantity":100,"type":"food"},
+    {"id":3,"name":"Blankets","cost":0.0,"quantity":25,"type":"Clothing"},
+    {"id":4,"name":"Carrot","cost":5.0,"quantity":7,"type":"food"}
+]

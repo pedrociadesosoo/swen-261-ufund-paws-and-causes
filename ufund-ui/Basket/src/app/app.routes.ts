@@ -24,6 +24,6 @@ export const routes: Routes = [
     { path: 'basket', component: BasketComponent },
     { path: 'funding-basket', component: FundingbasketComponent },
     { path: 'needs', component: NeedListComponent },
-    { path: 'details_component', component: NeedDetailComponent }
+    { path: 'details_component/:id', component: NeedDetailComponent }
 ];
 
