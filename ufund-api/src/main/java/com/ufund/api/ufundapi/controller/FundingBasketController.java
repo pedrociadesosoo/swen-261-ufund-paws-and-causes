@@ -36,6 +36,40 @@ public class FundingBasketController {
         this.needService = needService;
     }
 
+    @PostMapping("")
+    public ResponseEntity<FundingBasket> createFundingBasket(@PathVariable int id){
+        LOG.info("GET /fundingbasket/" + id);
+        try{
+            FundingBasket[] fbArray = fbDao.getFundingBasketArray();
+            for (FundingBasket afb : fbArray){
+                if (afb.getId() == id){
+                    return new ResponseEntity<>(HttpStatus.CONFLICT);
+                }
+            }
+            return new ResponseEntity<>(fbDao.createFundingBasket(id), HttpStatus.CREATED);
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> deleteFundingBasket(int id){
+        LOG.info("DELETE /fundngbasket/" + id);
+        try{
+            FundingBasket[] fbArray = fbDao.getFundingBasketArray();
+            for (FundingBasket afb : fbArray){
+                if (afb.getId() == id){
+                    return new ResponseEntity<>(fbDao.deleteFundingBasket(id), HttpStatus.OK);
+                }
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e){
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);  
+        }    
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<FundingBasket> getFundingBasket(@PathVariable int id){
         LOG.info("GET /fundingbasket/" + id);
@@ -56,6 +90,9 @@ public class FundingBasketController {
         LOG.info("GET /fundingbasket/" + id + "/needs");
         try{
             FundingBasket fb = fbDao.getFundingBasket(id);
+            if (fb == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             Map<Integer, Need> needs = fb.getNeeds();
             if(needs.isEmpty() == false){
                 return new ResponseEntity<>(needs, HttpStatus.OK);
@@ -68,15 +105,17 @@ public class FundingBasketController {
         }
     }
 
-    public ResponseEntity<Boolean> addNeed(@PathVariable int idFB, @PathVariable int idNeed){
-        LOG.info("POST /fundingbasket/" + idFB + "/" + idNeed);
+    public ResponseEntity<Need> addNeed(@PathVariable int idFB, @PathVariable Need need){
+        LOG.info("POST /fundingbasket/" + idFB + "/" + need.getId());
         try {
             FundingBasket fb = fbDao.getFundingBasket(idFB);
+            if (fb == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             Map<Integer, Need> needs = fb.getNeeds();
-            if (needs.containsKey(idNeed)){
+            if (needs.containsKey(need.getId())){
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
-            Need need = needService.getNeedById(idNeed);
             return new ResponseEntity<>(fbDao.addNeed(fb, need), HttpStatus.OK);
         } catch (IOException e ){
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
@@ -84,13 +123,15 @@ public class FundingBasketController {
         }
     }
 
-    public ResponseEntity<Boolean> removeNeed(@PathVariable int idFB, @PathVariable int idNeed){
-        LOG.info("DELETE /fundingbasket/" + idFB + "/" + idNeed);
+    public ResponseEntity<Need> removeNeed(@PathVariable int idFB, @PathVariable Need need){
+        LOG.info("DELETE /fundingbasket/" + idFB + "/" + need.getId());
         try{
             FundingBasket fb = fbDao.getFundingBasket(idFB);
+            if (fb == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
             Map<Integer, Need> needs = fb.getNeeds();
-            if (needs.containsKey(idNeed)){
-                Need need = needService.getNeedById(idNeed);
+            if (needs.containsKey(need.getId())){
                 return new ResponseEntity<>(fbDao.removeNeed(fb, need), HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

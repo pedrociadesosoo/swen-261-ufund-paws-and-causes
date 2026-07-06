@@ -2,6 +2,7 @@ package com.ufund.api.ufundapi.dao;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import com.ufund.api.ufundapi.model.FundingBasket;
 import com.ufund.api.ufundapi.model.Need;;
@@ -23,7 +24,7 @@ public interface FundingBasketDAO {
      * @return new {@link FundingBasket fb} if successful, null if otherwise
      * @throws IOException if an issue with storage occurs
      */
-    FundingBasket createFundingBasket(FundingBasket fb) throws IOException;
+    FundingBasket createFundingBasket(int id) throws IOException;
 
     /**
      * Deletes an existing {@linkplain FundingBasket fb}
@@ -33,8 +34,10 @@ public interface FundingBasketDAO {
      */
     boolean deleteFundingBasket(int id) throws IOException;
 
-    boolean addNeed(FundingBasket fb, Need need) throws IOException;
+    Map<Integer, Need> getFundingBasketNeeds(int id) throws IOException;
 
-    boolean removeNeed(FundingBasket fb, Need need) throws IOException;
+    Need addNeed(FundingBasket fb, Need need) throws IOException;
+
+    Need removeNeed(FundingBasket fb, Need need) throws IOException;
 
 }

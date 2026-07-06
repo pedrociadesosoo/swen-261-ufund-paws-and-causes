@@ -1,5 +1,6 @@
 package com.ufund.api.ufundapi.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -10,9 +11,12 @@ public class FundingBasket {
     @JsonProperty("id") private int id;
     @JsonProperty("needs") Map<Integer, Need> needs;
 
-    public FundingBasket(@JsonProperty("id") int id, 
-                         @JsonProperty("needs") Map<Integer, Need> needs){
+    public FundingBasket(@JsonProperty("id") int id){
         this.id = id;
+        this.needs = new HashMap<>();
+    }
+
+    public void setMap(@JsonProperty("needs") Map<Integer, Need> needs){
         this.needs = needs;
     }
 

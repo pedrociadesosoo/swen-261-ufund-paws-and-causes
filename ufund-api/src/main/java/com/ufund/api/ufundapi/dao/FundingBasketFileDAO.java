@@ -21,13 +21,14 @@ import org.springframework.beans.factory.annotation.Value;
 public class FundingBasketFileDAO implements FundingBasketDAO {
 
     private static final Logger LOG = Logger.getLogger(NeedFileDAO.class.getName());
-    
+
     private Map<Integer, FundingBasket> fundingbaskets = new TreeMap<>();
     private ObjectMapper objectMapper;
-    private static int nextId; 
+    private static int nextId;
     private String filename;
-    
-    public FundingBasketFileDAO(@Value("${fundingbaskets.file}") String filename, ObjectMapper objectMapper) throws IOException{
+
+    public FundingBasketFileDAO(@Value("${fundingbaskets.file}") String filename, ObjectMapper objectMapper)
+            throws IOException {
         this.filename = filename;
         this.objectMapper = objectMapper;
         load();
@@ -59,7 +60,7 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
         nextId = 0;
 
         FundingBasket[] fbArray = objectMapper.readValue(new File(filename), FundingBasket[].class);
-        
+
         for (FundingBasket fb : fbArray) {
             fundingbaskets.put(fb.getId(), fb);
             if (fb.getId() >= nextId)
@@ -72,12 +73,12 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
     /**
      * {@inheritDoc}
      */
-    
+
     @Override
-    public FundingBasket[] getFundingBasketArray(){
+    public FundingBasket[] getFundingBasketArray() {
         synchronized (fundingbaskets) {
             ArrayList<FundingBasket> fbList = new ArrayList<>();
-            for (FundingBasket fb : fundingbaskets.values()){
+            for (FundingBasket fb : fundingbaskets.values()) {
                 fbList.add(fb);
             }
 
@@ -87,15 +88,15 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
             return fbArray;
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
 
     @Override
-    public FundingBasket getFundingBasket(int id){
+    public FundingBasket getFundingBasket(int id) {
         synchronized (fundingbaskets) {
-            if (fundingbaskets.containsKey(id)){
+            if (fundingbaskets.containsKey(id)) {
                 return fundingbaskets.get(id);
             } else {
                 return null;
@@ -108,14 +109,15 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
      */
 
     @Override
-    public FundingBasket createFundingBasket(FundingBasket fb) throws IOException {
+    public FundingBasket createFundingBasket(int id) {
         synchronized (fundingbaskets) {
             try {
+                FundingBasket fb = new FundingBasket(id);
                 fb.setId(nextId());
                 fundingbaskets.put(fb.getId(), fb);
                 save();
                 return fb;
-            } catch (IOException e){
+            } catch (IOException e) {
                 LOG.log(Level.SEVERE, e.getLocalizedMessage());
                 return null;
             }
@@ -128,39 +130,49 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
     @Override
     public boolean deleteFundingBasket(int id) throws IOException {
         synchronized (fundingbaskets) {
-            if (fundingbaskets.containsKey(id)){
+            if (fundingbaskets.containsKey(id)) {
                 fundingbaskets.remove(id);
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
     }
 
     @Override
-    public boolean addNeed(FundingBasket fb, Need need){
-        synchronized (fundingbaskets){
+    public Map<Integer, Need> getFundingBasketNeeds(int id) throws IOException {
+        synchronized (fundingbaskets) {
+            if (fundingbaskets.containsKey(id)) {
+                FundingBasket fb = fundingbaskets.get(id);
+                return fb.getNeeds();
+            } else {
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public Need addNeed(FundingBasket fb, Need need) {
+        synchronized (fundingbaskets) {
             Map<Integer, Need> needs = fb.getNeeds();
-            if (needs.containsKey(need.getId())){
-                return false;
+            if (needs.containsKey(need.getId())) {
+                return null;
             }
             fb.addNeed(need);
-            return true;
+            return need;
         }
     }
 
     @Override
-    public boolean removeNeed(FundingBasket fb, Need need){
-                synchronized (fundingbaskets){
+    public Need removeNeed(FundingBasket fb, Need need) {
+        synchronized (fundingbaskets) {
             Map<Integer, Need> needs = fb.getNeeds();
-            if (needs.containsKey(need.getId())){
+            if (needs.containsKey(need.getId())) {
                 needs.remove(need.getId());
-                return true;
+                return need;
             }
-            return false;
+            return null;
         }
     }
-
 
 }

@@ -35,13 +35,11 @@ public class FundingBasketFileDAOTest {
     private FundingBasket sampleFB(){
 
         Need[] needs = sampleNeeds();
-
         Map<Integer, Need> needMap = new HashMap<>();
 
         for (Need need : needs){
             needMap.put(need.getId(), need);
         }
-
         return new FundingBasket(1, needMap);
     }
 
