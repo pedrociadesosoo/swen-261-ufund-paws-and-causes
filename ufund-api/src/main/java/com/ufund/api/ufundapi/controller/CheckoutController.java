@@ -50,7 +50,7 @@ public class CheckoutController {
     {
         LOG.info("Delete /checkout/ " + checkoutId);
         try {
-            Checkout confirmedCheckout = checkoutService.completeCheckout(checkoutId);
+            Checkout confirmedCheckout = checkoutService.completeCancelCheckout(checkoutId);
             if (confirmedCheckout != null) 
                 return new ResponseEntity<Checkout>(confirmedCheckout, HttpStatus.OK);
             else 
@@ -66,7 +66,7 @@ public class CheckoutController {
     {
         LOG.info("Delete /checkout/ " + checkoutId);
         try {
-            Checkout confirmedCheckout = checkoutService.cancelCheckout(checkoutId);
+            Checkout confirmedCheckout = checkoutService.completeCancelCheckout(checkoutId);
             if (confirmedCheckout != null) 
                 return new ResponseEntity<Checkout>(confirmedCheckout, HttpStatus.OK);
             else 

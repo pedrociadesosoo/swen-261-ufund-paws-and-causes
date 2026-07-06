@@ -25,23 +25,13 @@ public class CheckoutServiceImpl implements CheckoutService{
     }
 
     @Override
-    public Checkout completeCheckout(int checkoutId) throws IOException {
-        if ( checkout != null) {
+    public Checkout completeCancelCheckout(int checkoutId) throws IOException {
+        if ( checkoutDAO.getCheckout(checkoutId) != null) {
             checkoutDAO.deleteCheckout(checkoutId);
             return checkout;
         } else {
             return null;
         }
     }
-
-    @Override
-    public Checkout cancelCheckout(int checkoutId) throws IOException{
-        if ( checkout != null) {
-            checkoutDAO.deleteCheckout(checkoutId);
-            return checkout;
-        } else {
-            return null;
-        }
-    } 
 
 }

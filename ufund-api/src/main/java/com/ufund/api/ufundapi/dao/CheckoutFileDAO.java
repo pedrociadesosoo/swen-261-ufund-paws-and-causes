@@ -13,29 +13,25 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Checkout;
 import com.ufund.api.ufundapi.model.FundingBasket;
-import com.ufund.api.ufundapi.model.Need;
 
 @Component
 public class CheckoutFileDAO implements CheckoutDAO {
 
-    private static final Logger LOG = Logger.getLogger(NeedFileDAO.class.getName());
+    private static final Logger LOG = Logger.getLogger(CheckoutFileDAO.class.getName());
     
     private Map<Integer, Checkout> checkouts = new TreeMap<>();
     private ObjectMapper objectMapper;
     private static int nextId; 
     private String filename;
     
-    public CheckoutFileDAO(@Value("${checkout.file}") String filename, ObjectMapper objectMapper) throws IOException{
+    public CheckoutFileDAO(@Value("${checkouts.file}") String filename, ObjectMapper objectMapper) 
+        throws IOException
+    {
         this.filename = filename;
         this.objectMapper = objectMapper;
         load();
     }
 
-    /**
-     * Generates the next id for a new {@linkplain Need need }
-     * 
-     * @return The next id
-     */
     private synchronized static int nextId() {
         int id = nextId;
         ++nextId;

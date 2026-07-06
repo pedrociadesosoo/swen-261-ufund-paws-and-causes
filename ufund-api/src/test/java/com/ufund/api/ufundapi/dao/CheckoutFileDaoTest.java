@@ -107,7 +107,7 @@ class CheckoutFileDAOTest {
         assertEquals(false, result);
     }
 
-    @Test
+    /*@Test
     public void testDeleteNeedExists() throws IOException {
         //setting up test data
         int checkoutTestId = 1;

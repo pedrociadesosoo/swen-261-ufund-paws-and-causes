@@ -42,8 +42,6 @@ class NeedFileDAOTest {
             .readValue(new File("testfile.txt"),Need[].class))
                 .thenReturn(testNeeds);
         needFileDAO = new NeedFileDAO("testfile.txt",mockObjectMapper);
-        
-        
     }
 
     private Need[] sampleNeeds() {
@@ -204,6 +202,5 @@ class NeedFileDAOTest {
         //test
         boolean result = needFileDAO.deleteNeed(needTestId);
         assertEquals(true, result);
-        
     }
 }

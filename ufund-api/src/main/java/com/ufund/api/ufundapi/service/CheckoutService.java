@@ -9,7 +9,5 @@ public interface  CheckoutService {
 
     public Checkout transitionBasketToCheckout(FundingBasket basket) throws IOException;
 
-    public Checkout completeCheckout(int checkoutId) throws IOException;
-
-    public Checkout cancelCheckout(int checkoutId) throws IOException;
+    public Checkout completeCancelCheckout(int checkoutId) throws IOException;
 }
