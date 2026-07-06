@@ -24,19 +24,19 @@ export class FundingbasketService {
     );
   }
 
-  addNeed(idFB: number, idNeed: number): Observable<Boolean>{
+  addNeed(idFB: number, idNeed: number): Observable<FundingBasket> {
     const url = `${this.fbUrl}/${idFB}/${idNeed}`;
-    return this.http.post<boolean>(url, {}).pipe(
+    return this.http.post<FundingBasket>(url, {}).pipe(
       tap(() => console.log(`added need ${idNeed} to funding basket ${idFB}`)),
-      catchError(this.handleError<boolean>(`add need`))
+      catchError(this.handleError<FundingBasket>('add need'))
     );
   }
 
-  removeNeed(idFB: number, idNeed: number): Observable<Boolean>{
+  removeNeed(idFB: number, idNeed: number): Observable<FundingBasket> {
     const url = `${this.fbUrl}/${idFB}/${idNeed}`;
-    return this.http.delete<boolean>(url, {}).pipe(
+    return this.http.delete<FundingBasket>(url).pipe(
       tap(() => console.log(`deleted need ${idNeed} from funding basket ${idFB}`)),
-      catchError(this.handleError<boolean>(`delete need`))
+      catchError(this.handleError<FundingBasket>('delete need'))
     );
   }
 
