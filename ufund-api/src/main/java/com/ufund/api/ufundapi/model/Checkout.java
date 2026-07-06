@@ -1,6 +1,9 @@
 package com.ufund.api.ufundapi.model;
 
-import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Class to represent UFund helper checkout 
@@ -10,46 +13,30 @@ public class Checkout {
 
     //#region Fields
 
+    private static final Logger LOG = Logger.getLogger(Need.class.getName());
+
     /**
      * the list of needs being checked out
      */
-    private Need[] needsToCheckout;
+    @JsonProperty("needs") private Map<Integer, Need> needsToCheckout;
 
     /**
-     * the total cost of all the needs in the checkout
+     * the total cost of all the needs in the checkout  
      */
-    private double totalCost;
+    @JsonProperty("cost") private double totalCost;
 
     ///#endregion
     
 
-    //#region Constructors
-
-    /**
-     * Constructor from array of needs
-     * @param array of needs
-     */
-    public Checkout(Need[] needs){
-        needsToCheckout = needs;
-        totalCost = calculateTotalCost();
-    }
-
-    /**
-     * Constructor from list of needs
-     * @param array of needs
-     */
-    public Checkout(List<Need> needs){
-        needsToCheckout = (Need[]) needs.toArray();
-        totalCost = calculateTotalCost();
-    }
+    //#region Constructor
 
     /**
      * Constructor from array of needs
      * @param the FundingBasket object with needs being checked out
      */
      public Checkout(FundingBasket basket){
-        //needsToCheckout = basket.getNeeds();
-        //needsToCheckout = (Need[]) basket.getNeeds().toArray();
+        needsToCheckout = basket.getNeeds();
+        totalCost = calculateTotalCost();
     }
     
     //#endregion
@@ -61,7 +48,7 @@ public class Checkout {
      * getter for array of needs
      * @return Checkout object's array of needs
      */
-    public Need[] getNeeds(){
+    public Map<Integer, Need> getNeeds(){
         return needsToCheckout;
     }
 
@@ -71,21 +58,6 @@ public class Checkout {
      */
     public double getTotalCost(){
         return totalCost;
-    }
-
-    //#endregion
-
-
-    //#region toString
-
-    /**
-     * toString override for checkout
-     * @return string representation of the funding basket
-     */
-    @Override
-    public String toString(){
-        //TODO: format toString
-        return "";
     }
 
     //#endregion
@@ -101,7 +73,7 @@ public class Checkout {
         
         //sum the costs of all the needs in checkout
         double cost = 0;
-        for(Need need : needsToCheckout){
+        for(Need need : needsToCheckout.values()){
             cost += (need.getCost() * need.getQuantity());
         }
 
@@ -111,7 +83,5 @@ public class Checkout {
     }
 
     //#endregion
-
-    //checkout should not be editable in itself, so no setters
 
 }

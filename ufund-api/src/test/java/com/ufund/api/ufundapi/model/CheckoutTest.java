@@ -1,6 +1,10 @@
 package com.ufund.api.ufundapi.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -10,72 +14,40 @@ import org.junit.jupiter.api.Test;
  */
 @Tag("Model-Tier")
 public class CheckoutTest {
+
+    private FundingBasket testBasket;
+    private Checkout testCheckout;
     
     /**
      * 
      */
     @BeforeEach
-    public void setupCheckup(){
-        Need[] testNeeds = {
-            new Need(0, null, 0, 0, null),
-            new Need(1, null, 0, 0, null),
-            new Need(2, null, 0, 0, null),
-            new Need(3, null, 0, 0, null)
-        };
+    public void setupCheckout(){
+
+        Map<Integer, Need> testMap = new TreeMap<Integer,Need>();
+        testMap.put(0, new Need(0, "Canned Soup", 2.50, 50, "food"));
+        testMap.put(1, new Need(1, "Winter Coats", 50.0, 10, "clothing"));
+        testMap.put(2, new Need(4, "Blankets", 15.00, 25, "clothing"));
+        testMap.put(3, new Need(2, "Rice", 1.99, 100, "food"));
+
+        testBasket = new FundingBasket(0, testMap);
     }
 
     /**
      * 
      */
     @Test
-    public void testConstructorNeeds(){
-        //set up test data
-        Need[] testNeeds = {
-            new Need(0, null, 0, 0, null),
-            new Need(1, null, 0, 0, null),
-            new Need(2, null, 0, 0, null),
-            new Need(3, null, 0, 0, null)
-        };
-
+    public void testConstructor(){
+        //test data already set up by setupCheckout()
         //test constructor 
-        Checkout testCheckout = new Checkout(testNeeds);
+        testCheckout = new Checkout(testBasket);
 
         //verify that constructor's created object as expected
-        assertEquals(testNeeds[0], testCheckout.getNeeds()[0]);
-        assertEquals(testNeeds[1], testCheckout.getNeeds()[1]);
-        assertEquals(testNeeds[2], testCheckout.getNeeds()[2]);
-        assertEquals(testNeeds[3], testCheckout.getNeeds()[3]);
+        assertEquals(testBasket.getNeeds().get(0), testCheckout.getNeeds().get(0));
+        assertEquals(testBasket.getNeeds().get(1), testCheckout.getNeeds().get(1));
+        assertEquals(testBasket.getNeeds().get(2), testCheckout.getNeeds().get(2));
+        assertEquals(testBasket.getNeeds().get(3), testCheckout.getNeeds().get(3));
 
-    }
-    
-    /**
-     * 
-     */
-    @Test
-    public void testConstructorBasket(){
-
-    }
-
-    /**
-     * 
-     */
-    @Test
-    public void testToString() {
-        // setup testing data
-        Need[] testNeeds = {
-            new Need(0, null, 0, 0, null),
-            new Need(1, null, 0, 0, null),
-            new Need(2, null, 0, 0, null),
-            new Need(3, null, 0, 0, null)
-        };
-        Checkout testCheckout = new Checkout(testNeeds);
-        String expectedString = "";
-
-        // call toString() method
-        String actualString = testCheckout.toString();
-
-        // verify returned string is formatted properly
-        assertEquals(expectedString,actualString);
     }
 
     /**
@@ -83,15 +55,10 @@ public class CheckoutTest {
      */
     @Test
     public void testCaluclateTotalCost(){
-        //setup test data
-        Need[] testNeeds = {
-            new Need(0, null, 0, 0, null),
-            new Need(1, null, 0, 0, null),
-            new Need(2, null, 0, 0, null),
-            new Need(3, null, 0, 0, null)
-        };
-        Checkout testCheckout = new Checkout(testNeeds);
-        double expectedCost = 0;
+        //test data already set up by setupCheckout()
+        //test constructor 
+        testCheckout = new Checkout(testBasket);
+        double expectedCost = 1199;
 
         //call calculateTotalCost() method
 
