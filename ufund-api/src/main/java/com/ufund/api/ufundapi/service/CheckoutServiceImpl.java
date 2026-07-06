@@ -17,17 +17,17 @@ public class CheckoutServiceImpl implements CheckoutService{
     }
 
     @Override
-    public Checkout transitionFundingBasketToCheckout(FundingBasket basket) throws IOException {
-        if (checkoutDAO.getCheckout() != null) {
+    public Checkout transitionBasketToCheckout(FundingBasket basket) throws IOException {
+        if (checkoutDAO.getCheckout(basket.getId()) != null) {
             checkoutDAO.createCheckout(basket);
         }
-        return checkoutDAO.getCheckout();
+        return checkoutDAO.getCheckout(basket.getId());
     }
 
     @Override
-    public Checkout completeCheckout() throws IOException {
+    public Checkout completeCheckout(int checkoutId) throws IOException {
         if ( checkout != null) {
-            checkoutDAO.deleteCheckout();
+            checkoutDAO.deleteCheckout(checkoutId);
             return checkout;
         } else {
             return null;
@@ -35,9 +35,9 @@ public class CheckoutServiceImpl implements CheckoutService{
     }
 
     @Override
-    public Checkout cancelCheckout() throws IOException{
+    public Checkout cancelCheckout(int checkoutId) throws IOException{
         if ( checkout != null) {
-            checkoutDAO.deleteCheckout();
+            checkoutDAO.deleteCheckout(checkoutId);
             return checkout;
         } else {
             return null;

@@ -15,6 +15,8 @@ public class Checkout {
 
     private static final Logger LOG = Logger.getLogger(Need.class.getName());
 
+    @JsonProperty("accountName") private int id;
+
     /**
      * the list of needs being checked out
      */
@@ -34,7 +36,8 @@ public class Checkout {
      * Constructor from array of needs
      * @param the FundingBasket object with needs being checked out
      */
-     public Checkout(FundingBasket basket){
+     public Checkout(int id, FundingBasket basket){
+        this.id = id;
         needsToCheckout = basket.getNeeds();
         totalCost = calculateTotalCost();
     }
@@ -43,6 +46,14 @@ public class Checkout {
 
 
     //#region Getters
+
+    /**
+     * getter for array of needs
+     * @return Checkout object's array of needs
+     */
+    public int getId(){
+        return id;
+    }
 
     /**
      * getter for array of needs

@@ -26,4 +26,55 @@ public class CheckoutController {
         this.checkoutService = checkoutService;
     }  
 
+    @PostMapping("")
+    public ResponseEntity<Checkout> transitionBasketToCheckout(FundingBasket basket) 
+    {
+        LOG.info("POST /checkout/ " + basket.getId());
+        try {
+            Checkout existing = checkoutService.transitionBasketToCheckout(basket);
+            if (existing != null ) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<Checkout>(
+                    checkoutService.transitionBasketToCheckout(basket), 
+                    HttpStatus.CREATED);
+            }
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Checkout> completeCheckout(int checkoutId) 
+    {
+        LOG.info("Delete /checkout/ " + checkoutId);
+        try {
+            Checkout confirmedCheckout = checkoutService.completeCheckout(checkoutId);
+            if (confirmedCheckout != null) 
+                return new ResponseEntity<Checkout>(confirmedCheckout, HttpStatus.OK);
+            else 
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Checkout> cancelCheckout(int checkoutId) 
+    {
+        LOG.info("Delete /checkout/ " + checkoutId);
+        try {
+            Checkout confirmedCheckout = checkoutService.cancelCheckout(checkoutId);
+            if (confirmedCheckout != null) 
+                return new ResponseEntity<Checkout>(confirmedCheckout, HttpStatus.OK);
+            else 
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Checkout;
+import com.ufund.api.ufundapi.model.FundingBasket;
 import com.ufund.api.ufundapi.model.Need;
 
 @Component
@@ -89,11 +90,12 @@ public class CheckoutFileDAO implements CheckoutDAO {
     }
 
     @Override
-    public Checkout createCheckout(Checkout checkout) throws IOException {
+    public Checkout createCheckout(FundingBasket basket) throws IOException {
        synchronized (checkouts) {
-           checkouts.put(checkout.getId(), checkout);
+           Checkout newCheckout = new Checkout(basket.getId(), basket);
+           checkouts.put(basket.getId(), newCheckout);
            save();
-           return checkout;
+           return newCheckout;
        }
     }
 

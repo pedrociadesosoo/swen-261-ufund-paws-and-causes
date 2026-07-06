@@ -3,6 +3,7 @@ package com.ufund.api.ufundapi.dao;
 import java.io.IOException;
 
 import com.ufund.api.ufundapi.model.Checkout;
+import com.ufund.api.ufundapi.model.FundingBasket;
 
 public interface CheckoutDAO {
 
@@ -15,7 +16,7 @@ public interface CheckoutDAO {
 
     //#region creating methods
 
-    public Checkout createCheckout(Checkout checkout) throws IOException;
+    public Checkout createCheckout(FundingBasket basket) throws IOException;
 
     //#endregion
 

@@ -40,7 +40,7 @@ public class CheckoutTest {
     public void testConstructor(){
         //test data already set up by setupCheckout()
         //test constructor 
-        testCheckout = new Checkout(testBasket);
+        testCheckout = new Checkout(testBasket.getId(), testBasket);
 
         //verify that constructor's created object as expected
         assertEquals(testBasket.getNeeds().get(0), testCheckout.getNeeds().get(0));
@@ -57,7 +57,7 @@ public class CheckoutTest {
     public void testCaluclateTotalCost(){
         //test data already set up by setupCheckout()
         //test constructor 
-        testCheckout = new Checkout(testBasket);
+        testCheckout = new Checkout(testBasket.getId(), testBasket);
         double expectedCost = 1199;
 
         //call calculateTotalCost() method

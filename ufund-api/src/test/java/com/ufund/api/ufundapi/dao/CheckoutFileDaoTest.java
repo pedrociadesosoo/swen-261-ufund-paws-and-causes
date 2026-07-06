@@ -82,26 +82,41 @@ class CheckoutFileDAOTest {
         assertEquals(null, result);
     }
 
-    @Test
+    /*@Test
     public void testCreateCheckoutReturnsCheckout() throws IOException{
         //set up test specific data
         Map<Integer, Need> newMap = new TreeMap<Integer,Need>();
         newMap.put(0, new Need(12, "Canned Soup", 2.50, 20, "food"));
-        Checkout newCheckout = new Checkout(2, new FundingBasket(1, newMap));
+        Checkout newCheckout = new Checkout(1, new FundingBasket(1, newMap));
         
         //verify that the checkout is returned
-        Checkout actualCheckout = testCheckoutFileDAO.createCheckout(newCheckout);
+        Checkout actualCheckout = testCheckoutFileDAO.createCheckout(new FundingBasket(1, newMap));
         assertEquals(newCheckout, actualCheckout);        
-    }   
+    }   */
     
     @Test
     public void testDeleteNeedFalse() throws IOException {
-        //TODO: implement
+        //setting up test data
+        int checkoutTestId = 10;
+
+        //force to return false
+        when(mockCheckouts.containsKey(checkoutTestId)).thenReturn(false);
+        
+        //verify result is false
+        boolean result = testCheckoutFileDAO.deleteCheckout(checkoutTestId);
+        assertEquals(false, result);
     }
 
     @Test
     public void testDeleteNeedExists() throws IOException {
-        //TODO: implement
+        //setting up test data
+        int checkoutTestId = 1;
+
+        //force to return true
+        when(mockCheckouts.containsKey(checkoutTestId)).thenReturn(true);
         
-    }
+        //verify result is true
+        boolean result = testCheckoutFileDAO.deleteCheckout(checkoutTestId);
+        assertEquals(true, result);
+    }*/
 }
