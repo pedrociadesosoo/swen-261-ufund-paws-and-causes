@@ -1,5 +1,6 @@
 [
-  {"id":1,"name":"Canned Soup","quantity":50,"unit":"cans"},
-  {"id":2,"name":"Rice","quantity":100,"unit":"lbs"},
-  {"id":3,"name":"Blankets","quantity":25,"unit":"items"}
+  {"id": 1, "name": "Winter Coats", "cost": 50.00, "quantity": 10, "type": "clothing"},
+  {"id": 2, "name": "Canned Corn", "cost": 5.00, "quantity": 100, "type": "food"},
+  {"id": 3, "name": "Blankets", "cost": 25.00, "quantity": 30, "type": "clothing"},
+  {"id": 4, "name": "Canned Beans", "cost": 3.00, "quantity": 150, "type": "food"}
 ]
