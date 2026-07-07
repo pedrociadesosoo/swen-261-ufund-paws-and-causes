@@ -8,9 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -230,65 +228,6 @@ public class FundingBasketControllerTest {
         ResponseEntity<Boolean> response = fbCont.removeNeed(99, 3);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         verify(fbService, never()).removeNeed(any(), any());
-    }
-
-    /**
-     * Checking out a non-empty basket removes every need in it from the
-     * cupboard and clears the basket.
-     */
-    @Test
-    public void testCheckout() throws IOException {
-        FundingBasket fb = sampleFB();
-        fb.setOwnerUsername("helper1");
-        // Snapshot the actual Need instances stored in the basket (Need has no
-        // equals() override, so verifying against freshly-built Need objects
-        // would fail even with identical field values).
-        List<Need> needsInBasket = new ArrayList<>(fb.getNeeds().values());
-        when(fbService.getFundingBasket(1)).thenReturn(fb);
-
-        ResponseEntity<Boolean> response = fbCont.checkout("helper1", 1);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(true, response.getBody());
-        for (Need need : needsInBasket) {
-            verify(needService).deleteNeed(need.getId());
-            verify(fbService).removeNeed(fb, need);
-        }
-    }
-
-    /**
-     * An empty basket can't be checked out (sprint acceptance criteria).
-     */
-    @Test
-    public void testCheckoutEmptyBasket() throws IOException {
-        FundingBasket fb = new FundingBasket(1, new HashMap<>());
-        fb.setOwnerUsername("helper1");
-        when(fbService.getFundingBasket(1)).thenReturn(fb);
-
-        ResponseEntity<Boolean> response = fbCont.checkout("helper1", 1);
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        verify(needService, never()).deleteNeed(any(int.class));
-    }
-
-    @Test
-    public void testCheckoutNonexistentFB() throws IOException {
-        when(fbService.getFundingBasket(99)).thenReturn(null);
-
-        ResponseEntity<Boolean> response = fbCont.checkout("helper1", 99);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    /**
-     * A helper can't check out someone else's basket.
-     */
-    @Test
-    public void testCheckoutWrongOwner() throws IOException {
-        FundingBasket fb = sampleFB();
-        fb.setOwnerUsername("helper1");
-        when(fbService.getFundingBasket(1)).thenReturn(fb);
-
-        ResponseEntity<Boolean> response = fbCont.checkout("helper2", 1);
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        verify(needService, never()).deleteNeed(any(int.class));
     }
 
 }

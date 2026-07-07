@@ -22,6 +22,22 @@ export class App {
   }
 
   /**
+   * True if the logged-in user is the manager. Used by the nav bar to hide
+   * "Add Need" from helpers.
+   */
+  isManager(): boolean {
+    return this.accountService.isManager();
+  }
+
+  /**
+   * True if the logged-in user is a helper. Used by the nav bar to hide
+   * "My Basket" from the manager.
+   */
+  isHelper(): boolean {
+    return this.accountService.isHelper();
+  }
+
+  /**
    * Logs the current user out and returns them to the login page.
    */
   logout(): void {

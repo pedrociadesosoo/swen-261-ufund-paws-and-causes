@@ -3,8 +3,6 @@ package com.ufund.api.ufundapi.controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -192,46 +190,6 @@ public class FundingBasketController {
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IOException e){
-            LOG.log(Level.SEVERE, e.getLocalizedMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * POST /fundingbasket/{idFB}/checkout - completes a helper's contribution.
-     * Every need currently in the basket is considered fully funded: it's
-     * removed from the cupboard and cleared out of the basket. Matches the
-     * sprint acceptance criteria: an empty basket is refused, checkout only
-     * proceeds on a non-empty one, and only the basket's owner can check it out.
-     *
-     * @param username the caller's username, from the X-Username header
-     * @param idFB the basket id to check out
-     * @return 200 true on success, 403 if the caller doesn't own the basket,
-     * 404 if the basket doesn't exist, 409 if the basket is empty,
-     * 500 on storage error
-     */
-    @PostMapping("/{idFB}/checkout")
-    public ResponseEntity<Boolean> checkout(@RequestHeader(value = "X-Username", required = false) String username,
-                                             @PathVariable int idFB) {
-        LOG.info("POST /fundingbasket/" + idFB + "/checkout");
-        try {
-            FundingBasket fb = fbService.getFundingBasket(idFB);
-            if (fb == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            if (fb.getOwnerUsername() != null && !fb.getOwnerUsername().equals(username)) {
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
-            List<Need> needsToFund = new ArrayList<>(fb.getNeeds().values());
-            if (needsToFund.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            }
-            for (Need need : needsToFund) {
-                needService.deleteNeed(need.getId());
-                fbService.removeNeed(fb, need);
-            }
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -20,7 +20,6 @@ export class Checkout implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
 
-  // "Necessary fields" for completing checkout, per the sprint acceptance criteria
   nameOnCard: string = '';
   cardNumber: string = '';
   expiration: string = '';
@@ -94,6 +93,5 @@ export class Checkout implements OnInit {
     if (reallyCancel) {
       this.router.navigate(['/basket']);
     }
-    // If they cancel the cancellation, we simply stay on the checkout page.
   }
 }
