@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth';
+import { AccountService } from '../account';
 
 @Component({
   selector: 'app-cupboard',
@@ -17,7 +17,7 @@ export class Cupboard implements OnInit {
   constructor(
     private needService: NeedService,
     private router: Router,
-    private authService: AuthService
+    private accountService: AccountService
   ) {}
 
   ngOnInit(): void {
@@ -45,13 +45,13 @@ export class Cupboard implements OnInit {
    * Returns true if the current user is a manager
    */
   isManager(): boolean {
-    return this.authService.isManager();
+    return this.accountService.isManager();
   }
 
   /**
    * Returns true if the current user is a helper
    */
   isHelper(): boolean {
-    return this.authService.isHelper();
+    return this.accountService.isHelper();
   }
 }

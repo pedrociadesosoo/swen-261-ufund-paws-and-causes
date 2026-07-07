@@ -7,7 +7,7 @@ import { Account } from './account.model';
 })
 export class AccountService {
   private apiUrl = 'http://localhost:8080/accounts';
-  public currentAccount: Account | null  = null;
+  private currentAccount: Account | null  = null;
   constructor(private http: HttpClient) {}
 
   /**
@@ -27,5 +27,31 @@ export class AccountService {
   return this.currentAccount;
   }
 
-  
+  /**
+   * logs out the current user
+   */
+  logout(): void {
+  this.currentAccount = null;
+  }
+
+  /**
+   * true if the logged-in user is the manager
+   */
+  isManager(): boolean {
+  return this.currentAccount?.type === 'admin';
+  }
+
+  /**
+   * true if the logged-in user is a helper
+   */
+  isHelper(): boolean {
+  return this.currentAccount?.type === 'helper';
+  }
+
+  /**
+   * true if anyone is logged in
+   */
+  isLoggedIn(): boolean {
+  return this.currentAccount !== null;
+  }
 }
