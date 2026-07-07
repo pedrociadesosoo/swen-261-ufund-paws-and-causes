@@ -1,7 +1,9 @@
 package com.ufund.api.ufundapi.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -57,73 +59,74 @@ public class FundingBasketFileDAOTest {
     }
 
     @Test
-    void testCreateFBReturnsFB (){
+    void testCreateFBReturnsFB() throws IOException {
         FundingBasket fb = sampleFB();
 
         FundingBasket created = fbdao.createFundingBasket(fb.getId());
 
-        assertEquals(fb.getId(), created.getId());
-        assertEquals(fb.getNeeds().size(), created.getNeeds().size());
-
+        assertNotNull(created);
+        assertEquals(1, created.getId());
+        assertTrue(created.getNeeds().isEmpty());
     }
 
     @Test
     void testCreateFBFail() throws IOException {
         FundingBasket fb = sampleFB();
-        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
+        doThrow(new IOException("write failed"))
+                .when(mockMapper)
+                .writeValue(any(File.class), any(FundingBasket[].class));
 
         FundingBasket created = fbdao.createFundingBasket(fb.getId());
 
-        assertEquals(null, created);
+        assertNull(created);
     }
 
     @Test
-    void testDeleteFBReturnsFB() throws IOException{
-        FundingBasket fb = sampleFB();
-        FundingBasket deleted = fbdao.deleteFundingBasket(fb.getId());
+    void testDeleteFBReturnsFB() throws IOException {
+        FundingBasket created = fbdao.createFundingBasket(1);
 
-        assertEquals(fb, deleted);
-        
+        FundingBasket deleted = fbdao.deleteFundingBasket(created.getId());
+
+        assertNotNull(deleted);
+        assertEquals(created.getId(), deleted.getId());
     }
 
     @Test
-    void testDeleteFBFail() throws IOException{
-        FundingBasket fb = sampleFB();
-        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
-        
-        FundingBasket deleted = fbdao.deleteFundingBasket(fb.getId());
-        assertEquals(null, deleted);
-
+    void testDeleteFBFail() throws IOException {
+        FundingBasket deleted = fbdao.deleteFundingBasket(999);
+        assertNull(deleted);
     }
 
     @Test
-    void testGetNeedsReturnsAll() throws IOException{
-        FundingBasket fb = sampleFB();
+    void testGetNeedsReturnsAll() throws IOException {
+        FundingBasket created = fbdao.createFundingBasket(1);
+        created.setMap(sampleFB().getNeeds());
 
-        Map<Integer,Need> needs = fbdao.getFundingBasketNeeds(fb.getId());
+        Map<Integer, Need> needs = fbdao.getFundingBasketNeeds(created.getId());
 
-        assertEquals(fb.getNeeds(), needs);
-
+        assertNotNull(needs);
+        assertEquals(3, needs.size());
+        assertEquals("Canned Soup", needs.get(1).getName());
     }
 
     @Test
-    void testGetNeedsEmpty(){
+    void testGetNeedsEmpty() throws IOException {
+        FundingBasket created = fbdao.createFundingBasket(1);
 
+        Map<Integer, Need> needs = fbdao.getFundingBasketNeeds(created.getId());
 
+        assertNotNull(needs);
+        assertTrue(needs.isEmpty());
     }
 
     @Test
-    void testGetNeedsFail() throws IOException{
-        FundingBasket fb = sampleFB();
-        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
-
-        Map<Integer,Need> needs = fbdao.getFundingBasketNeeds(fb.getId());
+    void testGetNeedsFail() throws IOException {
+        Map<Integer, Need> needs = fbdao.getFundingBasketNeeds(999);
         assertNull(needs);
-
     }
 
     @Test
-    void testAddNeedFB(){
+    void testAddNeedFB() {
         FundingBasket fb = sampleFB();
         Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
 
@@ -133,23 +136,30 @@ public class FundingBasketFileDAOTest {
     }
 
     @Test
-    void testAddNeedFBFail() throws IOException{
+    void testAddNeedFBFail() {
         FundingBasket fb = sampleFB();
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
-        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
+        Need duplicateNeed = new Need(1, "Canned Soup", 2.50, 50, "food");
 
-        Need need = fbdao.addNeed(fb, newNeed);
-        assertEquals(null, need);
-
+        Need need = fbdao.addNeed(fb, duplicateNeed);
+        assertNull(need);
     }
 
     @Test
-    void testRemoveNeedFB(){
+    void testRemoveNeedFB() {
+        FundingBasket fb = sampleFB();
+        Need existingNeed = new Need(1, "Canned Soup", 2.50, 50, "food");
 
+        Need removed = fbdao.removeNeed(fb, existingNeed);
+        assertNotNull(removed);
+        assertEquals(existingNeed.getId(), removed.getId());
     }
 
     @Test
-    void testRemoveNeedFBFail(){
+    void testRemoveNeedFBFail() {
+        FundingBasket fb = sampleFB();
+        Need missingNeed = new Need(99, "Missing", 5.00, 1, "other");
 
+        Need removed = fbdao.removeNeed(fb, missingNeed);
+        assertNull(removed);
     }
 }

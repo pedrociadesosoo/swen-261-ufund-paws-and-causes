@@ -87,8 +87,7 @@ public class FundingBasketControllerTest {
 
         ResponseEntity<FundingBasket> response = fbCont.deleteFundingBasket(1);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(true, response.getBody());
-    
+        assertEquals(fb, response.getBody());
     }
     @Test
     public void testDeleteFBNotFound() throws IOException {
@@ -114,15 +113,14 @@ public class FundingBasketControllerTest {
     @Test
     public void addNeedFB() throws IOException{
         FundingBasket fb = sampleFB();
-        Map<Integer,Need> needs = fb.getNeeds();
         Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
 
         when(fbDao.getFundingBasket(1)).thenReturn(fb);
+        when(fbDao.addNeed(fb, newNeed)).thenReturn(newNeed);
 
         ResponseEntity<Need> response = fbCont.addNeed(1, newNeed);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(newNeed, response.getBody());
-
     }
 
     @Test
@@ -146,15 +144,14 @@ public class FundingBasketControllerTest {
     @Test
     public void deleteNeedFB() throws IOException{
         FundingBasket fb = sampleFB();
-        Map<Integer,Need> needs = fb.getNeeds();
         Need deleteNeed = new Need(3, "Blankets", 15.00, 25, "clothing");
 
         when(fbDao.getFundingBasket(1)).thenReturn(fb);
+        when(fbDao.removeNeed(fb, deleteNeed)).thenReturn(deleteNeed);
 
         ResponseEntity<Need> response = fbCont.removeNeed(1, deleteNeed);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(deleteNeed, response.getBody());
-
     }
 
     @Test
