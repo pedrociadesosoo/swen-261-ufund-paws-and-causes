@@ -9,6 +9,7 @@ import { Cupboard } from './cupboard/cupboard';
 import { AddNeed } from './add-need/add-need';
 import { NeedDetail } from './need-detail/need-detail';
 import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.component';
+import { Login } from './login/login';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.
     Cupboard,
     AddNeed,
     NeedDetail,
-    FundingbasketComponent
+    FundingbasketComponent,
+    Login
   ],
   imports: [
     BrowserModule,

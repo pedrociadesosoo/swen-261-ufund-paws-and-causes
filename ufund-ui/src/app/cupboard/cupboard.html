@@ -17,6 +17,7 @@
         <th>Cost</th>
         <th>Quantity</th>
         <th>Type</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -26,11 +27,24 @@
         <td>{{ need.cost | currency }}</td>
         <td>{{ need.quantity }}</td>
         <td>{{ need.type }}</td>
+        <td>
+          <!-- Helper-specific controls -->
+          <span *ngIf="isHelper()">
+            <button (click)="$event.stopPropagation()">Add to Basket</button>
+          </span>
+
+          <!-- Manager-specific controls -->
+          <span *ngIf="isManager()">
+            <button (click)="$event.stopPropagation()">Edit</button>
+            <button (click)="$event.stopPropagation()">Delete</button>
+          </span>
+        </td>
       </tr>
     </tbody>
   </table>
 
-  <a routerLink="/add-need">
+  <!-- Manager only: Add Need button -->
+  <a *ngIf="isManager()" routerLink="/add-need">
     <button>Add Need</button>
   </a>
 </div>
