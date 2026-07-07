@@ -1,0 +1,16 @@
+<h2>Login page!</h2>
+<div *ngIf="statusMsg">{{ statusMsg }}</div>
+<form (ngSubmit)="login()" >
+	<label for="username">username</label>
+      <input
+        id="username"
+        type="text"
+        name="username"
+	[(ngModel)]="username"
+        required
+        placeholder="Please enter username"
+      />
+
+      <button type="submit">Log In</button>
+      <button type="button" (click)="createAccount()">Create Account</button>
+</form>
