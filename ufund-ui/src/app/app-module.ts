@@ -8,6 +8,7 @@ import { App } from './app';
 import { Cupboard } from './cupboard/cupboard';
 import { AddNeed } from './add-need/add-need';
 import { NeedDetail } from './need-detail/need-detail';
+import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.component';
 import { Login } from './login/login';
 
 @NgModule({
@@ -16,6 +17,7 @@ import { Login } from './login/login';
     Cupboard,
     AddNeed,
     NeedDetail,
+    FundingbasketComponent,
     Login
   ],
   imports: [

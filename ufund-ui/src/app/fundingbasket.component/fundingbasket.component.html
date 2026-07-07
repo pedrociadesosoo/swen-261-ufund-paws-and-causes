@@ -1,0 +1,16 @@
+<h2>My FundingBasket </h2>
+<ol class="FundingBasket">
+    @for (entry of needs.entries(); track entry[0]){
+        <li>
+            <a [routerLink]="['/cupboard', entry[1].id]">
+                {{ entry[1].name }}
+            </a>
+            <button type="button" (click)="add(id, entry[1].id)">
+                Add to Basket
+            </button>
+            <button type="button" (click)="remove(id, entry[1].id)">
+                Remove from Basket
+            </button>
+        </li>
+    }
+</ol>
