@@ -8,7 +8,18 @@ import { Account } from './account.model';
 export class AccountService {
   private apiUrl = 'http://localhost:8080/accounts';
   private currentAccount: Account | null  = null;
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient) {
+  // restore the session from localStorage so a page refresh doesn't log the user out
+  const saved = localStorage.getItem('currentAccount');
+  if (saved) {
+    try {
+      this.currentAccount = JSON.parse(saved) as Account;
+    } catch {
+      localStorage.removeItem('currentAccount');
+    }
+  }
+  }
 
   /**
    * sends a request to log in as a given username
@@ -22,6 +33,7 @@ export class AccountService {
   }
   setCurrentAccount(account: Account): void {
   this.currentAccount = account;
+  localStorage.setItem('currentAccount', JSON.stringify(account));
   }
   getCurrentAccount(): Account | null {
   return this.currentAccount;
@@ -32,6 +44,7 @@ export class AccountService {
    */
   logout(): void {
   this.currentAccount = null;
+  localStorage.removeItem('currentAccount');
   }
 
   /**
