@@ -28,11 +28,12 @@ public class AccountController {
     @PostMapping("/register")
     public ResponseEntity<Account> register(@RequestBody Map<String, String> body) {
         String username = body.get("username");
+	String password = body.get("password");
         LOG.info("POST /accounts/register username=" + username);
         try {
             if (!accountService.isValidUsername(username))
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            Account created = accountService.createAccount(username);
+            Account created = accountService.createAccount(username, password);
             if (created == null)
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             return new ResponseEntity<>(created, HttpStatus.CREATED);
@@ -45,6 +46,7 @@ public class AccountController {
     @PostMapping("/login")
     public ResponseEntity<Account> login(@RequestBody Map<String, String> body) {
         String username = body.get("username");
+	String password = body.get("password");
         LOG.info("POST /accounts/login username=" + username);
         try {
             if (username == null)
@@ -52,6 +54,8 @@ public class AccountController {
             Account account = accountService.getAccount(username);
             if (account == null)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	    if (!account.checkPassword(password))
+		    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             return new ResponseEntity<>(account, HttpStatus.OK);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());

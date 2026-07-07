@@ -7,7 +7,7 @@ import com.ufund.api.ufundapi.model.Account;
 
 public interface AccountService {
     boolean isValidUsername(String username);
-    Account createAccount(String username) throws IOException;
+    Account createAccount(String username, String password) throws IOException;
     Account getAccount(String username) throws IOException;
     List<Account> getAllAccounts() throws IOException;
 }

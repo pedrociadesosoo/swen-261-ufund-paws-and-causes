@@ -11,10 +11,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public abstract class Account {
     @JsonProperty("username") private String username;
-
-    public Account(@JsonProperty("username") String username) {
+    @JsonProperty("password") private String password;
+    public Account(@JsonProperty("username") String username, @JsonProperty("password") String password) {
         this.username = username;
+	this.password = password;
     }
 
-    public String getUsername() { return username; }
+    public String getUsername() { return this.username; }
+    public boolean  checkPassword(String password) { return password != null && password.equals(this.password); }
 }

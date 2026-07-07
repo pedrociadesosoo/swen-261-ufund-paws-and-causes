@@ -13,12 +13,12 @@ export class AccountService {
   /**
    * sends a request to log in as a given username
    */
-  login(username: string): Observable<Account> {
-      return this.http.post<Account>(`${this.apiUrl}/login`, { username });
+  login(username: string, password: string): Observable<Account> {
+      return this.http.post<Account>(`${this.apiUrl}/login`, { username, password });
   }
 
-  createUser(username: string): Observable<Account> {
-  	return this.http.post<Account>(`${this.apiUrl}/register`, {username});
+  createUser(username: string, password: string): Observable<Account> {
+  	return this.http.post<Account>(`${this.apiUrl}/register`, {username, password});
   }
   setCurrentAccount(account: Account): void {
   this.currentAccount = account;

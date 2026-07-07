@@ -26,12 +26,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Account createAccount(String username) throws IOException {
+    public Account createAccount(String username, String password) throws IOException {
         if (accountDAO.getAccount(username) != null)
             return null;
         Account account = username.equals("admin")
-            ? new ManagerAccount(username)
-            : new HelperAccount(username, new ArrayList<>());
+            ? new ManagerAccount(username, password)
+            : new HelperAccount(username, password, new ArrayList<>());
         return accountDAO.createAccount(account);
     }
 
