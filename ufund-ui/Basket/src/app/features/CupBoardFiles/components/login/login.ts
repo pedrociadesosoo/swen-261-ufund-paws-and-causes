@@ -97,6 +97,6 @@ export class LoginComponent {
       return;
     }
     this.acc.login(this.username.trim(), this.password);
-    this.router.navigate(['/needs']);
+    this.router.navigate(['/cupboard']);
   }
 }
