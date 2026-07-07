@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class HelperAccount extends Account {
+    // IDs of the Needs currently in this helper's checkout basket, not IDs of baskets
     @JsonProperty("basketIds") private List<Integer> basketIds;
 
     public HelperAccount(@JsonProperty("username") String username, @JsonProperty("password") String password, @JsonProperty("basketIds") List<Integer> basketIds) {
