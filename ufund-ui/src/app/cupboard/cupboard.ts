@@ -16,6 +16,9 @@ export class Cupboard implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
 
+  /** Bound to the search box; filters the cupboard by partial name match */
+  searchTerm: string = '';
+
   constructor(
     private needService: NeedService,
     private router: Router,
@@ -28,13 +31,28 @@ export class Cupboard implements OnInit {
   }
 
   /**
-   * Loads all needs from the API
+   * Loads needs from the API, filtered by searchTerm when one is set
    */
   loadNeeds(): void {
-    this.needService.getNeeds().subscribe({
+    this.needService.getNeeds(this.searchTerm || undefined).subscribe({
       next: (needs) => this.needs = needs,
       error: () => this.errorMessage = 'Failed to load needs'
     });
+  }
+
+  /**
+   * Re-runs loadNeeds() with the current searchTerm; bound to the search box
+   */
+  search(): void {
+    this.loadNeeds();
+  }
+
+  /**
+   * Clears the search box and reloads the full cupboard
+   */
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.loadNeeds();
   }
 
   /**
@@ -42,6 +60,31 @@ export class Cupboard implements OnInit {
    */
   viewNeed(id: number): void {
     this.router.navigate(['/cupboard', id]);
+  }
+
+  /**
+   * Manager-only: navigates to the edit form for a need
+   */
+  editNeed(id: number): void {
+    this.router.navigate(['/edit-need', id]);
+  }
+
+  /**
+   * Manager-only: deletes a need after confirmation, then reloads the list
+   */
+  deleteNeed(need: Need): void {
+    if (!confirm(`Delete "${need.name}" from the cupboard?`)) return;
+    this.needService.deleteNeed(need.id).subscribe({
+      next: () => {
+        this.successMessage = `${need.name} deleted`;
+        this.errorMessage = '';
+        this.loadNeeds();
+      },
+      error: () => {
+        this.successMessage = '';
+        this.errorMessage = 'Failed to delete need';
+      }
+    });
   }
 
   /**

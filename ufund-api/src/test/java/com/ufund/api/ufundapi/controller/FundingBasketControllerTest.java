@@ -8,7 +8,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -87,9 +89,10 @@ public class FundingBasketControllerTest {
         FundingBasket fb = sampleFB();
         when(fbService.createFundingBasket(fb)).thenReturn(fb);
 
-        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket(fb);
+        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket("helper1", fb);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(fb, response.getBody());
+        assertEquals("helper1", fb.getOwnerUsername());
     }
 
     @Test
@@ -97,18 +100,41 @@ public class FundingBasketControllerTest {
         FundingBasket fb = sampleFB();
         when(fbService.createFundingBasket(fb)).thenReturn(null);
 
-        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket(fb);
+        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket("helper1", fb);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    /**
+     * Requests with no X-Username header can't create a basket for anyone.
+     */
+    @Test
+    public void testCreateFBForbiddenWithNoUsername() throws IOException {
+        FundingBasket fb = sampleFB();
+
+        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket(null, fb);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(fbService, never()).createFundingBasket(any());
     }
 
     @Test
     public void testGetFBArray() throws IOException {
         FundingBasket[] baskets = new FundingBasket[] { sampleFB(), new FundingBasket(2, new HashMap<>()) };
-        when(fbService.getFundingBasketArray()).thenReturn(baskets);
+        when(fbService.getFundingBasketsByOwner("helper1")).thenReturn(baskets);
 
-        ResponseEntity<FundingBasket[]> response = fbCont.getFundingBasketArray();
+        ResponseEntity<FundingBasket[]> response = fbCont.getFundingBasketArray("helper1");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(baskets, response.getBody());
+    }
+
+    /**
+     * Requests with no X-Username header can't list anyone's baskets, which
+     * is the whole point of the per-owner fix: no header means no baskets.
+     */
+    @Test
+    public void testGetFBArrayForbiddenWithNoUsername() throws IOException {
+        ResponseEntity<FundingBasket[]> response = fbCont.getFundingBasketArray(null);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(fbService, never()).getFundingBasketsByOwner(any());
     }
 
     @Test
@@ -204,6 +230,65 @@ public class FundingBasketControllerTest {
         ResponseEntity<Boolean> response = fbCont.removeNeed(99, 3);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         verify(fbService, never()).removeNeed(any(), any());
+    }
+
+    /**
+     * Checking out a non-empty basket removes every need in it from the
+     * cupboard and clears the basket.
+     */
+    @Test
+    public void testCheckout() throws IOException {
+        FundingBasket fb = sampleFB();
+        fb.setOwnerUsername("helper1");
+        // Snapshot the actual Need instances stored in the basket (Need has no
+        // equals() override, so verifying against freshly-built Need objects
+        // would fail even with identical field values).
+        List<Need> needsInBasket = new ArrayList<>(fb.getNeeds().values());
+        when(fbService.getFundingBasket(1)).thenReturn(fb);
+
+        ResponseEntity<Boolean> response = fbCont.checkout("helper1", 1);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(true, response.getBody());
+        for (Need need : needsInBasket) {
+            verify(needService).deleteNeed(need.getId());
+            verify(fbService).removeNeed(fb, need);
+        }
+    }
+
+    /**
+     * An empty basket can't be checked out (sprint acceptance criteria).
+     */
+    @Test
+    public void testCheckoutEmptyBasket() throws IOException {
+        FundingBasket fb = new FundingBasket(1, new HashMap<>());
+        fb.setOwnerUsername("helper1");
+        when(fbService.getFundingBasket(1)).thenReturn(fb);
+
+        ResponseEntity<Boolean> response = fbCont.checkout("helper1", 1);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        verify(needService, never()).deleteNeed(any(int.class));
+    }
+
+    @Test
+    public void testCheckoutNonexistentFB() throws IOException {
+        when(fbService.getFundingBasket(99)).thenReturn(null);
+
+        ResponseEntity<Boolean> response = fbCont.checkout("helper1", 99);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    /**
+     * A helper can't check out someone else's basket.
+     */
+    @Test
+    public void testCheckoutWrongOwner() throws IOException {
+        FundingBasket fb = sampleFB();
+        fb.setOwnerUsername("helper1");
+        when(fbService.getFundingBasket(1)).thenReturn(fb);
+
+        ResponseEntity<Boolean> response = fbCont.checkout("helper2", 1);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(needService, never()).deleteNeed(any(int.class));
     }
 
 }

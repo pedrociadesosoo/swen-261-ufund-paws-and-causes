@@ -1,7 +1,10 @@
-<nav style="padding: 1rem; background: #f5f5f5; display: flex; gap: 1rem;">
+<nav style="padding: 1rem; background: #f5f5f5; display: flex; gap: 1rem; align-items: center;">
   <a routerLink="/cupboard">View Cupboard</a>
   <a routerLink="/add-need">Add Need</a>
   <a routerLink="/basket">My Basket</a>
+  <span style="flex: 1;"></span>
+  <a *ngIf="!isLoggedIn()" routerLink="/login">Login</a>
+  <button *ngIf="isLoggedIn()" (click)="logout()">Logout</button>
 </nav>
 
 <router-outlet />

@@ -1,6 +1,18 @@
 <div class="cupboard-container">
   <h2>Needs Cupboard</h2>
 
+  <div class="search-bar">
+    <input
+      type="text"
+      name="search"
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="search()"
+      placeholder="Search needs by name"
+    />
+    <button (click)="search()">Search</button>
+    <button (click)="clearSearch()">Clear</button>
+  </div>
+
   <div *ngIf="errorMessage" class="error">
     {{ errorMessage }}
   </div>
@@ -39,8 +51,8 @@
 
           <!-- Manager-specific controls -->
           <span *ngIf="isManager()">
-            <button (click)="$event.stopPropagation()">Edit</button>
-            <button (click)="$event.stopPropagation()">Delete</button>
+            <button (click)="$event.stopPropagation(); editNeed(need.id)">Edit</button>
+            <button (click)="$event.stopPropagation(); deleteNeed(need)">Delete</button>
           </span>
         </td>
       </tr>

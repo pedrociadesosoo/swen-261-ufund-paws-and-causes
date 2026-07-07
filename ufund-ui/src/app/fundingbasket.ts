@@ -8,4 +8,6 @@ import { Need } from "./need.model";
 export interface FundingBasket {
     id: number;
     needs: { [key: number]: Need };
+    /** Username of the helper who owns this basket; set server-side from the X-Username header. */
+    ownerUsername?: string;
 }

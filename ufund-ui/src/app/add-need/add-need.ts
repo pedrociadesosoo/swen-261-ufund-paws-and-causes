@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
 
@@ -9,7 +9,7 @@ import { Need } from '../need.model';
   templateUrl: './add-need.html',
   styleUrl: './add-need.css',
 })
-export class AddNeed {
+export class AddNeed implements OnInit {
   need: Need = {
     id: 0,
     name: '',
@@ -20,7 +20,30 @@ export class AddNeed {
   errorMessage: string = '';
   successMessage: string = '';
 
-  constructor(private needService: NeedService, private router: Router) {}
+  /** True when editing an existing need (route has an :id param) rather than creating a new one */
+  isEditMode: boolean = false;
+
+  constructor(
+    private needService: NeedService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  /**
+   * If the route was loaded with an :id param, this is the edit page for an
+   * existing need, so load its current values into the form.
+   */
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam !== null) {
+      this.isEditMode = true;
+      const id = Number(idParam);
+      this.needService.getNeedById(id).subscribe({
+        next: (need) => this.need = need,
+        error: () => this.errorMessage = 'Failed to load need details'
+      });
+    }
+  }
 
   /**
    * Validates the need fields before submitting
@@ -47,11 +70,23 @@ export class AddNeed {
   }
 
   /**
-   * Submits the form to create a new need
+   * Submits the form, either creating a new need or updating the existing
+   * one being edited, depending on isEditMode.
    */
   onSubmit(): void {
     this.errorMessage = '';
     if (!this.validate()) return;
+
+    if (this.isEditMode) {
+      this.needService.updateNeed(this.need.id, this.need).subscribe({
+        next: (updated) => {
+          this.successMessage = `Need "${updated.name}" updated successfully!`;
+          this.router.navigate(['/cupboard']);
+        },
+        error: () => this.errorMessage = 'Failed to update need. Please try again.'
+      });
+      return;
+    }
 
     this.needService.createNeed(this.need).subscribe({
       next: (created) => {

@@ -34,5 +34,19 @@ export class NeedService {
   getNeedById(id: number): Observable<Need> {
     return this.http.get<Need>(`${this.apiUrl}/${id}`);
   }
-  
+
+  /**
+   * Updates an existing need
+   */
+  updateNeed(id: number, need: Need): Observable<Need> {
+    return this.http.put<Need>(`${this.apiUrl}/${id}`, need);
+  }
+
+  /**
+   * Deletes a need by id
+   */
+  deleteNeed(id: number): Observable<Need> {
+    return this.http.delete<Need>(`${this.apiUrl}/${id}`);
+  }
+
 }

@@ -13,12 +13,18 @@ export class Login {
 	statusMsg: string = '';
 	constructor(private accountService: AccountService, private router: Router){}
 	
+	/**
+	 * Logs in with the entered credentials. On success, stores the account
+	 * as the current session and navigates to the cupboard so the login
+	 * form doesn't stay on screen after a successful login.
+	 */
 	login(): void {
 		this.accountService.login(this.username, this.password).subscribe({
 			next:(valid) => {
 
 			this.accountService.setCurrentAccount(valid);
 			this.statusMsg = `Successfully logged in as ${valid.username}`;
+			this.router.navigate(['/cupboard']);
 			},
 			error:(err) => {
 			if (err.status === 404){

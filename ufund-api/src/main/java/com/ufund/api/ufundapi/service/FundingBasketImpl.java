@@ -1,6 +1,9 @@
 package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.ufund.api.ufundapi.model.FundingBasket;
@@ -33,6 +36,19 @@ public class FundingBasketImpl implements FundingBasketService {
      */
     public FundingBasket[] getFundingBasketArray() throws IOException {
         return fundingBasketDAO.getFundingBasketArray();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public FundingBasket[] getFundingBasketsByOwner(String ownerUsername) throws IOException {
+        List<FundingBasket> owned = new ArrayList<>();
+        for (FundingBasket fb : fundingBasketDAO.getFundingBasketArray()) {
+            if (ownerUsername.equals(fb.getOwnerUsername())) {
+                owned.add(fb);
+            }
+        }
+        return owned.toArray(new FundingBasket[0]);
     }
 
     /**
