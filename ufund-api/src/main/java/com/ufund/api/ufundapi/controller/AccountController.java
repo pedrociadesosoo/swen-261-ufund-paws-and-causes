@@ -46,7 +46,7 @@ public class AccountController {
     @PostMapping("/login")
     public ResponseEntity<Account> login(@RequestBody Map<String, String> body) {
         String username = body.get("username");
-	String password = body.get("password");
+	    String password = body.get("password");
         LOG.info("POST /accounts/login username=" + username);
         try {
             if (username == null)
