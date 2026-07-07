@@ -80,7 +80,6 @@ public class AccountControllerTest {
         String password = "12345";
         Account created = new Account("charlieg", "12345") {};
         when(accountService.getAccount("charlieg")).thenReturn(created);
-        when(created.checkPassword(password)).thenReturn(true);
 
         ResponseEntity<Account> response = accountController.login(body);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -96,7 +95,7 @@ public class AccountControllerTest {
         body.replace("username", null);
 
         ResponseEntity<Account> response = accountController.login(body);
-        assertEquals(HttpStatus.BAD_REQUEST, response.getBody());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         body.replace("username", "charlieg");
     }
 
@@ -107,7 +106,7 @@ public class AccountControllerTest {
         when(accountService.getAccount("charlieg")).thenReturn(null);
 
         ResponseEntity<Account> response = accountController.login(body);
-        assertEquals(HttpStatus.NOT_FOUND, response.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
@@ -118,7 +117,7 @@ public class AccountControllerTest {
         body.replace("password", "1234");
 
         ResponseEntity<Account> response = accountController.login(body);
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getBody());
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         body.replace("password", "12345");
 
     }
