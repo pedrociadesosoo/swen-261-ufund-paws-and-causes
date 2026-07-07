@@ -37,9 +37,9 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
      * 
      * @return The next id
      */
-    private synchronized static int nextId() {
-        int id = nextId;
-        ++nextId;
+    private synchronized int nextId() {
+        int id = 1; 
+        while (fundingbaskets.containsKey(id)) { id++; } 
         return id;
     }
 
@@ -55,16 +55,15 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
 
     private boolean load() throws IOException {
         fundingbaskets = new TreeMap<>();
-        nextId = 0;
+        nextId = 1;
 
         FundingBasket[] fbArray = objectMapper.readValue(new File(filename), FundingBasket[].class);
         
         for (FundingBasket fb : fbArray) {
             fundingbaskets.put(fb.getId(), fb);
             if (fb.getId() >= nextId)
-                nextId = fb.getId();
+                nextId = fb.getId() + 1;
         }
-        ++nextId;
         return true;
     }
 
@@ -79,10 +78,8 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
             for (FundingBasket fb : fundingbaskets.values()){
                 fbList.add(fb);
             }
-
             FundingBasket[] fbArray = new FundingBasket[fundingbaskets.size()];
             fbList.toArray(fbArray);
-
             return fbArray;
         }
     }
@@ -129,6 +126,7 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
         synchronized (fundingbaskets) {
             if (fundingbaskets.containsKey(id)){
                 fundingbaskets.remove(id);
+                save();
                 return true;
             }
             else {
@@ -138,10 +136,11 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
     }
 
     @Override
-    public boolean addNeed(FundingBasket fb, Need need){
+    public boolean addNeed(FundingBasket fb, Need need) throws IOException {
         synchronized (fundingbaskets){
             Map<Integer, Need> needs = fb.getNeeds();
             if (needs.containsKey(need.getId())){
+                save();
                 return false;
             }
             fb.addNeed(need);
@@ -150,11 +149,12 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
     }
 
     @Override
-    public boolean removeNeed(FundingBasket fb, Need need){
+    public boolean removeNeed(FundingBasket fb, Need need) throws IOException {
                 synchronized (fundingbaskets){
             Map<Integer, Need> needs = fb.getNeeds();
             if (needs.containsKey(need.getId())){
                 needs.remove(need.getId());
+                save();
                 return true;
             }
             return false;

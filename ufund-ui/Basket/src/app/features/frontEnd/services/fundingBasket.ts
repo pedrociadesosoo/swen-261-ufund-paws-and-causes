@@ -20,7 +20,7 @@ export class FundingbasketService {
         return this.http.get<FundingBasket[]>(`${this.API}`);
     }
 
-    createFundingBasket(fb: Omit<FundingBasket, 'id'>): Observable<FundingBasket> {
+    createFundingBasket(fb: FundingBasket): Observable<FundingBasket> {
         return this.http.post<FundingBasket>(this.API, fb);
     }
 

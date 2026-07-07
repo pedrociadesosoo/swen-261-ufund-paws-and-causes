@@ -9,6 +9,25 @@
     <p>No needs in the cupboard yet.</p>
   </div>
 
+
+  <div class="basket-selector">
+    <label>Select Basket:</label>
+
+    <select [(ngModel)]="selectedBasketId">
+      <option *ngFor="let basket of baskets" [value]="basket.id">
+        Basket {{ basket.id }}
+      </option>
+    </select>
+
+    <!-- Add new basket -->
+    <button (click)="createBasket()">+</button>
+
+    <!-- Delete selected basket -->
+    <button (click)="deleteBasket(selectedBasketId)">🗑</button>
+  </div>
+
+
+
   <table *ngIf="needs.length > 0">
     <thead>
       <tr>
@@ -17,25 +36,45 @@
         <th>Cost</th>
         <th>Quantity</th>
         <th>Type</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let need of needs" (click)="viewNeed(need.id)" style="cursor: pointer;">
+      <tr *ngFor="let need of needs">
         <td>{{ need.id }}</td>
         <td>{{ need.name }}</td>
         <td>{{ need.cost | currency }}</td>
         <td>{{ need.quantity }}</td>
         <td>{{ need.type }}</td>
+      <td>
+          <!-- Helper-specific controls -->
+          <span *ngIf="isHelper()">
+            <button (click)="selectedNeed = need; addFundingBasket(selectedBasketId)">
+              Add to Basket
+            </button>
+            <button (click)="viewNeed(need.id)">View</button>
+          </span>
+
+          <!-- Manager-specific controls -->
+          <span *ngIf="isManager()">
+            <button (click)="edit(need); $event.stopPropagation()">Edit</button>
+            <button (click)="remove(need.id); $event.stopPropagation()">Delete</button>
+            <div *ngIf="selectedNeed && selectedNeed.id === need.id" style="cursor: pointer;">
+              <input [(ngModel)]="selectedNeed.name">
+              <input [(ngModel)]="selectedNeed.cost">
+              <input [(ngModel)]="selectedNeed.quantity">
+              <input [(ngModel)]="selectedNeed.type">
+              <button (click)="save()">Save</button>
+              <button (click)="exitEdit()">Exit Edit</button>
+
+            </div>
+          </span>
+        </td>
       </tr>
     </tbody>
   </table>
 
-  <button (click)="addNeed()">
-    Add Need
-  </button>
-
-  <button (click)="editNeed()" >
-    Edit Need
-  </button>
-
+  <!-- Manager only: Add Need button -->
+  <button *ngIf="isManager()" (click)="addNeed()">Add Need</button>
+  <button (click)="viewFundingBasket()">View Funding Basket</button>
 </div>

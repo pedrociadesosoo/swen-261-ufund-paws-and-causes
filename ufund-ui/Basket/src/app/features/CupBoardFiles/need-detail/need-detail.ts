@@ -4,6 +4,7 @@ import { NeedService } from '../../frontEnd/services/need.service';
 import { Need } from '../../frontEnd/models/need.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -21,14 +22,24 @@ export class NeedDetail implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private needService: NeedService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
+
   ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.needService.getById(id).subscribe({
-      next: (need: Need) => this.need = need,
-      error: () => this.errorMessage = 'Failed to load need details'
+      next: (need: Need) => 
+      {
+        this.need = need,
+        this.cdr.detectChanges();
+      },
+      error: () =>
+        {
+          this.errorMessage = 'Failed to load need details',
+          this.cdr.detectChanges();
+        } 
     });
   }
 
