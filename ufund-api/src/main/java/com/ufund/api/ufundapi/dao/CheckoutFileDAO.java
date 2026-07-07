@@ -31,12 +31,6 @@ public class CheckoutFileDAO implements CheckoutDAO {
         load();
     }
 
-    private synchronized static int nextId() {
-        int id = nextId;
-        ++nextId;
-        return id;
-    }
-
     private boolean save() throws IOException {
         Checkout[] fbArray = getCheckoutArray();
 
@@ -87,10 +81,10 @@ public class CheckoutFileDAO implements CheckoutDAO {
     @Override
     public Checkout createCheckout(FundingBasket basket) throws IOException {
        synchronized (checkouts) {
-           Checkout newCheckout = new Checkout(basket.getId(), basket);
-           checkouts.put(basket.getId(), newCheckout);
-           save();
-           return newCheckout;
+            Checkout newCheckout = new Checkout(basket.getId(), basket);
+            checkouts.put(basket.getId(), newCheckout);
+            save();
+            return newCheckout;
        }
     }
 
@@ -99,7 +93,8 @@ public class CheckoutFileDAO implements CheckoutDAO {
         synchronized (checkouts) {
             if(checkouts.containsKey(id)){
                 checkouts.remove(id);
-                return save();
+                save();
+                return true;
             } else {
                 return false;
             }            

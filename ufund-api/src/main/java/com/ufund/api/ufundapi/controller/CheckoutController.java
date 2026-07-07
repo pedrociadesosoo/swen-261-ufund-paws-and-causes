@@ -45,12 +45,12 @@ public class CheckoutController {
         }
     }
 
-    @PostMapping("")
+    @DeleteMapping("")
     public ResponseEntity<Checkout> completeCheckout(int checkoutId) 
     {
         LOG.info("Delete /checkout/ " + checkoutId);
         try {
-            Checkout confirmedCheckout = checkoutService.completeCancelCheckout(checkoutId);
+            Checkout confirmedCheckout = checkoutService.completeCheckout(checkoutId);
             if (confirmedCheckout != null) 
                 return new ResponseEntity<Checkout>(confirmedCheckout, HttpStatus.OK);
             else 
@@ -61,14 +61,14 @@ public class CheckoutController {
         }
     }
 
-    @PostMapping("")
+    @DeleteMapping("")
     public ResponseEntity<Checkout> cancelCheckout(int checkoutId) 
     {
         LOG.info("Delete /checkout/ " + checkoutId);
         try {
-            Checkout confirmedCheckout = checkoutService.completeCancelCheckout(checkoutId);
-            if (confirmedCheckout != null) 
-                return new ResponseEntity<Checkout>(confirmedCheckout, HttpStatus.OK);
+            Checkout canceledCheckout = checkoutService.cancelCheckout(checkoutId);
+            if (canceledCheckout != null) 
+                return new ResponseEntity<Checkout>(canceledCheckout, HttpStatus.OK);
             else 
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
         } catch (IOException e) {

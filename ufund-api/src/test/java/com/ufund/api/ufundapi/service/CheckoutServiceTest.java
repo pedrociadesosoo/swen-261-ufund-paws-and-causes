@@ -17,6 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.ufund.api.ufundapi.dao.CheckoutDAO;
+import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.Checkout;
 import com.ufund.api.ufundapi.model.FundingBasket;
@@ -25,12 +26,14 @@ import com.ufund.api.ufundapi.model.FundingBasket;
 @Tag("Service-tier")
 public class CheckoutServiceTest {
     private CheckoutServiceImpl testService;
-    private CheckoutDAO mockDao;
+    private CheckoutDAO mockCheckoutDao;
+    private NeedDAO mockNeedDAO;
 
     @BeforeEach
     public void setupCheckoutServiceTest() throws IOException{
-        mockDao = mock(CheckoutDAO.class);
-        testService = new CheckoutServiceImpl(mockDao);
+        mockCheckoutDao = mock(CheckoutDAO.class);
+        mockNeedDAO = mock(NeedDAO.class);
+        testService = new CheckoutServiceImpl(mockCheckoutDao, mockNeedDAO);
     }
 
     private FundingBasket sampleBasket(){
@@ -48,20 +51,20 @@ public class CheckoutServiceTest {
         return new Checkout(1, sampleBasket());
     }
 
-    /* 
+     
     @Test
     public void testTransitionExists() throws IOException{
         // setup test data
-        int testId = 1;
+        int testId = 0;
         Checkout testCheckout = sampleCheckout();
         FundingBasket testBasket = sampleBasket();
 
         // force to return valid checkout
-        when(mockDao.getCheckout(testId)).thenReturn(testCheckout);
+        when(mockCheckoutDao.getCheckout(testId)).thenReturn(testCheckout);
         
         // verify returns checkout
         Checkout actualCheckout = testService.transitionBasketToCheckout(testBasket);
-        assertEquals(sampleBasket(), actualCheckout);
+        assertEquals(testCheckout, actualCheckout);
     
     }
 
@@ -72,39 +75,66 @@ public class CheckoutServiceTest {
         FundingBasket testBasket = sampleBasket();
 
         // force to return null
-        when(mockDao.getCheckout(testId)).thenReturn(null);
+        when(mockCheckoutDao.getCheckout(testId)).thenReturn(null);
         
-        // verify returns checkout
+        // verify returns null
         Checkout actualCheckout = testService.transitionBasketToCheckout(testBasket);
-        assertEquals(sampleCheckout(), actualCheckout);
+        assertEquals(null, actualCheckout);
     
     }
 
     @Test
-    public void testCompleteCancelCheckout() throws IOException{
+    public void testCompleteCheckout() throws IOException{
         // setup test data
         int testId = 1;
         Checkout testCheckout = sampleCheckout();
 
         // force to return valid checkout
-        when(mockDao.getCheckout(testId)).thenReturn(testCheckout);
+        when(mockCheckoutDao.getCheckout(testId)).thenReturn(testCheckout);
         
         // verify returns checkout
-        Checkout deletedCheckout = testService.completeCancelCheckout(testId);
-        assertEquals(sampleCheckout(), deletedCheckout);
+        Checkout deletedCheckout = testService.completeCheckout(testId);
+        assertEquals(testCheckout, deletedCheckout);
     }
 
     @Test
-    public void testCompleteCancelCheckoutNull() throws IOException{
+    public void testCancelCompleteNull() throws IOException{
         // setup test data
         int testId = 10;
         
         // force to return valid checkout
-        when(mockDao.getCheckout(testId)).thenReturn(null);
+        when(mockCheckoutDao.getCheckout(testId)).thenReturn(null);
         
         // verify returns checkout
-        Checkout deletedCheckout = testService.completeCancelCheckout(testId);
+        Checkout deletedCheckout = testService.completeCheckout(testId);
         assertEquals(null, deletedCheckout);
     }
-        */
+
+    @Test
+    public void testCancelCheckout() throws IOException{
+        // setup test data
+        int testId = 1;
+        Checkout testCheckout = sampleCheckout();
+
+        // force to return valid checkout
+        when(mockCheckoutDao.getCheckout(testId)).thenReturn(testCheckout);
+        
+        // verify returns checkout
+        Checkout deletedCheckout = testService.cancelCheckout(testId);
+        assertEquals(testCheckout, deletedCheckout);
+    }
+
+    @Test
+    public void testCancelCheckoutNull() throws IOException{
+        // setup test data
+        int testId = 10;
+        
+        // force to return valid checkout
+        when(mockCheckoutDao.getCheckout(testId)).thenReturn(null);
+        
+        // verify returns checkout
+        Checkout deletedCheckout = testService.cancelCheckout(testId);
+        assertEquals(null, deletedCheckout);
+    }
+        
 }
