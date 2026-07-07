@@ -11,13 +11,10 @@ public class FundingBasket {
     @JsonProperty("id") private int id;
     @JsonProperty("needs") Map<Integer, Need> needs;
 
-    public FundingBasket(@JsonProperty("id") int id){
+    public FundingBasket(@JsonProperty("id") int id,
+                         @JsonProperty("needs") Map<Integer, Need> needs){
         this.id = id;
-        this.needs = new HashMap<>();
-    }
-
-    public void setMap(@JsonProperty("needs") Map<Integer, Need> needs){
-        this.needs = needs;
+        this.needs = needs != null ? needs : new HashMap<>();
     }
 
     public int getId(){

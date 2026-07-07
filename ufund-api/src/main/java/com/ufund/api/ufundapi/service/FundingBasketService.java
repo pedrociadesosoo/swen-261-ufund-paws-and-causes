@@ -1,11 +1,12 @@
-package com.ufund.api.ufundapi.dao;
+package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
 
 import com.ufund.api.ufundapi.model.FundingBasket;
 import com.ufund.api.ufundapi.model.Need;
 
-public interface FundingBasketDAO {
+
+public interface FundingBasketService {
 
     /**
      * returns {@linkplain FundingBasket fb}
