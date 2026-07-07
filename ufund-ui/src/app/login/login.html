@@ -1,0 +1,24 @@
+<h2>Login page!</h2>
+<div *ngIf="statusMsg">{{ statusMsg }}</div>
+<form (ngSubmit)="login()" >
+	<label for="username">username</label>
+      <input
+        id="username"
+        type="text"
+        name="username"
+	[(ngModel)]="username"
+        required
+        placeholder="Please enter username"
+      />
+	<label for="password">password</label>
+      <input
+        id="password"
+        type="password"
+        name="password"
+	[(ngModel)]="password"
+        required
+        placeholder="Please enter password"
+      />
+      <button type="submit">Log In</button>
+      <button type="button" (click)="createAccount()">Create Account</button>
+</form>
