@@ -5,6 +5,10 @@
     {{ errorMessage }}
   </div>
 
+  <div *ngIf="successMessage" class="success">
+    {{ successMessage }}
+  </div>
+
   <div *ngIf="needs.length === 0 && !errorMessage">
     <p>No needs in the cupboard yet.</p>
   </div>
@@ -30,7 +34,7 @@
         <td>
           <!-- Helper-specific controls -->
           <span *ngIf="isHelper()">
-            <button (click)="$event.stopPropagation()">Add to Basket</button>
+            <button (click)="$event.stopPropagation(); addToBasket(need)">Add to Basket</button>
           </span>
 
           <!-- Manager-specific controls -->
