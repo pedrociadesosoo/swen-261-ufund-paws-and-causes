@@ -11,7 +11,6 @@ import { FundingBasket } from '../fundingbasket';
   standalone: false,
   templateUrl: './fundingbasket.component.html',
   styleUrl: './fundingbasket.component.css',
-  imports: [RouterLink, RouterOutlet],
 })
 export class FundingbasketComponent {
   needs: Map<number, Need> = new Map<number, Need>();
