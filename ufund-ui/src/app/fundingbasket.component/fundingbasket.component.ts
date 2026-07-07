@@ -4,6 +4,10 @@ import { Need } from '../need.model';
 import { FundingbasketService } from '../fundingbasket.service';
 import { FundingBasket } from '../fundingbasket';
 
+/**
+ * Displays all funding baskets and the needs inside them, and lets the
+ * user remove needs from a basket.
+ */
 @Component({
   selector: 'app-fundingbasket.component',
   standalone: false,
@@ -11,6 +15,7 @@ import { FundingBasket } from '../fundingbasket';
   styleUrl: './fundingbasket.component.css',
 })
 export class FundingbasketComponent {
+  // exposed so the template can call Object.entries() on a basket's needs
   Object = Object;
   needs: Map<number, Need> = new Map();
   errorMessage: string = '';
@@ -28,6 +33,9 @@ export class FundingbasketComponent {
     this.getFundingBasketArray();
   }
 
+  /**
+   * Loads every basket from the API and re-renders
+   */
   getFundingBasketArray(): void {
     this.fbService.getFundingBasketArray().subscribe({
       next: (baskets) => {
@@ -41,6 +49,9 @@ export class FundingbasketComponent {
     })
   }
 
+  /**
+   * Refreshes a single basket in place without reloading the whole list
+   */
   getFundingBasket(id: number): void {
       this.fbService.getFundingBasketArray().subscribe({
         next: (baskets) => {
@@ -58,6 +69,9 @@ export class FundingbasketComponent {
     })
   }
 
+  /**
+   * Adds a need to a basket, then reloads the list on success
+   */
   add(idFB: number, idNeed: number): void {
     this.fbService.addNeed(idFB, idNeed).subscribe({
       next: (success) => {
@@ -73,6 +87,9 @@ export class FundingbasketComponent {
     });
   }
 
+  /**
+   * Removes a need from a basket, then refreshes that basket on success
+   */
   remove(idFB: number, idNeed: number): void {
     this.fbService.removeNeed(idFB, idNeed).subscribe({
       next: (success) => {

@@ -20,6 +20,10 @@ import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.model.FundingBasket;
 
+/**
+ * Handles REST requests for {@linkplain FundingBasket funding baskets}
+ * under the /fundingbasket resource.
+ */
 @RestController
 @RequestMapping("fundingbasket")
 public class FundingBasketController {
@@ -32,6 +36,12 @@ public class FundingBasketController {
         this.needService = needService;
     }
 
+    /**
+     * GET /fundingbasket/{id} - retrieves a single basket.
+     *
+     * @param id the basket id
+     * @return 200 with the basket, 404 if it doesn't exist, 500 on storage error
+     */
     @GetMapping("/{id}")
     public ResponseEntity<FundingBasket> getFundingBasket(@PathVariable int id){
         LOG.info("GET /fundingbasket/" + id);
@@ -48,6 +58,13 @@ public class FundingBasketController {
         }
     }
 
+    /**
+     * POST /fundingbasket - creates a basket. The id in the request body is
+     * ignored; the persistence tier assigns the real one.
+     *
+     * @param fb the basket to create, from the JSON request body
+     * @return 201 with the created basket (including assigned id), 500 on failure
+     */
     @PostMapping("")
     public ResponseEntity<FundingBasket> createFundingBasket(@RequestBody FundingBasket fb) {
         LOG.info("POST /fundingbasket");
@@ -64,6 +81,12 @@ public class FundingBasketController {
         }
     }
 
+    /**
+     * DELETE /fundingbasket/{id} - deletes a basket.
+     *
+     * @param id the basket id
+     * @return 200 true if deleted, 404 if no such basket, 500 on storage error
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteFundingBasket(@PathVariable int id) {
         LOG.info("DELETE /fundingbasket/" + id);
@@ -80,8 +103,11 @@ public class FundingBasketController {
         }
     }
 
-
-
+    /**
+     * GET /fundingbasket - retrieves every basket.
+     *
+     * @return 200 with an array of all baskets (empty array if none), 500 on storage error
+     */
     @GetMapping("")
     public ResponseEntity<FundingBasket[]> getFundingBasketArray(){
         LOG.info("GET /fundingbasket");
@@ -94,6 +120,15 @@ public class FundingBasketController {
         }
     }
 
+    /**
+     * POST /fundingbasket/{idFB}/{idNeed} - adds an existing need to a basket.
+     * The need is looked up in the cupboard by id, so clients only send ids.
+     *
+     * @param idFB the basket id
+     * @param idNeed the id of the need to add
+     * @return 200 true on success, 409 if the need is already in the basket,
+     *         404 if the basket or the need doesn't exist, 500 on storage error
+     */
     @PostMapping("/{idFB}/{idNeed}")
     public ResponseEntity<Boolean> addNeed(@PathVariable int idFB, @PathVariable int idNeed){
         LOG.info("POST /fundingbasket/" + idFB + "/" + idNeed);
@@ -117,6 +152,14 @@ public class FundingBasketController {
         }
     }
 
+    /**
+     * DELETE /fundingbasket/{idFB}/{idNeed} - removes a need from a basket.
+     *
+     * @param idFB the basket id
+     * @param idNeed the id of the need to remove
+     * @return 200 true on success, 404 if the basket doesn't exist or the
+     *         need isn't in it, 500 on storage error
+     */
     @DeleteMapping("/{idFB}/{idNeed}")
     public ResponseEntity<Boolean> removeNeed(@PathVariable int idFB, @PathVariable int idNeed){
         LOG.info("DELETE /fundingbasket/" + idFB + "/" + idNeed);

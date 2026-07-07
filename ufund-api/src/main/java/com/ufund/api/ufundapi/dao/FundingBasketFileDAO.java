@@ -15,6 +15,12 @@ import com.ufund.api.ufundapi.model.FundingBasket;
 import com.ufund.api.ufundapi.model.Need;
 import org.springframework.beans.factory.annotation.Value;
 
+/**
+ * JSON-file persistence for {@linkplain FundingBasket funding baskets}.
+ * Baskets are held in memory and written back to the file (given by the
+ * {@code fundingbaskets.file} property) on every mutation, so the file is
+ * always in sync with what the API has confirmed to clients.
+ */
 @Component
 public class FundingBasketFileDAO implements FundingBasketDAO {
 
@@ -31,9 +37,10 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
     }
 
     /**
-     * Generates the next id for a new {@linkplain FundingBasket fb}
+     * Generates the next id for a new {@linkplain FundingBasket fb} by
+     * scanning up from 1, so ids freed by deletion get reused.
      *
-     * @return The next id
+     * @return The next available id
      */
     private synchronized int nextId() {
         int id = 1;
@@ -41,16 +48,25 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
         return id;
     }
 
+    /**
+     * Serializes the in-memory baskets to the JSON file.
+     *
+     * @return true if written successfully
+     * @throws IOException if the file cannot be written
+     */
     private boolean save() throws IOException {
         FundingBasket[] fbArray = getFundingBasketArray();
-
-        // Serializes the Java Objects to JSON objects into the file
-        // writeValue will thrown an IOException if there is an issue
-        // with the file or reading from the file
         objectMapper.writeValue(new File(filename), fbArray);
         return true;
     }
 
+    /**
+     * Loads all baskets from the JSON file into memory. Runs once at
+     * startup; the file must exist and hold a JSON array (may be empty).
+     *
+     * @return true if loaded successfully
+     * @throws IOException if the file cannot be read or parsed
+     */
     private boolean load() throws IOException {
         fundingbaskets = new TreeMap<>();
 
@@ -65,7 +81,6 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
     /**
      * {@inheritDoc}
      */
-
     @Override
     public FundingBasket[] getFundingBasketArray(){
         synchronized (fundingbaskets) {
@@ -82,7 +97,6 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
     /**
      * {@inheritDoc}
      */
-
     @Override
     public FundingBasket getFundingBasket(int id){
         synchronized (fundingbaskets) {
@@ -97,7 +111,6 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
     /**
      * {@inheritDoc}
      */
-
     @Override
     public FundingBasket createFundingBasket(FundingBasket fb) throws IOException {
         synchronized (fundingbaskets) {
@@ -130,6 +143,9 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean addNeed(FundingBasket fb, Need need) throws IOException {
         synchronized (fundingbaskets){
@@ -143,6 +159,9 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean removeNeed(FundingBasket fb, Need need) throws IOException {
         synchronized (fundingbaskets){
