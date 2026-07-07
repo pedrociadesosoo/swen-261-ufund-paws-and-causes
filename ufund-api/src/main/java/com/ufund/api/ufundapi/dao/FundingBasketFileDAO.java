@@ -140,10 +140,10 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
         synchronized (fundingbaskets){
             Map<Integer, Need> needs = fb.getNeeds();
             if (needs.containsKey(need.getId())){
-                save();
                 return false;
             }
             fb.addNeed(need);
+            save();
             return true;
         }
     }

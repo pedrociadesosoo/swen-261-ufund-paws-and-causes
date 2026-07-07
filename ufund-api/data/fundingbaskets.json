@@ -1,1 +1,1 @@
-[{"id":1,"needs":{"1":{"id":1,"name":"Canned Soup","cost":5.0,"quantity":50,"type":"Food"}}},{"id":5,"needs":{}},{"id":8,"needs":{}},{"id":9,"needs":{}},{"id":10,"needs":{}},{"id":11,"needs":{}},{"id":12,"needs":{}}]
+[{"id":1,"needs":{"1":{"id":1,"name":"Canned Soup","cost":5.0,"quantity":50,"type":"Food"},"3":{"id":3,"name":"Blankets","cost":0.0,"quantity":25,"type":"Clothing"},"4":{"id":4,"name":"Carrot","cost":5.0,"quantity":7,"type":"food"},"2":{"id":2,"name":"Rice","cost":0.0,"quantity":100,"type":"food"}}}]

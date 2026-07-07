@@ -5,6 +5,7 @@ import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FundingBasket } from '../../frontEnd/models/funding.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-fundingbasket.component',
@@ -20,7 +21,12 @@ export class FundingbasketComponent {
   id: number = 0;
   baskets: FundingBasket[] = [];
 
-  constructor(private fbService: FundingbasketService, private router: Router) { }
+  constructor(
+    private fbService: FundingbasketService, 
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  
+  ) { }
 
   ngOnInit(): void {
     this.getFundingBasketArray();
@@ -30,9 +36,12 @@ export class FundingbasketComponent {
     this.fbService.getFundingBasketArray().subscribe({
       next: (baskets) => {
         this.baskets = baskets;
+        this.cdr.detectChanges();
+
       },
       error: () => {
         this.errorMessage = 'Loading failure';
+        this.cdr.detectChanges();
       }
     })
   }
