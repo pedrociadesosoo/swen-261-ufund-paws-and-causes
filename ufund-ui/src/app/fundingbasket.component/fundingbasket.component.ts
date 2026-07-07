@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { Need } from '../need.model';
 import { FundingbasketService } from '../fundingbasket.service';
-import { NeedService } from '../need';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { FundingBasket } from '../fundingbasket';
 
-
+/**
+ * Displays all funding baskets and the needs inside them, and lets the
+ * user remove needs from a basket.
+ */
 @Component({
   selector: 'app-fundingbasket.component',
   standalone: false,
@@ -13,28 +15,53 @@ import { FundingBasket } from '../fundingbasket';
   styleUrl: './fundingbasket.component.css',
 })
 export class FundingbasketComponent {
-  needs: Map<number, Need> = new Map<number, Need>();
+  // exposed so the template can call Object.entries() on a basket's needs
+  Object = Object;
+  needs: Map<number, Need> = new Map();
   errorMessage: string = '';
   fundingbasket: FundingBasket | null = null;
   id: number = 0;
+  baskets: FundingBasket[] = [];
 
-  constructor(private fbService: FundingbasketService, private router: Router) { }
+  constructor(
+    private fbService: FundingbasketService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-    this.createNewBasket();
+    this.getFundingBasketArray();
   }
 
-  createNewBasket(): void {
-    this.id = this.id;
-    this.id++;
-    this.getFundingBasket(this.id); 
+  /**
+   * Loads every basket from the API and re-renders
+   */
+  getFundingBasketArray(): void {
+    this.fbService.getFundingBasketArray().subscribe({
+      next: (baskets) => {
+        this.baskets = baskets;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Loading failure';
+        this.cdr.detectChanges();
+      }
+    })
   }
 
+  /**
+   * Refreshes a single basket in place without reloading the whole list
+   */
   getFundingBasket(id: number): void {
-    this.fbService.getFundingBasket(id).subscribe({
-      next: (basket) => {
-        this.fundingbasket = basket;
-        this.needs = new Map<number, Need>(Object.entries(basket.needs ?? {}).map(([key,value]) => [Number (key), value as Need]));
+      this.fbService.getFundingBasketArray().subscribe({
+        next: (baskets) => {
+          const updated = baskets.find(b => b.id === id);
+          if (updated) {
+            const index = this.baskets.findIndex(b => b.id === id);
+            if (index !== -1) {
+              this.baskets[index] = updated;
+            }
+          }
       },
       error: () => {
         this.errorMessage = 'Loading failure';
@@ -42,26 +69,27 @@ export class FundingbasketComponent {
     })
   }
 
+  /**
+   * Adds a need to a basket, then reloads the list on success
+   */
   add(idFB: number, idNeed: number): void {
-    if (this.needs.has(idNeed)){
-      this.errorMessage = 'Need already in basket';
-      return;
-    }
-
     this.fbService.addNeed(idFB, idNeed).subscribe({
       next: (success) => {
         if (success) {
-        this.getFundingBasket(idFB);
-      } else {
-        this.errorMessage = 'Unable to add need to basket';
-      }
-     },
+          this.getFundingBasketArray();
+        } else {
+          this.errorMessage = 'Unable to add need to basket';
+        }
+      },
       error: () => {
         this.errorMessage = 'Failure adding need to basket';
       }
     });
   }
 
+  /**
+   * Removes a need from a basket, then refreshes that basket on success
+   */
   remove(idFB: number, idNeed: number): void {
     this.fbService.removeNeed(idFB, idNeed).subscribe({
       next: (success) => {

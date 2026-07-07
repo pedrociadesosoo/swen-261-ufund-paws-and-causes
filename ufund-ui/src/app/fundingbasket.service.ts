@@ -1,58 +1,59 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/internal/Observable';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { FundingBasket } from './fundingbasket';
-import { Need } from './need.model';
-import { of } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
-
+/**
+ * Makes the funding-basket API calls to the backend.
+ * Mirrors the endpoints on FundingBasketController.
+ */
+@Injectable({ providedIn: 'root' })
 export class FundingbasketService {
+    private readonly API = 'http://localhost:8080/fundingbasket';
 
-  constructor(
-    private http: HttpClient,) { }
-  /** Log a HeroService message with the MessageService */
+    constructor(private http: HttpClient) { }
 
-  getFundingBasket(id: number): Observable<FundingBasket> {
-    const url = `${this.fbUrl}/${id}`;
-    return this.http.get<FundingBasket>(url).pipe(
-      tap(() => console.log(`fetched funding basket id=${id}`)),
-      catchError(this.handleError<FundingBasket>(`Get Funding Basket id=${id}`))
-    );
-  }
+    /**
+     * Fetches a single basket by id
+     */
+    getFundingBasket(id: number): Observable<FundingBasket> {
+        return this.http.get<FundingBasket>(`${this.API}/${id}`);
+    }
 
-  addNeed(idFB: number, idNeed: number): Observable<FundingBasket> {
-    const url = `${this.fbUrl}/${idFB}/${idNeed}`;
-    return this.http.post<FundingBasket>(url, {}).pipe(
-      tap(() => console.log(`added need ${idNeed} to funding basket ${idFB}`)),
-      catchError(this.handleError<FundingBasket>('add need'))
-    );
-  }
+    /**
+     * Fetches every basket
+     */
+    getFundingBasketArray(): Observable<FundingBasket[]> {
+        return this.http.get<FundingBasket[]>(`${this.API}`);
+    }
 
-  removeNeed(idFB: number, idNeed: number): Observable<FundingBasket> {
-    const url = `${this.fbUrl}/${idFB}/${idNeed}`;
-    return this.http.delete<FundingBasket>(url).pipe(
-      tap(() => console.log(`deleted need ${idNeed} from funding basket ${idFB}`)),
-      catchError(this.handleError<FundingBasket>('delete need'))
-    );
-  }
+    /**
+     * Creates a basket; the backend assigns the real id
+     */
+    createFundingBasket(fb: FundingBasket): Observable<FundingBasket> {
+        return this.http.post<FundingBasket>(this.API, fb);
+    }
 
-  /**
-  * Handle Http operation that failed.
-  * Let the app continue.
-  *
-  * @param operation - name of the operation that failed
-  * @param result - optional value to return as the observable result
-  */
-  private handleError<T>(operation = 'operation', result?: T) {
-    return (error: unknown): Observable<T> => {
-      console.error(`${operation} failed`, error);
-      return of(result as T);
-    };
-  }
+    /**
+     * Deletes a basket by id
+     */
+    deleteFundingBasket(id: number): Observable<boolean> {
+        return this.http.delete<boolean>(`${this.API}/${id}`);
+    }
 
-  private fbUrl = 'http://localhost:8080/fundingbasket';
+    /**
+     * Adds an existing cupboard need to a basket, both referenced by id.
+     * 409 from the backend means the need is already in the basket.
+     */
+    addNeed(idFB: number, idNeed: number): Observable<boolean> {
+        return this.http.post<boolean>(`${this.API}/${idFB}/${idNeed}`, null);
+    }
+
+    /**
+     * Removes a need from a basket, both referenced by id
+     */
+    removeNeed(idFB: number, idNeed: number): Observable<boolean> {
+        return this.http.delete<boolean>(`${this.API}/${idFB}/${idNeed}`);
+    }
+
 }

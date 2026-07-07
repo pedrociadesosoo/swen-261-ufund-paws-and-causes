@@ -1,4 +1,4 @@
-package com.ufund.api.ufundapi.dao;
+package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
 
@@ -6,9 +6,10 @@ import com.ufund.api.ufundapi.model.FundingBasket;
 import com.ufund.api.ufundapi.model.Need;
 
 /**
- * Defines the persistence operations for {@linkplain FundingBasket funding baskets}.
+ * Business-tier operations for {@linkplain FundingBasket funding baskets}.
+ * Sits between the controller and the persistence tier.
  */
-public interface FundingBasketDAO {
+public interface FundingBasketService {
 
     /**
      * Retrieves the {@linkplain FundingBasket funding basket} with the given id.
@@ -28,8 +29,7 @@ public interface FundingBasketDAO {
     FundingBasket[] getFundingBasketArray() throws IOException;
 
     /**
-     * Creates a new {@linkplain FundingBasket fb}. The id on the incoming
-     * basket is ignored and replaced with the next available id.
+     * Creates a new {@linkplain FundingBasket fb}.
      *
      * @param fb the FundingBasket to be created
      * @return the created FundingBasket with its assigned id, null on failure
@@ -47,7 +47,7 @@ public interface FundingBasketDAO {
     boolean deleteFundingBasket(int id) throws IOException;
 
     /**
-     * Adds a {@linkplain Need need} to a basket and persists the change.
+     * Adds a {@linkplain Need need} to a basket.
      *
      * @param fb the basket to add to
      * @param need the need to add
@@ -57,7 +57,7 @@ public interface FundingBasketDAO {
     boolean addNeed(FundingBasket fb, Need need) throws IOException;
 
     /**
-     * Removes a {@linkplain Need need} from a basket and persists the change.
+     * Removes a {@linkplain Need need} from a basket.
      *
      * @param fb the basket to remove from
      * @param need the need to remove

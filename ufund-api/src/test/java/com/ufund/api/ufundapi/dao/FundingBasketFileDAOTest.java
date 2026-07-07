@@ -2,6 +2,7 @@ package com.ufund.api.ufundapi.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -43,113 +44,122 @@ public class FundingBasketFileDAOTest {
         for (Need need : needs){
             needMap.put(need.getId(), need);
         }
-        FundingBasket fb = new FundingBasket(1);
-        fb.setMap(needMap);
-        return fb;
+        return new FundingBasket(1, needMap);
     }
 
     @BeforeEach
     public void setupFBDAO() throws IOException {
         mockMapper = mock(ObjectMapper.class);
         when(mockMapper.readValue(any(File.class), eq(FundingBasket[].class)))
-            .thenReturn(new FundingBasket[0]);
+            .thenReturn(new FundingBasket[] { sampleFB() });
         fbdao = new FundingBasketFileDAO("data/fundingbaskets.json", mockMapper);
     }
 
     @Test
-    void testCreateFBReturnsFB (){
-        FundingBasket fb = sampleFB();
+    void testGetFBReturnsFB() {
+        FundingBasket fb = fbdao.getFundingBasket(1);
 
-        FundingBasket created = fbdao.createFundingBasket(fb.getId());
+        assertEquals(1, fb.getId());
+        assertEquals(3, fb.getNeeds().size());
+    }
 
-        assertEquals(fb.getId(), created.getId());
-        assertEquals(fb.getNeeds().size(), created.getNeeds().size());
+    @Test
+    void testGetFBMissing() {
+        FundingBasket fb = fbdao.getFundingBasket(99);
 
+        assertNull(fb);
+    }
+
+    @Test
+    void testGetFBArrayReturnsAll() {
+        FundingBasket[] baskets = fbdao.getFundingBasketArray();
+
+        assertEquals(1, baskets.length);
+        assertEquals(1, baskets[0].getId());
+    }
+
+    @Test
+    void testCreateFBAssignsNextId() throws IOException {
+        FundingBasket created = fbdao.createFundingBasket(new FundingBasket(0, new HashMap<>()));
+
+        assertEquals(2, created.getId());
+        assertEquals(2, fbdao.getFundingBasketArray().length);
     }
 
     @Test
     void testCreateFBFail() throws IOException {
-        FundingBasket fb = sampleFB();
         doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
 
-        FundingBasket created = fbdao.createFundingBasket(fb.getId());
+        FundingBasket created = fbdao.createFundingBasket(new FundingBasket(0, new HashMap<>()));
 
-        assertEquals(null, created);
+        assertNull(created);
     }
 
     @Test
-    void testDeleteFBReturnsFB() throws IOException{
-        FundingBasket fb = sampleFB();
-        FundingBasket deleted = fbdao.deleteFundingBasket(fb.getId());
+    void testDeleteFBReturnsTrue() throws IOException {
+        boolean deleted = fbdao.deleteFundingBasket(1);
 
-        assertEquals(fb, deleted);
-        
+        assertEquals(true, deleted);
+        assertNull(fbdao.getFundingBasket(1));
     }
 
     @Test
-    void testDeleteFBFail() throws IOException{
-        FundingBasket fb = sampleFB();
-        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
-        
-        FundingBasket deleted = fbdao.deleteFundingBasket(fb.getId());
-        assertEquals(null, deleted);
+    void testDeleteFBMissingReturnsFalse() throws IOException {
+        boolean deleted = fbdao.deleteFundingBasket(99);
 
+        assertEquals(false, deleted);
     }
 
     @Test
-    void testGetNeedsReturnsAll() throws IOException{
-        FundingBasket fb = sampleFB();
-
-        Map<Integer,Need> needs = fbdao.getFundingBasketNeeds(fb.getId());
-
-        assertEquals(fb.getNeeds(), needs);
-
-    }
-
-    @Test
-    void testGetNeedsEmpty(){
-
-
-    }
-
-    @Test
-    void testGetNeedsFail() throws IOException{
-        FundingBasket fb = sampleFB();
-        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
-
-        Map<Integer,Need> needs = fbdao.getFundingBasketNeeds(fb.getId());
-        assertNull(needs);
-
-    }
-
-    @Test
-    void testAddNeedFB(){
-        FundingBasket fb = sampleFB();
+    void testAddNeedFB() throws IOException {
+        FundingBasket fb = fbdao.getFundingBasket(1);
         Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
 
-        Need need = fbdao.addNeed(fb, newNeed);
-        assertEquals(newNeed.getName(), need.getName());
-        assertEquals(newNeed.getId(), need.getId());
+        boolean added = fbdao.addNeed(fb, newNeed);
+
+        assertEquals(true, added);
+        assertEquals(4, fb.getNeeds().size());
     }
 
     @Test
-    void testAddNeedFBFail() throws IOException{
-        FundingBasket fb = sampleFB();
+    void testAddNeedFBDuplicate() throws IOException {
+        FundingBasket fb = fbdao.getFundingBasket(1);
+        Need dupNeed = new Need(3, "Blankets", 15.00, 25, "clothing");
+
+        boolean added = fbdao.addNeed(fb, dupNeed);
+
+        assertEquals(false, added);
+        assertEquals(3, fb.getNeeds().size());
+    }
+
+    @Test
+    void testAddNeedFBSaveFail() throws IOException {
+        FundingBasket fb = fbdao.getFundingBasket(1);
         Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
         doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
 
-        Need need = fbdao.addNeed(fb, newNeed);
-        assertEquals(null, need);
-
+        assertThrows(IOException.class, () -> fbdao.addNeed(fb, newNeed));
     }
 
     @Test
-    void testRemoveNeedFB(){
+    void testRemoveNeedFB() throws IOException {
+        FundingBasket fb = fbdao.getFundingBasket(1);
+        Need need = new Need(3, "Blankets", 15.00, 25, "clothing");
 
+        boolean removed = fbdao.removeNeed(fb, need);
+
+        assertEquals(true, removed);
+        assertEquals(2, fb.getNeeds().size());
     }
 
     @Test
-    void testRemoveNeedFBFail(){
+    void testRemoveNeedFBMissing() throws IOException {
+        FundingBasket fb = fbdao.getFundingBasket(1);
+        Need need = new Need(4, "Shoes", 12.00, 20, "clothing");
 
+        boolean removed = fbdao.removeNeed(fb, need);
+
+        assertEquals(false, removed);
+        assertEquals(3, fb.getNeeds().size());
     }
 }
