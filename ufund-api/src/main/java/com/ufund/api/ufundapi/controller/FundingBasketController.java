@@ -54,7 +54,7 @@ public class FundingBasketController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteFundingBasket(int id){
+    public ResponseEntity<FundingBasket> deleteFundingBasket(int id){
         LOG.info("DELETE /fundngbasket/" + id);
         try{
             FundingBasket[] fbArray = fbDao.getFundingBasketArray();

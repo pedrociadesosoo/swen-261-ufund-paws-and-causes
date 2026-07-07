@@ -128,13 +128,14 @@ public class FundingBasketFileDAO implements FundingBasketDAO {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteFundingBasket(int id) throws IOException {
+    public FundingBasket deleteFundingBasket(int id) throws IOException {
         synchronized (fundingbaskets) {
             if (fundingbaskets.containsKey(id)) {
+                FundingBasket deleted = fundingbaskets.get(id);
                 fundingbaskets.remove(id);
-                return true;
+                return deleted;
             } else {
-                return false;
+                return null;
             }
         }
     }

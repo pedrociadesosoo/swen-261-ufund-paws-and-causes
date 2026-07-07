@@ -83,9 +83,9 @@ public class FundingBasketControllerTest {
     public void testDeleteFB() throws IOException{
         FundingBasket fb = sampleFB();
         when(fbDao.getFundingBasketArray()).thenReturn(new FundingBasket[] {fb} );
-        when(fbDao.deleteFundingBasket(1)).thenReturn(true);
+        when(fbDao.deleteFundingBasket(1)).thenReturn(fb);
 
-        ResponseEntity<Boolean> response = fbCont.deleteFundingBasket(1);
+        ResponseEntity<FundingBasket> response = fbCont.deleteFundingBasket(1);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(true, response.getBody());
     

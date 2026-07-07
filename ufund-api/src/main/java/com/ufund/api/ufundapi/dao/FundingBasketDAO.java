@@ -32,7 +32,7 @@ public interface FundingBasketDAO {
      * @return true if successful, false if failure
      * @throws IOException if an issue with storage access occurs
      */
-    boolean deleteFundingBasket(int id) throws IOException;
+    FundingBasket deleteFundingBasket(int id) throws IOException;
 
     Map<Integer, Need> getFundingBasketNeeds(int id) throws IOException;
 
