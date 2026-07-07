@@ -10,7 +10,7 @@
       <h3>Basket {{ basket.id }}</h3>
 
       <ul>
-        @for (entry of Object.entries(basket.needs ?? {}); track entry[0]) {
+        @for (entry of Object.entries(basket.needs || {}); track entry[0]) {
           <li>
             <a [routerLink]="['/cupboard', entry[1].id]">
               {{ entry[1].name }}
