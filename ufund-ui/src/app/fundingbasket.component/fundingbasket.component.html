@@ -1,0 +1,27 @@
+<h2>My FundingBasket </h2>
+
+<div *ngIf="errorMessage" class="error">
+  {{ errorMessage }}
+</div>
+
+<ol class="FundingBasket">
+  @for (basket of baskets; track basket.id) {
+    <li>
+      <h3>Basket {{ basket.id }}</h3>
+
+      <ul>
+        @for (entry of Object.entries(basket.needs ?? {}); track entry[0]) {
+          <li>
+            <a [routerLink]="['/cupboard', entry[1].id]">
+              {{ entry[1].name }}
+            </a>
+
+            <button type="button" (click)="remove(basket.id, entry[1].id)">
+              Remove from Basket
+            </button>
+          </li>
+        }
+      </ul>
+    </li>
+  }
+</ol>

@@ -1,0 +1,54 @@
+<div class="cupboard-container">
+  <h2>Needs Cupboard</h2>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="needs.length === 0 && !errorMessage">
+    <p>No needs in the cupboard yet.</p>
+  </div>
+
+  <table *ngIf="needs.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Cost</th>
+        <th>Quantity</th>
+        <th>Type</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let need of needs" (click)="viewNeed(need.id)" style="cursor: pointer;">
+        <td>{{ need.id }}</td>
+        <td>{{ need.name }}</td>
+        <td>{{ need.cost | currency }}</td>
+        <td>{{ need.quantity }}</td>
+        <td>{{ need.type }}</td>
+        <td>
+          <!-- Helper-specific controls -->
+          <span *ngIf="isHelper()">
+            <button (click)="$event.stopPropagation(); addToBasket(need)">Add to Basket</button>
+          </span>
+
+          <!-- Manager-specific controls -->
+          <span *ngIf="isManager()">
+            <button (click)="$event.stopPropagation()">Edit</button>
+            <button (click)="$event.stopPropagation()">Delete</button>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Manager only: Add Need button -->
+  <a *ngIf="isManager()" routerLink="/add-need">
+    <button>Add Need</button>
+  </a>
+</div>
