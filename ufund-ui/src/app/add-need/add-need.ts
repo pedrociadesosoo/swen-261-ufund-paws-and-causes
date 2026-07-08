@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
-
+import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-add-need',
   standalone: false,
   templateUrl: './add-need.html',
   styleUrl: './add-need.css',
 })
-export class AddNeed {
+export class AddNeed implements OnInit {
   need: Need = {
     id: 0,
     name: '',
@@ -19,8 +19,37 @@ export class AddNeed {
   };
   errorMessage: string = '';
   successMessage: string = '';
+  // True once a save succeeds, so canDeactivate() lets the user leave without
+  // a warning even though the form is still technically "dirty".
+  private submitted: boolean = false;
 
-  constructor(private needService: NeedService, private router: Router) {}
+  // Reference to the template's #needForm, used by canDeactivate() to check
+  // whether the user has typed anything since the page loaded.
+  @ViewChild('needForm') needForm?: NgForm;
+  /** True when editing an existing need (route has an :id param) rather than creating a new one */
+  isEditMode: boolean = false;
+
+  constructor(
+    private needService: NeedService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  /**
+   * If the route was loaded with an :id param, this is the edit page for an
+   * existing need, so load its current values into the form.
+   */
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (idParam !== null) {
+      this.isEditMode = true;
+      const id = Number(idParam);
+      this.needService.getNeedById(id).subscribe({
+        next: (need) => this.need = need,
+        error: () => this.errorMessage = 'Failed to load need details'
+      });
+    }
+  }
 
   /**
    * Validates the need fields before submitting
@@ -47,15 +76,29 @@ export class AddNeed {
   }
 
   /**
-   * Submits the form to create a new need
+   * Submits the form, either creating a new need or updating the existing
+   * one being edited, depending on isEditMode.
    */
   onSubmit(): void {
     this.errorMessage = '';
     if (!this.validate()) return;
 
+    if (this.isEditMode) {
+      this.needService.updateNeed(this.need.id, this.need).subscribe({
+        next: (updated) => {
+          this.successMessage = `Need "${updated.name}" updated successfully!`;
+	  this.submitted = true; // saved successfully, so the deactivate guard won't warn on this navigate
+          this.router.navigate(['/cupboard']);
+        },
+        error: () => this.errorMessage = 'Failed to update need. Please try again.'
+      });
+      return;
+    }
+
     this.needService.createNeed(this.need).subscribe({
       next: (created) => {
         this.successMessage = `Need "${created.name}" added successfully!`;
+	this.submitted = true; // saved successfully, so the deactivate guard won't warn on this navigate
         this.router.navigate(['/cupboard']);
       },
       error: (err) => {
@@ -73,4 +116,13 @@ export class AddNeed {
   goToCupboard(): void {
     this.router.navigate(['/cupboard']);
   }
+  /**
+   * Called by unsavedChangesGuard before leaving this route. Safe to leave
+   * silently if nothing was changed, or if the change was already saved;
+   * otherwise the guard will prompt the user to confirm discarding it.
+   */
+  canDeactivate():boolean {
+	  return this.submitted || !this.needForm?.dirty;
+  }
+
 }

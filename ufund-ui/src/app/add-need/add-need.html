@@ -1,5 +1,5 @@
 <div class="add-need-container">
-  <h2>Add Need to Cupboard</h2>
+  <h2>{{ isEditMode ? 'Edit Need' : 'Add Need to Cupboard' }}</h2>
 
   <div *ngIf="errorMessage" class="error">
     {{ errorMessage }}
@@ -61,7 +61,7 @@
     </div>
 
     <div class="button-group">
-      <button type="submit">Add Need</button>
+      <button type="submit">{{ isEditMode ? 'Save Changes' : 'Add Need' }}</button>
       <button type="button" (click)="goToCupboard()">Cancel</button>
     </div>
   </form>

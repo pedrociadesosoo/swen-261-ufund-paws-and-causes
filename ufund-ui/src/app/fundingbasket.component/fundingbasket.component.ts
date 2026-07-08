@@ -88,6 +88,19 @@ export class FundingbasketComponent {
   }
 
   /**
+   * Navigates to the checkout page for a basket, refusing if it's empty
+   * (per the sprint acceptance criteria: an empty basket can't be checked out)
+   */
+  goToCheckout(basket: FundingBasket): void {
+    const count = Object.keys(basket.needs ?? {}).length;
+    if (count === 0) {
+      this.errorMessage = 'Add at least one need to your basket before checking out.';
+      return;
+    }
+    this.router.navigate(['/checkout', basket.id]);
+  }
+
+  /**
    * Removes a need from a basket, then refreshes that basket on success
    */
   remove(idFB: number, idNeed: number): void {

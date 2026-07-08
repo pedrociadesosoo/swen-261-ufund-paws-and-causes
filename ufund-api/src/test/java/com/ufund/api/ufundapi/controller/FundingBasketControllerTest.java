@@ -87,9 +87,10 @@ public class FundingBasketControllerTest {
         FundingBasket fb = sampleFB();
         when(fbService.createFundingBasket(fb)).thenReturn(fb);
 
-        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket(fb);
+        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket("helper1", fb);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(fb, response.getBody());
+        assertEquals("helper1", fb.getOwnerUsername());
     }
 
     @Test
@@ -97,18 +98,41 @@ public class FundingBasketControllerTest {
         FundingBasket fb = sampleFB();
         when(fbService.createFundingBasket(fb)).thenReturn(null);
 
-        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket(fb);
+        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket("helper1", fb);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    /**
+     * Requests with no X-Username header can't create a basket for anyone.
+     */
+    @Test
+    public void testCreateFBForbiddenWithNoUsername() throws IOException {
+        FundingBasket fb = sampleFB();
+
+        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket(null, fb);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(fbService, never()).createFundingBasket(any());
     }
 
     @Test
     public void testGetFBArray() throws IOException {
         FundingBasket[] baskets = new FundingBasket[] { sampleFB(), new FundingBasket(2, new HashMap<>()) };
-        when(fbService.getFundingBasketArray()).thenReturn(baskets);
+        when(fbService.getFundingBasketsByOwner("helper1")).thenReturn(baskets);
 
-        ResponseEntity<FundingBasket[]> response = fbCont.getFundingBasketArray();
+        ResponseEntity<FundingBasket[]> response = fbCont.getFundingBasketArray("helper1");
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(baskets, response.getBody());
+    }
+
+    /**
+     * Requests with no X-Username header can't list anyone's baskets, which
+     * is the whole point of the per-owner fix: no header means no baskets.
+     */
+    @Test
+    public void testGetFBArrayForbiddenWithNoUsername() throws IOException {
+        ResponseEntity<FundingBasket[]> response = fbCont.getFundingBasketArray(null);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(fbService, never()).getFundingBasketsByOwner(any());
     }
 
     @Test

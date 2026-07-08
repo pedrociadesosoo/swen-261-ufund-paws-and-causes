@@ -1,1 +1,1 @@
-[{"id":1,"needs":{"1":{"id":1,"name":"Winter Coats","cost":50.0,"quantity":10,"type":"clothing"},"2":{"id":2,"name":"Canned Corn","cost":5.0,"quantity":100,"type":"food"},"8":{"id":8,"name":"Winter Gloves","cost":10.0,"quantity":10,"type":"clothing"}}}]
+[{"id":2,"needs":{},"ownerUsername":"pedrociad"}]

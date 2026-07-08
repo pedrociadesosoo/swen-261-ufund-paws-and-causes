@@ -8,8 +8,12 @@
         name="username"
 	[(ngModel)]="username"
         required
+        maxlength="20"
         placeholder="Please enter username"
       />
+      <small class="username-requirements">
+        1-20 characters. Allowed: A-Z, a-z, 0-9, and _ (underscore).
+      </small>
 	<label for="password">password</label>
       <input
         id="password"

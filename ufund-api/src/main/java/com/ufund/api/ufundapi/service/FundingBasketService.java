@@ -29,6 +29,17 @@ public interface FundingBasketService {
     FundingBasket[] getFundingBasketArray() throws IOException;
 
     /**
+     * Retrieves only the {@linkplain FundingBasket funding baskets} owned by
+     * the given helper, so one helper's basket contents aren't visible to
+     * (or shared with) every other helper.
+     *
+     * @param ownerUsername the username of the owning helper
+     * @return an array of that helper's baskets, empty if they have none
+     * @throws IOException if an issue with storage occurs
+     */
+    FundingBasket[] getFundingBasketsByOwner(String ownerUsername) throws IOException;
+
+    /**
      * Creates a new {@linkplain FundingBasket fb}.
      *
      * @param fb the FundingBasket to be created

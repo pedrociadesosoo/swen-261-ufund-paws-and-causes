@@ -1,0 +1,26 @@
+.checkout-container {
+  padding: 1rem;
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.error {
+  color: #b00020;
+}
+
+.success {
+  color: #1a7d1a;
+}

@@ -1,0 +1,63 @@
+<div class="checkout-container">
+  <h2>Checkout</h2>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="basket && needCount() > 0">
+    <h3>Needs you're funding</h3>
+    <ul>
+      <li *ngFor="let entry of basket.needs | keyvalue">
+        {{ entry.value.name }} &mdash; {{ entry.value.cost | currency }}
+      </li>
+    </ul>
+
+    <form (ngSubmit)="completeCheckout()" #checkoutForm="ngForm">
+      <div class="form-group">
+        <label for="nameOnCard">Name on Card</label>
+        <input
+          id="nameOnCard"
+          type="text"
+          [(ngModel)]="nameOnCard"
+          name="nameOnCard"
+          required
+          placeholder="Enter the name on your card"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="cardNumber">Card Number</label>
+        <input
+          id="cardNumber"
+          type="text"
+          [(ngModel)]="cardNumber"
+          name="cardNumber"
+          required
+          placeholder="Enter your card number"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="expiration">Expiration Date</label>
+        <input
+          id="expiration"
+          type="text"
+          [(ngModel)]="expiration"
+          name="expiration"
+          required
+          placeholder="MM/YY"
+        />
+      </div>
+
+      <div class="button-group">
+        <button type="submit">Confirm Payment</button>
+        <button type="button" (click)="cancelCheckout()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>

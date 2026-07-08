@@ -15,6 +15,11 @@ public class FundingBasket {
     private static final Logger LOG = Logger.getLogger(FundingBasket.class.getName());
     @JsonProperty("id") private int id;
     @JsonProperty("needs") Map<Integer, Need> needs;
+    // The username of the helper who owns this basket. Not part of the
+    // constructor (kept optional/settable) so existing callers and stored
+    // JSON without this field still deserialize cleanly; null means
+    // unowned/legacy data.
+    @JsonProperty("ownerUsername") private String ownerUsername;
 
     /**
      * Creates a funding basket. Used both by controllers and by Jackson when
@@ -36,6 +41,24 @@ public class FundingBasket {
 
     public void setId(int id){
         this.id = id;
+    }
+
+    /**
+     * @return the username of the helper who owns this basket, or null if unset
+     */
+    public String getOwnerUsername(){
+        return this.ownerUsername;
+    }
+
+    /**
+     * Sets the owning helper's username. The controller stamps this from the
+     * X-Username request header rather than trusting whatever a client sends,
+     * so ownership can't be spoofed.
+     *
+     * @param ownerUsername the username of the owning helper
+     */
+    public void setOwnerUsername(String ownerUsername){
+        this.ownerUsername = ownerUsername;
     }
 
     /**
