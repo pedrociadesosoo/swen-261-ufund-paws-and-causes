@@ -58,10 +58,14 @@ public class AccountFileDAOTest {
 
     @Test
     public void testGetAllAccountsReturnsAll() throws IOException{
-        List accounts = afDao.getAllAccounts();
+        List<Account> accounts = afDao.getAllAccounts();
 
         assertNotNull(accounts);
-        assertEquals(sampleAccounts().get(0), accounts.get(0));
+        Account charlie = accounts.stream()
+            .filter(a -> a.getUsername().equals("charlieg"))
+            .findFirst().orElse(null);
+        assertNotNull(charlie);
+        assertTrue(charlie.checkPassword("12345"));
     }
 
     @Test 
