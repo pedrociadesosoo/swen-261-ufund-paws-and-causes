@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, CanDeactivateFn, Router } from '@angular/router';
 import { AccountService } from './account';
-
+import { AddNeed } from './add-need/add-need';
 /**
  * Blocks navigation to a route unless someone is currently logged in;
  * redirects anonymous visitors to the login page.
@@ -36,4 +36,12 @@ export const helperGuard: CanActivateFn = () => {
   if (accountService.isHelper()) return true;
   router.navigate(['/cupboard']);
   return false;
+};
+/**
+ * A function to confirm whether or not a user wishes to leave a page when they
+ * have unsaved changes
+ */
+export const unsavedChangesGuard: CanDeactivateFn<AddNeed> = (component) => {
+	if (component.canDeactivate()) return true;
+	return confirm('You have unsaved changes. Leave this page and discard them?');
 };

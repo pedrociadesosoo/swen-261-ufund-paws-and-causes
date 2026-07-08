@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
-
+import { NgForm } from '@angular/forms';
 @Component({
   selector: 'app-add-need',
   standalone: false,
@@ -19,7 +19,13 @@ export class AddNeed implements OnInit {
   };
   errorMessage: string = '';
   successMessage: string = '';
+  // True once a save succeeds, so canDeactivate() lets the user leave without
+  // a warning even though the form is still technically "dirty".
+  private submitted: boolean = false;
 
+  // Reference to the template's #needForm, used by canDeactivate() to check
+  // whether the user has typed anything since the page loaded.
+  @ViewChild('needForm') needForm?: NgForm;
   /** True when editing an existing need (route has an :id param) rather than creating a new one */
   isEditMode: boolean = false;
 
@@ -81,6 +87,7 @@ export class AddNeed implements OnInit {
       this.needService.updateNeed(this.need.id, this.need).subscribe({
         next: (updated) => {
           this.successMessage = `Need "${updated.name}" updated successfully!`;
+	  this.submitted = true; // saved successfully, so the deactivate guard won't warn on this navigate
           this.router.navigate(['/cupboard']);
         },
         error: () => this.errorMessage = 'Failed to update need. Please try again.'
@@ -91,6 +98,7 @@ export class AddNeed implements OnInit {
     this.needService.createNeed(this.need).subscribe({
       next: (created) => {
         this.successMessage = `Need "${created.name}" added successfully!`;
+	this.submitted = true; // saved successfully, so the deactivate guard won't warn on this navigate
         this.router.navigate(['/cupboard']);
       },
       error: (err) => {
@@ -108,4 +116,13 @@ export class AddNeed implements OnInit {
   goToCupboard(): void {
     this.router.navigate(['/cupboard']);
   }
+  /**
+   * Called by unsavedChangesGuard before leaving this route. Safe to leave
+   * silently if nothing was changed, or if the change was already saved;
+   * otherwise the guard will prompt the user to confirm discarding it.
+   */
+  canDeactivate():boolean {
+	  return this.submitted || !this.needForm?.dirty;
+  }
+
 }

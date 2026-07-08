@@ -39,9 +39,15 @@ export class App {
 
   /**
    * Logs the current user out and returns them to the login page.
+   * Navigates first and only clears the session if navigation actually
+   * succeeds, so a canDeactivate guard (e.g. unsaved-changes on Edit Need)
+   * can cancel the navigation and the user stays logged in.
    */
   logout(): void {
-    this.accountService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/login']).then(navigated => {
+      if (navigated) {
+        this.accountService.logout();
+      }
+    });
   }
 }
