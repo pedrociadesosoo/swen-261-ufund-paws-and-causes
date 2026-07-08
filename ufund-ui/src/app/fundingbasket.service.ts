@@ -61,7 +61,7 @@ export class FundingbasketService {
      * from the cupboard (fully funded) and clears the basket.
      */
     checkout(idFB: number): Observable<boolean> {
-        return this.http.post<boolean>(`${this.API}/${idFB}/checkout`, null);
+        return this.http.delete<boolean>(`${this.API}/${idFB}/checkout`);
     }
 
 }

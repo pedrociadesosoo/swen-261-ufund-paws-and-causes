@@ -3,6 +3,7 @@ package com.ufund.api.ufundapi.controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -194,4 +195,36 @@ public class FundingBasketController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * checks out funding basket by deleting needs in basket from cupboard and then deleting basket
+     * @param idFB the basket id
+     * @return 200 true on success, 404 if the basket doesn't exist or the
+     *         need isn't in it, 500 on storage error
+     */
+    @DeleteMapping("{idFB}/checkout")
+    public ResponseEntity<Boolean> checkout(@PathVariable int idFB){
+        LOG.info("DELETE /fundingbasket/" + idFB);
+        try{
+            FundingBasket fb = fbService.getFundingBasket(idFB);
+            if (fb == null){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                List<Need> cupboardNeeds = needService.getAllNeeds();
+                
+                for(int i = cupboardNeeds.size()-1; i>=0; i--){
+                    
+                    if(fb.getNeeds().containsKey(cupboardNeeds.get(i).getId())){
+                        needService.deleteNeed(cupboardNeeds.get(i).getId());
+                    }
+                }
+                return new ResponseEntity<Boolean>(fbService.deleteFundingBasket(idFB), HttpStatus.OK);
+            }
+        } catch (IOException e){
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+
+
