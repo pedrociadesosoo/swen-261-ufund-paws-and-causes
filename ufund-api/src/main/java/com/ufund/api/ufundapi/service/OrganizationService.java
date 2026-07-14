@@ -1,11 +1,11 @@
-package com.ufund.api.ufundapi.dao;
+package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
 
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.Organization;
 
-public interface OrganizationDAO {
+public interface OrganizationService {
 
     /**
      * Retrieves the {@linkplain Organization organization} with the same name.
@@ -71,5 +71,4 @@ public interface OrganizationDAO {
      * @throws IOException if an issue with storage occurs
      */
     boolean deleteNeed(Organization o, Need need) throws IOException;
-
 }
