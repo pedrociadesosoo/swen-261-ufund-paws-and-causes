@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { NgForm } from '@angular/forms';
+
 @Component({
   selector: 'app-add-need',
   standalone: false,
@@ -15,7 +16,7 @@ export class AddNeed implements OnInit {
     name: '',
     cost: 0,
     quantity: 0,
-    type: ''
+    type: 0
   };
   errorMessage: string = '';
   successMessage: string = '';
@@ -68,7 +69,7 @@ export class AddNeed implements OnInit {
       this.errorMessage = 'Quantity must be greater than 0.';
       return false;
     }
-    if (!this.need.type || this.need.type.trim() === '') {
+    if (!this.need.type ) {
       this.errorMessage = 'Type is required.';
       return false;
     }
@@ -124,5 +125,4 @@ export class AddNeed implements OnInit {
   canDeactivate():boolean {
 	  return this.submitted || !this.needForm?.dirty;
   }
-
 }

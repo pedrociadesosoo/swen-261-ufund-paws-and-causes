@@ -12,6 +12,7 @@ import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.
 import { Login } from './login/login';
 import { Checkout } from './checkout/checkout';
 import { AuthInterceptor } from './auth-interceptor';
+import { NeedTypeDropdown } from './need-type-dropdown/need-type-dropdown';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { AuthInterceptor } from './auth-interceptor';
     NeedDetail,
     FundingbasketComponent,
     Login,
-    Checkout
+    Checkout,
+    NeedTypeDropdown
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,3 @@
+export enum NeedType {
+    ITEM_DONATION, MONETARY, VOLUNTEERING
+}
