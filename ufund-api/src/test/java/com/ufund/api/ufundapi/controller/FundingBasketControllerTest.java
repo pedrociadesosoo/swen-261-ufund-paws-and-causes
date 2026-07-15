@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.ufund.api.ufundapi.model.FundingBasket;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 import com.ufund.api.ufundapi.service.FundingBasketService;
 import com.ufund.api.ufundapi.service.NeedService;
 
@@ -31,9 +32,9 @@ public class FundingBasketControllerTest {
 
     private Need[] sampleNeeds() {
         return new Need[] {
-                new Need(1, "Canned Soup", 2.50, 50, "food"),
-                new Need(2, "Rice", 1.99, 100, "food"),
-                new Need(3, "Blankets", 15.00, 25, "clothing")
+                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
+                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
+                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION)
         };
     }
 
@@ -156,7 +157,7 @@ public class FundingBasketControllerTest {
     @Test
     public void testAddNeedFB() throws IOException {
         FundingBasket fb = sampleFB();
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
 
         when(fbService.getFundingBasket(1)).thenReturn(fb);
         when(needService.getNeedById(4)).thenReturn(newNeed);
@@ -200,7 +201,7 @@ public class FundingBasketControllerTest {
     @Test
     public void testRemoveNeedFB() throws IOException {
         FundingBasket fb = sampleFB();
-        Need need = new Need(3, "Blankets", 15.00, 25, "clothing");
+        Need need = new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION);
 
         when(fbService.getFundingBasket(1)).thenReturn(fb);
         when(needService.getNeedById(3)).thenReturn(need);

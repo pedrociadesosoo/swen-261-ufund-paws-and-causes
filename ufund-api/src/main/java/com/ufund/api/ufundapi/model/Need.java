@@ -11,14 +11,14 @@ public class Need{
     @JsonProperty("name") private String name;
     @JsonProperty("cost") private double cost;
     @JsonProperty("quantity") private int quantity;
-    @JsonProperty("type") private String type;
+    @JsonProperty("type") private NeedType type;
 
 
     public Need(@JsonProperty("id") int id,
                 @JsonProperty("name") String name,
                 @JsonProperty("cost") double cost,
                 @JsonProperty("quantity") int quantity,
-                @JsonProperty("type") String type) {
+                @JsonProperty("type") NeedType type) {
         this.id = id;
         this.name = name;
         this.cost = cost;
@@ -59,13 +59,11 @@ public class Need{
         this.cost = cost;
     }
 
-
-
-    public String getType() {
+    public NeedType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(NeedType type) {
         this.type = type;
     }
 }

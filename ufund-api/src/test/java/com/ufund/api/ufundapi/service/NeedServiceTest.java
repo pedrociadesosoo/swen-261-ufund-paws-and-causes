@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Tag;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 
 @Tag("Service-tier")
 class NeedServiceTest {
@@ -33,8 +34,8 @@ class NeedServiceTest {
     @Test
     void testGetAllNeedsReturnsAll() throws IOException {
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, "food"),
-            new Need(2, "Rice", 1.99, 100, "food"));
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION));
         when(mockDao.getAllNeeds()).thenReturn(needs);
 
         List<Need> result = service.getAllNeeds();
@@ -43,7 +44,7 @@ class NeedServiceTest {
         assertEquals(1, result.get(0).getId());
         assertEquals("Canned Soup", result.get(0).getName());
         assertEquals(50, result.get(0).getQuantity());
-        assertEquals("food", result.get(0).getType());
+        assertEquals(NeedType.ITEM_DONATION, result.get(0).getType());
         verify(mockDao).getAllNeeds();
     }
 
@@ -63,7 +64,7 @@ class NeedServiceTest {
     @Test
     void testFindNeeds() {
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, "food"));
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION));
         when(mockDao.findNeeds("Canned")).thenReturn(needs);
 
         List<Need> result = service.findNeeds("Canned");
@@ -92,8 +93,8 @@ class NeedServiceTest {
     @Test
     void testFindNeedsMultipleMatches() {
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, "food"),
-            new Need(2, "Canned Beans", 1.99, 100, "food"));
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
+            new Need(2, "Canned Beans", 1.99, 100, NeedType.ITEM_DONATION));
         when(mockDao.findNeeds("Canned")).thenReturn(needs);
 
         List<Need> result = service.findNeeds("Canned");
