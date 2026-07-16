@@ -21,6 +21,11 @@ import com.ufund.api.ufundapi.model.Organization;
 import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.service.OrganizationService;
 
+
+/**
+ * Handles REST requests for {@linkplain Organization organizations}
+ * under the /organization resource.
+ */
 @RestController
 @RequestMapping("organization")
 public class OrganizationController {
@@ -33,6 +38,12 @@ public class OrganizationController {
         this.needService = needService;
     }
 
+    
+    /**
+     * GET /organization/{name} - retrieves single organization
+     * @param name the organization name
+     * @return 200 with organization, 404 if doesn't exist, 500 if storage error
+     */
     @GetMapping("/{name}")
     public ResponseEntity<Organization> getOrganization(@PathVariable String name){
         LOG.info("GET /organization/" + name);
@@ -50,6 +61,13 @@ public class OrganizationController {
         }
     }
 
+    /**
+     * POST /organization - Creates the new organization
+     * with all of the relevant information carried on from
+     * the body parameter
+     * @param o the organization to be created
+     * @return 201 on creation, 403 on null name, 409 on existing name, 500 on failure
+     */
     @PostMapping("")
     public ResponseEntity<Organization> createOrganization(@RequestBody Organization o){
         LOG.info("POST /organization");
@@ -57,6 +75,11 @@ public class OrganizationController {
             if (o.getName() == null){
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
+
+            if (oService.getOrganization(o.getName()) != null){
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+
             Organization newO = oService.createOrganization(o);
             if (newO != null){
                 return new ResponseEntity<>(newO, HttpStatus.CREATED);
@@ -70,6 +93,12 @@ public class OrganizationController {
         }
     }
 
+    /**
+     * POST /organization/{name} - updates a prexisitng organization,
+     * changing the relevant information based on organization name
+     * @param o - the organization to be updated
+     * @return 403 if null name, 200 on success, 404 on not found, 500 on failure.
+     */
     @PostMapping("/{name}")
     public ResponseEntity<Boolean> updateOrganization(@RequestBody Organization o){
         LOG.info("POST /organization/" + o.getName());
@@ -90,6 +119,11 @@ public class OrganizationController {
         }
     }
 
+    /**
+     * DELETE /organization/{name} - Deletes an organization
+     * @param name - the name of the organization to be deleted
+     * @return 403 on null name, 404 on nonexistent, 200 on success, 500 on failure.
+     */
     @DeleteMapping("/{name}")
     public ResponseEntity<Boolean> deleteOrganization(@PathVariable String name){
         LOG.info("DELETE /organization/" + name);
@@ -110,6 +144,12 @@ public class OrganizationController {
         }
     }
 
+    /**
+     * POST /organization/{name}/{id} - Adds a need to an organization
+     * @param name - the name of the organization
+     * @param id -  the id of the need
+     * @return - 404 on null org, 409 on conflict, 200 on success, 500 on failure
+     */
     @PostMapping("/{name}/{id}")
     public ResponseEntity<Boolean> addNeed(@PathVariable String name, @PathVariable int id){
         LOG.info("POST /organization/" + name + "/" + id);
@@ -120,7 +160,7 @@ public class OrganizationController {
             }
 
             if (o.getNeeds().containsKey(id)){
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+                return new ResponseEntity<>(false,HttpStatus.CONFLICT);
             }
 
             Need n = needService.getNeedById(id);
@@ -132,6 +172,12 @@ public class OrganizationController {
         }
     }
 
+    /**
+     * DELETE /organization/{name}/{id} - Deletes a need from an organization
+     * @param name - the name of the organization
+     * @param id - the id of the need
+     * @return - 404 on null org or no present need, 200 on success, 500 on failure.
+     */
     @DeleteMapping("/{name}/{id}")
     public ResponseEntity<Boolean> deleteNeed(@PathVariable String name, @PathVariable int id){
         LOG.info("DELETE /organization/" + name + "/" + id);
@@ -142,7 +188,7 @@ public class OrganizationController {
             }
 
             if (!o.getNeeds().containsKey(id)){
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
             }
 
             Need n = needService.getNeedById(id);
