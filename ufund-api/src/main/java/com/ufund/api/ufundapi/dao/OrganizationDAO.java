@@ -35,7 +35,7 @@ public interface OrganizationDAO {
 
 
     /**
-     * Updates a preexisting {@linkplain Organization organization}.
+     * Updates a preexisting {@linkplain Organization organization}
      * @param o the organization to be updated
      * @return true if updated successfully, false if the organization isn't present
      * @throws IOException if an issue with storage occurs
@@ -45,22 +45,22 @@ public interface OrganizationDAO {
     /**
      * Deletes the {@linkplain Organization organization}.
      * 
-     * @param o the organization to be deleted
+     * @param name the name of the organization to be deleted
      * @return true on success, false on failure
      * @throws IOException if an issue with storage occurs.
      */
-    boolean deleteOrganizaiton(Organization o) throws IOException;
+    boolean deleteOrganization(String name) throws IOException;
 
 
     /**
      * Adds a {@linkplain Need need} to a organization and persists the change.
      *
-     * @param o the organization to add to.
-     * @param need the need to add
+     * @param name the name of the organization to add to.
+     * @param need the id of the need to add
      * @return true if added, false if the need was already in the organization
      * @throws IOException if an issue with storage occurs
      */
-    boolean addNeed(Organization o, Need need) throws IOException;
+    boolean addNeed(Organization o, Need n) throws IOException;
 
      /**
      * Removes a {@linkplain Need need} from a organization and persists the change.

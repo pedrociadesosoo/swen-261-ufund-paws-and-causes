@@ -121,7 +121,7 @@ public class OrganizationFileDAO implements OrganizationDAO{
         synchronized(organizations){
             try{
                 if (organizations.containsKey(o.getName())){
-                    organizations.put(o.getName(), o);
+                    organizations.put(o.getName(),o);
                     save();
                     return true;
                 }
@@ -137,11 +137,11 @@ public class OrganizationFileDAO implements OrganizationDAO{
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteOrganizaiton(Organization o) throws IOException {
+    public boolean deleteOrganization(String name) throws IOException {
         synchronized(organizations){
             try{
-                if (organizations.containsKey(o.getName())){
-                    organizations.remove(o.getName());
+                if (organizations.containsKey(name)){
+                    organizations.remove(name);
                     save();
                     return true;
                 }

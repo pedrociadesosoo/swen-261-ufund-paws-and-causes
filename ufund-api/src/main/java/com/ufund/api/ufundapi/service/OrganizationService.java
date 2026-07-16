@@ -49,7 +49,7 @@ public interface OrganizationService {
      * @return true on success, false on failure
      * @throws IOException if an issue with storage occurs.
      */
-    boolean deleteOrganizaiton(Organization o) throws IOException;
+    boolean deleteOrganization(String name) throws IOException;
 
 
     /**

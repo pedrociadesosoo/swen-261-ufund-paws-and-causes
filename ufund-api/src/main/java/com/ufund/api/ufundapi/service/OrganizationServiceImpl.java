@@ -50,8 +50,8 @@ public class OrganizationServiceImpl implements OrganizationService {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteOrganizaiton(Organization o) throws IOException {
-        return this.ofDAO.deleteOrganizaiton(o);
+    public boolean deleteOrganization(String name) throws IOException {
+        return this.ofDAO.deleteOrganization(name);
     }
 
     /**
