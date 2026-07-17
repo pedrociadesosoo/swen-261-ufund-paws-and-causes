@@ -16,20 +16,17 @@ export class NeedService {
    * Gets all needs or searches by partial name
    */
   getNeeds(name?: string, type?: NeedType): Observable<Need[]> {
-    if (name) {
-      if (type) {
-        //TODO: call with both name and type
-        return this.http.get<Need[]>(`${this.apiUrl}?name=${name}?type=${type}`);
-      } else {
+    if (type && name) {
+      //TODO: make sure this is how to call it with both name and type params
+      return this.http.get<Need[]>(`${this.apiUrl}?name=${name}?type=${type}`);
+    } else {
+      if(type)
+        return this.http.get<Need[]>(`${this.apiUrl}??type=${type}`);
+      else if(name)
         return this.http.get<Need[]>(`${this.apiUrl}?name=${name}`);
-      }
-    }
-
-    if(type){
-      return this.http.get<Need[]>(`${this.apiUrl}?type=${type}`);
-    } else{
-      return this.http.get<Need[]>(this.apiUrl);
-    }
+      else 
+        return this.http.get<Need[]>(this.apiUrl);
+    } 
   }
 
   /**

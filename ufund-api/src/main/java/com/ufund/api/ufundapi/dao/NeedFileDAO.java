@@ -70,7 +70,7 @@ public class NeedFileDAO implements NeedDAO {
      * @return The array of {@link Need needs}, may be empty
      */
     public Need[] getNeedArray() {
-        return getNeedArray(null);
+        return getNeedArray((String)null);
     }
     
     /**
