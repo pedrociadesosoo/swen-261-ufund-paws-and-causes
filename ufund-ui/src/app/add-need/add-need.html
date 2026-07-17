@@ -50,7 +50,12 @@
 
     <div class="form-group">
       <label for="type">Need Type</label>
-      <app-need-type-dropdown></app-need-type-dropdown>
+      <select [(ngModel)]="need.type" > 
+        <option [ngValue]=0>Select Type</option>
+        <option [ngValue]=1>Item</option>
+        <option [ngValue]=2>Monetary</option>
+        <option [ngValue]=3>Volunteering</option>
+    </select>
     </div>
 
     <div class="button-group">

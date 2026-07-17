@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 
 
 public interface NeedService {
@@ -23,6 +24,23 @@ public interface NeedService {
      * @return List of {@link Need needs} whose name contains the given text
      */
     List<Need> findNeeds(String containsText);
+
+    /**
+     * Finds all {@linkplain Need needs} whose name contains the given text
+     *
+     * @param containsText The text to search for in need names
+     * @param type The type of need to filter by
+     * @return List of {@link Need needs} whose name contains the given text
+     */
+    List<Need> findNeeds(String containsText, NeedType type);
+
+    /**
+     * Finds all {@linkplain Need needs} whose name contains the given text
+     *
+     * @param type The type of need to filter by
+     * @return List of {@link Need needs} whose name contains the given text
+     */
+    List<Need> findNeeds(NeedType type);
 
     /**
      * Finds and retrieves {@linkplain Need need} with the provided id

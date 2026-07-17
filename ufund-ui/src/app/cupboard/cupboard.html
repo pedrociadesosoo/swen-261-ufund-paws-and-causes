@@ -1,7 +1,15 @@
 <div class="cupboard-container">
   <h2>Needs Cupboard</h2>
 
+  
   <div class="search-bar">
+    <select> 
+        <option [ngValue]=0>Select Type</option>
+        <option [ngValue]=1>Item</option>
+        <option [ngValue]=2>Monetary</option>
+        <option [ngValue]=3>Volunteering</option>
+    </select>
+    
     <input
       type="text"
       name="search"

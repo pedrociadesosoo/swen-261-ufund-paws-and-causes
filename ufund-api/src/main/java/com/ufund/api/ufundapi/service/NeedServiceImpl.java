@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 
 @Service
 public class NeedServiceImpl implements NeedService {
@@ -52,6 +53,20 @@ public class NeedServiceImpl implements NeedService {
     /**
      * {@inheritDoc}
      */
+    public Need[] getNeedArray(String containsText, NeedType type) {
+        return needDao.findNeeds(containsText, type).toArray(new Need[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Need[] getNeedArray(NeedType type) {
+        return needDao.findNeeds(type).toArray(new Need[0]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public Need updateNeed(int id, Need need) throws IOException {
         Need existing = needDao.getNeedById(id);
         if (existing == null) {
@@ -78,5 +93,19 @@ public class NeedServiceImpl implements NeedService {
      */
     public List<Need> findNeeds(String containsText) {
         return needDao.findNeeds(containsText);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Need> findNeeds(String containsText, NeedType type) {
+        return needDao.findNeeds(containsText, type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Need> findNeeds(NeedType type) {
+        return needDao.findNeeds(type);
     }
 }

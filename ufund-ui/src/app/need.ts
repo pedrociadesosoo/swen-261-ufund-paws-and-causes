@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Need } from './need.model';
+import { NeedType } from './need-type';
 
 @Injectable({
   providedIn: 'root'
@@ -14,11 +15,21 @@ export class NeedService {
   /**
    * Gets all needs or searches by partial name
    */
-  getNeeds(name?: string): Observable<Need[]> {
+  getNeeds(name?: string, type?: NeedType): Observable<Need[]> {
     if (name) {
-      return this.http.get<Need[]>(`${this.apiUrl}?name=${name}`);
+      if (type) {
+        //TODO: call with both name and type
+        return this.http.get<Need[]>(`${this.apiUrl}?name=${name}?type=${type}`);
+      } else {
+        return this.http.get<Need[]>(`${this.apiUrl}?name=${name}`);
+      }
     }
-    return this.http.get<Need[]>(this.apiUrl);
+
+    if(type){
+      return this.http.get<Need[]>(`${this.apiUrl}?type=${type}`);
+    } else{
+      return this.http.get<Need[]>(this.apiUrl);
+    }
   }
 
   /**

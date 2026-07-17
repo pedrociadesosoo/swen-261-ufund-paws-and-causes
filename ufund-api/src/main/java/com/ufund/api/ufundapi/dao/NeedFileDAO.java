@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 
 
 
@@ -86,6 +87,49 @@ public class NeedFileDAO implements NeedDAO {
 
         for (Need need : needs.values()) {
             if (containsText == null || need.getName().toLowerCase().contains(containsText.toLowerCase())) {
+                needArrayList.add(need);
+            }
+        }
+
+        Need[] needArray = new Need[needArrayList.size()];
+        needArrayList.toArray(needArray);
+        return needArray;
+    }
+
+    public Need[] getNeedArray(NeedType type) { 
+        ArrayList<Need> needArrayList = new ArrayList<>();
+
+        for (Need need : needs.values()) {
+            if (need.getType() == type) {
+                needArrayList.add(need);
+            }
+        }
+
+        Need[] needArray = new Need[needArrayList.size()];
+        needArrayList.toArray(needArray);
+        return needArray;
+    }
+
+    /**
+     * Generates an array of {@linkplain Need needs} from the tree map for any
+     * {@linkplain Need needs} that contains the text specified by containsText
+     * and the need
+     * If containsText is null, the array contains all of the {@linkplain Need needs}
+     * in the tree map
+     * @param containsText The text to search for in need names
+     * @param type the type of need to search for
+     * @return The array of {@link Need needs}, may be empty
+     */
+    public Need[] getNeedArray(String containsText, NeedType type) { 
+        
+        ArrayList<Need> needArrayList = new ArrayList<>();
+
+        for (Need need : needs.values()) {
+            if (
+                need.getType() == type &&
+                (containsText == null || 
+                need.getName().toLowerCase().contains(containsText.toLowerCase()))
+            ) {
                 needArrayList.add(need);
             }
         }
@@ -217,6 +261,26 @@ public class NeedFileDAO implements NeedDAO {
     public List<Need> findNeeds(String containsText) {
         synchronized (needs) {
             return new ArrayList<>(Arrays.asList(getNeedArray(containsText)));
+        }
+    }
+
+    /**
+    * {@inheritDoc}
+     */
+    @Override
+    public List<Need> findNeeds(String containsText, NeedType type) {
+        synchronized (needs) {
+            return new ArrayList<Need>(Arrays.asList(getNeedArray(containsText, type)));
+        }
+    }
+
+    /**
+    * {@inheritDoc}
+     */
+    @Override
+    public List<Need> findNeeds(NeedType type) {
+        synchronized (needs) {
+            return new ArrayList<Need>(Arrays.asList(getNeedArray(type)));
         }
     }
 }
