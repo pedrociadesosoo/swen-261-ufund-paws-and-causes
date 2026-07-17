@@ -135,17 +135,6 @@ public class NeedControllerTest {
         verify(needService, never()).deleteNeed(any(int.class));
     }
 
-    /*@Test
-    public void testGetNeeds() throws Exception {
-        List<Need> needs = new ArrayList<>();
-        needs.add(new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION));
-        needs.add(new Need(2, "Blanket", 5.00, 50, NeedType.ITEM_DONATION));
-        when(needService.getAllNeeds()).thenReturn(needs);
-        ResponseEntity<Need[]> response = needController.getNeeds(null, null);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().length);
-    }*/
-
     @Test
     public void testSearchNeeds() throws Exception {
         List<Need> needs = new ArrayList<>();
@@ -162,17 +151,6 @@ public class NeedControllerTest {
         ResponseEntity<Need[]> response = needController.getNeeds("Cor", null);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
-
-    /*@Test
-    public void testGetNeedsBlankNameReturnsAll() throws Exception {
-        List<Need> needs = new ArrayList<>();
-        needs.add(new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION));
-        needs.add(new Need(2, "Blanket", 5.00, 50, NeedType.ITEM_DONATION));
-        when(needService.getAllNeeds()).thenReturn(needs);
-        ResponseEntity<Need[]> response = needController.getNeeds("", null);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(2, response.getBody().length);
-    }*/
 
     /**
      * Tests that getNeed returns HTTP 200 OK and the correct Need body when the service finds it.
