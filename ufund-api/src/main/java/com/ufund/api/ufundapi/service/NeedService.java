@@ -21,26 +21,10 @@ public interface NeedService {
      * Finds all {@linkplain Need needs} whose name contains the given text
      *
      * @param containsText The text to search for in need names
-     * @return List of {@link Need needs} whose name contains the given text
-     */
-    List<Need> findNeeds(String containsText);
-
-    /**
-     * Finds all {@linkplain Need needs} whose name contains the given text
-     *
-     * @param containsText The text to search for in need names
      * @param type The type of need to filter by
      * @return List of {@link Need needs} whose name contains the given text
      */
-    List<Need> findNeeds(String containsText, NeedType type);
-
-    /**
-     * Finds all {@linkplain Need needs} whose name contains the given text
-     *
-     * @param type The type of need to filter by
-     * @return List of {@link Need needs} whose name contains the given text
-     */
-    List<Need> findNeeds(NeedType type);
+    List<Need> findNeeds(String containsText, NeedType type) throws IOException;
 
     /**
      * Finds and retrieves {@linkplain Need need} with the provided id

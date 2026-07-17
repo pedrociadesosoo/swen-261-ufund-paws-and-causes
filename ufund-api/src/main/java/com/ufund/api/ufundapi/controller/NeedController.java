@@ -100,18 +100,7 @@ public class NeedController {
         @RequestParam(required = false) NeedType type) {
         LOG.info("GET /needs" + (name != null ? "?name=" + name : ""));
         try {
-            List<Need> needs;
-            if (type != null) {
-                 if (name != null && !name.isBlank())
-                    needs = needService.findNeeds(name, type);
-                else
-                    needs = needService.findNeeds(type);
-            } else { 
-                if (name != null && !name.isBlank())
-                    needs = needService.findNeeds(name);
-                else
-                    needs = needService.getAllNeeds();
-            }           
+            List<Need> needs = needService.findNeeds(name, type);         
             return new ResponseEntity<>(needs.toArray(new Need[0]), HttpStatus.OK);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());

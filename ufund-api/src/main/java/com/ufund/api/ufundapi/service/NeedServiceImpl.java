@@ -91,21 +91,17 @@ public class NeedServiceImpl implements NeedService {
     /**
      * {@inheritDoc}
      */
-    public List<Need> findNeeds(String containsText) {
-        return needDao.findNeeds(containsText);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<Need> findNeeds(String containsText, NeedType type) {
-        return needDao.findNeeds(containsText, type);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<Need> findNeeds(NeedType type) {
-        return needDao.findNeeds(type);
+    public List<Need> findNeeds(String containsText, NeedType type) throws IOException{
+        if (containsText != null && type != null) {
+            return needDao.findNeeds(containsText, type);
+        } else {
+            if(containsText != null){
+                return needDao.findNeeds(containsText);
+            } else if (type != null){
+                return needDao.findNeeds(type);
+            } else {
+                return getAllNeeds();
+            }
+        }
     }
 }
