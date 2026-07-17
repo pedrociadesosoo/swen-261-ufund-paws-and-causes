@@ -1,19 +1,18 @@
 package com.ufund.api.ufundapi.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import java.io.IOException;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.model.Need;
@@ -62,12 +61,12 @@ class NeedServiceTest {
      * Verifies that findNeeds returns needs whose name contains the search term.
      */
     @Test
-    void testFindNeeds() {
+    void testFindNeeds() throws IOException {
         List<Need> needs = Arrays.asList(
             new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION));
         when(mockDao.findNeeds("Canned")).thenReturn(needs);
 
-        List<Need> result = service.findNeeds("Canned");
+        List<Need> result = service.findNeeds("Canned", null);
 
         assertEquals(1, result.size());
         assertEquals("Canned Soup", result.get(0).getName());
@@ -78,10 +77,10 @@ class NeedServiceTest {
      * Verifies that findNeeds returns empty list when no needs match the search term
      */
     @Test
-    void testFindNeedsNoMatch() {
+    void testFindNeedsNoMatch() throws IOException {
         when(mockDao.findNeeds("xyz")).thenReturn(Collections.emptyList());
 
-        List<Need> result = service.findNeeds("xyz");
+        List<Need> result = service.findNeeds("xyz", null);
 
         assertTrue(result.isEmpty());
         verify(mockDao).findNeeds("xyz");
@@ -91,13 +90,13 @@ class NeedServiceTest {
      * Verifies that findNeeds returns multiple needs when multiple names match.
      */
     @Test
-    void testFindNeedsMultipleMatches() {
+    void testFindNeedsMultipleMatches() throws IOException {
         List<Need> needs = Arrays.asList(
             new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
             new Need(2, "Canned Beans", 1.99, 100, NeedType.ITEM_DONATION));
         when(mockDao.findNeeds("Canned")).thenReturn(needs);
 
-        List<Need> result = service.findNeeds("Canned");
+        List<Need> result = service.findNeeds("Canned", null);
 
         assertEquals(2, result.size());
         verify(mockDao).findNeeds("Canned");

@@ -126,9 +126,9 @@ public class NeedFileDAO implements NeedDAO {
 
         for (Need need : needs.values()) {
             if (
-                need.getType() == type &&
+                (type == null || need.getType() == type) &&
                 (containsText == null || 
-                need.getName().toLowerCase().contains(containsText.toLowerCase()))
+                    need.getName().toLowerCase().contains(containsText.toLowerCase()))
             ) {
                 needArrayList.add(need);
             }
