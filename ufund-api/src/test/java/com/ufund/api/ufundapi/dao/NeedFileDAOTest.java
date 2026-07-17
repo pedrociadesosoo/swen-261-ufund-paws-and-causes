@@ -320,6 +320,10 @@ class NeedFileDAOTest {
         //test that only needs with contained string and specificed type are returned
         List<Need> result = dao.findNeeds("a", NeedType.ITEM_DONATION);
         assertEquals(2, result.size());
+        for(Need need : result){
+            assertEquals(NeedType.ITEM_DONATION, need.getType());
+            assertTrue(need.getName().contains("a"));
+        }       
     }
 
     @Test
@@ -342,6 +346,11 @@ class NeedFileDAOTest {
         //test that only needs with contained string and specificed type are returned
         List<Need> result = dao.findNeeds("a", NeedType.MONETARY);
         assertEquals(1, result.size());
+
+        for(Need need : result){
+            assertEquals(NeedType.MONETARY, need.getType());
+            assertTrue(need.getName().contains("a"));
+        }
     }
 
     @Test
