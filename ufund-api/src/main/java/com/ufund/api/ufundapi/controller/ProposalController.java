@@ -2,6 +2,9 @@ package com.ufund.api.ufundapi.controller;
 
 import java.util.List;
 import java.io.IOException;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,17 +12,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.ufund.api.ufundapi.service.ProposalService;
+import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.Proposal;
 
 @RestController
 @RequestMapping("proposals")
 public class ProposalController {
     private ProposalService proposalService;
+    private static final Logger LOG = Logger.getLogger(ProposalController.class.getName());
 
     /**
      * Creates a REST API controller for {@linkplain Proposal proposals}.
@@ -39,7 +46,7 @@ public class ProposalController {
      * if found, NOT_FOUND if no proposal has that id
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Proposal> getProposal(@PathVariable int id) {
+    public ResponseEntity<Proposal> getProposal(@PathVariable int id) throws IOException{
         Proposal proposal = proposalService.getProposalById(id);
         if (proposal != null)
             return new ResponseEntity<>(proposal, HttpStatus.OK);
@@ -86,4 +93,30 @@ public class ProposalController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Deletes a {@linkplain Need need} with the given id.
+     * Manager-only: requires the X-Username header to belong to a manager account.
+     *
+     * @param username the caller's username, from the X-Username header
+     * @param id The id of the {@link Need need} to delete
+     * @return ResponseEntity HTTP status OK if deleted, FORBIDDEN if the caller isn't a
+     * manager, NOT_FOUND if not found, INTERNAL_SERVER_ERROR otherwise
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Proposal> deleteProposal(@RequestHeader(value = "X-Username", required = false) String username,
+                                            @PathVariable int id) {
+        LOG.info("DELETE /Proposal/" + id);
+        try {
+            Proposal deletedProposal = proposalService.deleteProposal(id);
+            if (deletedProposal != null)
+                return new ResponseEntity<Proposal>(deletedProposal, HttpStatus.OK);
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

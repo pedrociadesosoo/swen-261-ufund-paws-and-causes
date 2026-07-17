@@ -30,7 +30,13 @@
         <td>{{ proposal.organization }}</td>
         <td>{{ proposal.username }}</td>
         <td>{{ proposal.creationDate | date }}</td>
+
+        <!-- Manager-specific controls -->
+        <span *ngIf="isManager()">
+          <button (click)="$event.stopPropagation(); deleteProposal(proposal)">Delete</button>
+        </span>
       </tr>
     </tbody>
   </table>
 </div>
+

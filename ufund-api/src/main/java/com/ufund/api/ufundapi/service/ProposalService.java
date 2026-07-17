@@ -12,7 +12,7 @@ public interface ProposalService{
 
 	List<Proposal> findProposals(String pattern);
 
-	Proposal getProposalById(int id);
+	Proposal getProposalById(int id) throws IOException;
 	
 	//My thought on this one is that when a user votes on a proposal
 	//before getting updated the request is sent to the back-end
@@ -45,6 +45,8 @@ public interface ProposalService{
 	 * @throws IOException if an issue with storage access occurs
 	 */
 	Proposal createProposal(Proposal newProposal) throws IOException;
+
+	Proposal deleteProposal(int id) throws IOException;
 
 
 }

@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'basket', component: FundingbasketComponent, canActivate: [helperGuard] },
   { path: 'checkout/:id', component: Checkout, canActivate: [helperGuard] },
   { path: 'proposals', component: Proposals, canActivate: [authGuard] },
-  { path: '', redirectTo: '/cupboard', pathMatch: 'full' }
+  { path: '', redirectTo: '/login', pathMatch: 'full' }
 ];
 
 @NgModule({

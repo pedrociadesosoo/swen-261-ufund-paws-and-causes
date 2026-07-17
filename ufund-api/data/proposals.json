@@ -1,0 +1,11 @@
+[
+	{
+		"id": 1,
+		"name": "Blankets",
+		"cost": 20.0,
+		"quantity": 25,
+		"type": "fabric",
+		"username": "Moss",
+		"organization": "Moss item"
+	}
+]

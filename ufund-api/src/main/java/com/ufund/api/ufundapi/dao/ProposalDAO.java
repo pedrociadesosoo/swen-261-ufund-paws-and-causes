@@ -11,7 +11,8 @@ public interface ProposalDAO{
     List<Proposal> findProposals(String containsText);
     
 
-    Proposal getProposalById(int id);
+    Proposal getProposalById(int id) throws IOException;
+    
     /**
      * Creates a new {@linkplain Proposal proposal}
      * @param proposal {@link Proposal proposal} the proposal to be created

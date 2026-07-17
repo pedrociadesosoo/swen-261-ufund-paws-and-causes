@@ -38,7 +38,7 @@ public class ProposalServiceImpl implements ProposalService {
     /**
      * {@inheritDoc}
      */
-    public Proposal getProposalById(int id) {
+    public Proposal getProposalById(int id) throws IOException{
         return proposalDao.getProposalById(id);
     }
 
@@ -48,4 +48,14 @@ public class ProposalServiceImpl implements ProposalService {
     public Proposal createProposal(Proposal newProposal) throws IOException {
         return proposalDao.createProposal(newProposal);
     }
+
+    public Proposal deleteProposal(int id) throws IOException {
+        Proposal deletedProposal = proposalDao.getProposalById(id);
+        if (deletedProposal != null && proposalDao.deleteProposal(id)) {
+            return deletedProposal;
+        } else {
+            return null;
+        }
+    }
+ 
 }

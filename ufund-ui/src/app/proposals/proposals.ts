@@ -3,6 +3,8 @@ import { ProposalService } from '../proposal';
 import { Proposal } from '../proposal.model';
 import { AccountService } from '../account';
 
+
+
 /**
  * Lists all pending proposals so any logged-in user can see what's been
  * submitted for review.
@@ -16,6 +18,8 @@ import { AccountService } from '../account';
 export class Proposals implements OnInit {
   proposals: Proposal[] = [];
   errorMessage: string = '';
+  successMessage: string = '';
+
 
   constructor(
     private proposalService: ProposalService,
@@ -35,6 +39,25 @@ export class Proposals implements OnInit {
       error: () => this.errorMessage = 'Failed to load proposals'
     });
   }
+
+
+
+    /**
+     * Manager-only: deletes a need after confirmation, then reloads the list
+     */
+    deleteProposal(proposal: Proposal): void {
+      if (!confirm(`Delete "${proposal.name}" from the cupboard?`)) return;
+      this.proposalService.deleteProposal(proposal.id).subscribe({
+        next: () => {
+          this.successMessage = `${proposal.name} deleted`;
+          this.errorMessage = '';
+        },
+        error: () => {
+          this.successMessage = '';
+          this.errorMessage = 'Failed to delete proposal';
+        }
+      });
+    }
 
   /**
    * Returns true if the current user is a manager

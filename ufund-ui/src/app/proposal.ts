@@ -30,4 +30,8 @@ export class ProposalService {
   getProposalById(id: number): Observable<Proposal> {
     return this.http.get<Proposal>(`${this.apiUrl}/${id}`);
   }
+
+  deleteProposal(id: number): Observable<Proposal> {
+    return this.http.delete<Proposal>(`${this.apiUrl}/${id}`)
+  }
 }
