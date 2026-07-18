@@ -4,6 +4,7 @@ import { Proposal } from '../proposal.model';
 import { AccountService } from '../account';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
+import { HostListener } from '@angular/core';
 
 /**
  * Lists all pending proposals so any logged-in user can see what's been
@@ -20,6 +21,7 @@ export class Proposals implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
   selectedProposal: any;
+  originalProposal: any;
 
   constructor(
     private proposalService: ProposalService,
@@ -66,6 +68,7 @@ export class Proposals implements OnInit {
    * Opens the inline editor for a proposal.
    */
   editProposal(proposal: Proposal): void {
+    this.originalProposal = { ...proposal };
     this.selectedProposal = { ...proposal };
   }
 
@@ -83,6 +86,8 @@ export class Proposals implements OnInit {
       type: this.selectedProposal.type
     };
 
+    if (!confirm(`approve "${this.selectedProposal.name}" from the proposals list?`)) return;
+    
     this.needService.createNeed(approvedNeed).subscribe({
       next: () => {
         this.proposalService.deleteProposal(this.selectedProposal!.id).subscribe({
@@ -106,6 +111,8 @@ export class Proposals implements OnInit {
   }
 
     saveProposal(proposal: Proposal): void {
+    if (!confirm(`approve "${proposal.name}" from the proposals list?`)) return;
+
 
     const approvedNeed: Need = {
       id: 0,
@@ -124,6 +131,10 @@ export class Proposals implements OnInit {
             this.loadProposals();
           }
         });
+      },
+      error: () => {
+        this.successMessage = '',
+        this.errorMessage = "failed to approve proposal"
       }
     });
   }
@@ -134,6 +145,7 @@ export class Proposals implements OnInit {
    */
   cancelEdit(): void {
     this.selectedProposal = null;
+    this.originalProposal = null;
   }
 
 
@@ -151,6 +163,29 @@ export class Proposals implements OnInit {
     return this.accountService.isHelper();
   }
 
+
+
+  get hasUnsavedChanges(): boolean {
+      const current = this.selectedProposal;
+      const original = this.originalProposal;
+
+      if (!current || !original) return false;
+
+      return (['name', 'cost', 'quantity', 'type'] as const).some(
+        key => current[key] !== original[key]
+      );
+  }
+
+  canDeactivate(): boolean {
+    return !this.hasUnsavedChanges;
+  }
+
+    @HostListener('window:beforeunload', ['$event'])
+    handleBeforeUnload(event: BeforeUnloadEvent) {
+      if (this.hasUnsavedChanges) {
+        event.preventDefault();
+      }
+    }
 
 
 
