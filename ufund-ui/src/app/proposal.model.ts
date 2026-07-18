@@ -11,4 +11,6 @@ export interface Proposal {
     organization: string;
     creationDate: string;
     lastEdited: string;
+
+    [key: string]: any;
 }

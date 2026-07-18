@@ -87,6 +87,7 @@ export class FundingbasketComponent {
     });
   }
 
+
   /**
    * Navigates to the checkout page for a basket, refusing if it's empty
    * (per the sprint acceptance criteria: an empty basket can't be checked out)

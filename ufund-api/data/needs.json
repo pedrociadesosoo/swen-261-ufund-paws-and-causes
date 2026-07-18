@@ -1,5 +1,1 @@
-[
-  {"id":1,"name":"Canned Soup","quantity":50,"unit":"cans"},
-  {"id":2,"name":"Rice","quantity":100,"unit":"lbs"},
-  {"id":3,"name":"Blankets","quantity":25,"unit":"items"}
-]
+[{"id":1,"name":"Canned Soup","cost":0.0,"quantity":50,"type":null},{"id":2,"name":"Rice","cost":0.0,"quantity":100,"type":null},{"id":5,"name":"Blankets","cost":20.0,"quantity":25,"type":"fabric"}]
