@@ -6,6 +6,10 @@
 		"quantity": 25,
 		"type": "fabric",
 		"username": "Moss",
-		"organization": "Moss item"
+		"organization": "Moss item",
+		"votes": {
+			"for": 0,
+			"against": 0
+		}
 	}
 ]

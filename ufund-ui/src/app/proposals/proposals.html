@@ -24,7 +24,11 @@
       <tr *ngFor="let proposal of proposals">
       <ng-container *ngIf="selectedProposal?.id !== proposal.id">
         <td *ngFor="let field of proposalValues">
-          {{ field === 'creationDate' ? (proposal[field] | date) : proposal[field] }}
+          <ng-container [ngSwitch]="field">
+            <span *ngSwitchCase="'creationDate'">{{ proposal[field] | date }}</span>
+            <span *ngSwitchCase="'votes'">{{ getVoteDisplay(proposal[field]) }}</span>
+            <span *ngSwitchDefault>{{ proposal[field] }}</span>
+          </ng-container>
         </td>
       </ng-container>
         <td *ngIf="selectedProposal?.id !== proposal.id">

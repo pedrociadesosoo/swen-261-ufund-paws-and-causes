@@ -180,6 +180,16 @@ export class Proposals implements OnInit {
     return !this.hasUnsavedChanges;
   }
 
+  getVoteDisplay(votes: Map<string, number>): string {
+    if (!votes || Object.keys(votes).length === 0) {
+      return 'No votes yet';
+    }
+
+    return Object.entries(votes)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join(', ');
+  }
+
     @HostListener('window:beforeunload', ['$event'])
     handleBeforeUnload(event: BeforeUnloadEvent) {
       if (this.hasUnsavedChanges) {
@@ -197,6 +207,7 @@ export class Proposals implements OnInit {
       "Organization",
       "Submitted By",
       "Date",
+      "Votes",
       "Actions"
     ];
 
@@ -207,7 +218,8 @@ export class Proposals implements OnInit {
       "type",
       "organization",
       "username",
-      "creationDate"
+      "creationDate",
+      "votes"
     ];
 
 }

@@ -2,9 +2,7 @@ package com.ufund.api.ufundapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Map;
-
 import java.util.HashMap;
 
 import java.time.Instant;
@@ -29,7 +27,8 @@ public class Proposal{
                 @JsonProperty("quantity") int quantity,
                 @JsonProperty("type") String type,
 		@JsonProperty("username") String username,
-		@JsonProperty("organization") String organization
+		@JsonProperty("organization") String organization,
+        @JsonProperty("votes") Map<String, Integer> votes
 		) {
         this.id = id;
         this.name = name;
@@ -38,6 +37,7 @@ public class Proposal{
         this.type = type;
 	this.username = username;
 	this.organization = organization;
+    this.votes = votes;
     }
 
     public int getId() {
@@ -103,7 +103,6 @@ public class Proposal{
     	this.lastEdited = lastEdited;
     }
 
-    @JsonIgnore
     public Map<String, Integer> getAllVotes(){
     	return votes;
     }
