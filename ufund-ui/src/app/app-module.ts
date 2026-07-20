@@ -12,6 +12,8 @@ import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.
 import { Login } from './login/login';
 import { Checkout } from './checkout/checkout';
 import { AuthInterceptor } from './auth-interceptor';
+import { OrganizationComponent } from './organization.component/organization.component';
+import { OrganizationListComponent } from './organization-list.component/organization-list.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import { AuthInterceptor } from './auth-interceptor';
     NeedDetail,
     FundingbasketComponent,
     Login,
-    Checkout
+    Checkout,
+    OrganizationComponent,
+    OrganizationListComponent
   ],
   imports: [
     BrowserModule,

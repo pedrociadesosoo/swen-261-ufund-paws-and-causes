@@ -117,18 +117,18 @@ public class OrganizationFileDAO implements OrganizationDAO{
      * {@inheritDoc}
      */
     @Override
-    public boolean updateOrganization(Organization o) throws IOException {
+    public Organization updateOrganization(Organization o) throws IOException {
         synchronized(organizations){
             try{
                 if (organizations.containsKey(o.getName())){
                     organizations.put(o.getName(),o);
                     save();
-                    return true;
+                    return o;
                 }
-                return false;
+                return null;
             } catch (IOException e){
                 LOG.log(Level.SEVERE, e.getLocalizedMessage());
-                return false;
+                return null;
             }
         }
     }

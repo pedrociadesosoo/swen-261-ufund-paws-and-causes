@@ -40,7 +40,7 @@ public interface OrganizationDAO {
      * @return true if updated successfully, false if the organization isn't present
      * @throws IOException if an issue with storage occurs
      */
-    boolean updateOrganization(Organization o) throws IOException;
+    Organization updateOrganization(Organization o) throws IOException;
 
     /**
      * Deletes the {@linkplain Organization organization}.
