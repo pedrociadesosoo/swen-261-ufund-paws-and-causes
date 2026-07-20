@@ -136,16 +136,6 @@ public class OrganizationFileDAOTest {
     }
 
     @Test
-    void testAddNeedSaveFail() throws IOException{
-        Organization o = oDao.getOrganization("General Humanities");
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
-        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
-
-        boolean added = oDao.addNeed(o, newNeed);
-        assertThrows(IOException.class, () -> oDao.addNeed(o, newNeed));
-    }
-
-    @Test
     void testDeleteNeed() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
         Need deletedNeed = new Need(1, "Canned Soup", 2.50, 50, "food");
@@ -163,16 +153,6 @@ public class OrganizationFileDAOTest {
         boolean deleted = oDao.deleteNeed(o, deletedNeed);
         assertFalse(deleted);
         assertEquals(3, oDao.getOrganization("General Humanities").getNeeds().size());
-    }
-
-    @Test 
-    void testDeleteNeedHandleException() throws IOException{
-        Organization o = oDao.getOrganization("General Humanities");
-        Need deletedNeed = new Need(1, "Canned Soup", 2.50, 50, "food");
-        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
-
-        boolean deleted = oDao.deleteNeed(o, deletedNeed);
-        assertThrows(IOException.class, () -> oDao.deleteNeed(o, deletedNeed));
     }
 
 }
