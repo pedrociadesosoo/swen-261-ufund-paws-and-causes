@@ -19,6 +19,7 @@
         <th>Organization</th>
         <th>Submitted By</th>
         <th>Date</th>
+        <th>Votes</th>
       </tr>
     </thead>
     <tbody>
@@ -30,6 +31,20 @@
         <td>{{ proposal.organization }}</td>
         <td>{{ proposal.username }}</td>
         <td>{{ proposal.creationDate | date }}</td>
+        <td>
+          <div *ngIf="isHelper()" class="vote-controls">
+            <button
+              class="vote-btn"
+              [class.active]="myVote(proposal) === 1"
+              (click)="upvote(proposal)">&#9650;</button>
+            <span class="vote-count">{{ netVotes(proposal) }}</span>
+            <button
+              class="vote-btn"
+              [class.active]="myVote(proposal) === -1"
+              (click)="downvote(proposal)">&#9660;</button>
+          </div>
+          <span *ngIf="!isHelper()">{{ netVotes(proposal) }}</span>
+        </td>
       </tr>
     </tbody>
   </table>

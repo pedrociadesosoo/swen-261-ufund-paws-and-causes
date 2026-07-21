@@ -11,4 +11,5 @@ export interface Proposal {
     organization: string;
     creationDate: string;
     lastEdited: string;
+    votes: { [username: string]: number };
 }
