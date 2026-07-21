@@ -48,4 +48,23 @@ public class ProposalServiceImpl implements ProposalService {
     public Proposal createProposal(Proposal newProposal) throws IOException {
         return proposalDao.createProposal(newProposal);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Proposal voteUpdate(int proposalId, String username, int vote) throws IOException {
+        Proposal proposal = proposalDao.getProposalById(proposalId);
+        if (proposal == null)
+            return null;
+
+        Integer current = proposal.getUserVoteStatus(username);
+        if (current == null)            // user hasn't voted yet -> record it
+            proposal.getAllVotes().put(username, vote);
+        else if (current == vote)       // same vote again -> remove it (unvote)
+            proposal.getAllVotes().remove(username);
+        else                            // different vote -> replace it (flip)
+            proposal.getAllVotes().put(username, vote);
+
+        return proposalDao.updateProposal(proposal);
+    }
 }

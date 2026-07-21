@@ -86,4 +86,28 @@ public class ProposalController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Records a vote on the {@linkplain Proposal proposal} with the given id.
+     * The voting user and vote value (+1 or -1) come from the request body.
+     * Voting again with the same value removes the vote; voting with the
+     * opposite value flips it.
+     *
+     * @param id the id of the {@link Proposal proposal} being voted on
+     * @param req the {@link VoteRequest} carrying the username and vote value
+     * @return ResponseEntity with the updated {@link Proposal proposal} and HTTP
+     * status OK, NOT_FOUND if no proposal has that id, INTERNAL_SERVER_ERROR on
+     * a storage failure
+     */
+    @PostMapping("/{id}/vote")
+    public ResponseEntity<Proposal> voteUpdate(@PathVariable int id, @RequestBody VoteRequest req) {
+        try {
+            Proposal updated = proposalService.voteUpdate(id, req.getUsername(), req.getVote());
+            if (updated == null)
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(updated, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
