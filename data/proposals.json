@@ -1,1 +1,1 @@
-[]
+[{"id":1,"name":"Winter Coats","cost":45.0,"quantity":10,"type":"ITEM_DONATION","username":"charlieg","organization":"Rochester Shelter","votes":{"pedrociad":1,"seddy":1,"sarah123":-1},"creationDate":"2026-07-20T14:00:00.000000000Z","lastEdited":null},{"id":2,"name":"Weekend Tutoring","cost":0.0,"quantity":1,"type":"VOLUNTEERING","username":"seddy","organization":"RIT Community Center","votes":{"charlieg":1},"creationDate":"2026-07-21T09:30:00.000000000Z","lastEdited":null}]
