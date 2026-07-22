@@ -3,8 +3,8 @@
 
   
   <div class="search-bar">
-    <select> 
-        <option [ngValue]=0>Select Type</option>
+    <select name = "type" [(ngModel)]="searchType"> 
+        <option [ngValue]=0></option>
         <option [ngValue]=1>Item</option>
         <option [ngValue]=2>Monetary</option>
         <option [ngValue]=3>Volunteering</option>

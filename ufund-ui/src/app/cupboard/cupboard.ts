@@ -4,6 +4,7 @@ import { Need } from '../need.model';
 import { Router } from '@angular/router';
 import { AccountService } from '../account';
 import { FundingbasketService } from '../fundingbasket.service';
+import { NeedType } from '../need-type';
 
 @Component({
   selector: 'app-cupboard',
@@ -18,6 +19,7 @@ export class Cupboard implements OnInit {
 
   /** Bound to the search box; filters the cupboard by partial name match */
   searchTerm: string = '';
+  searchType: NeedType = 0;
 
   constructor(
     private needService: NeedService,
@@ -34,7 +36,7 @@ export class Cupboard implements OnInit {
    * Loads needs from the API, filtered by searchTerm when one is set
    */
   loadNeeds(): void {
-    this.needService.getNeeds(this.searchTerm || undefined).subscribe({
+    this.needService.getNeeds(this.searchTerm || undefined, this.searchType || undefined).subscribe({
       next: (needs) => this.needs = needs,
       error: () => this.errorMessage = 'Failed to load needs'
     });
@@ -52,6 +54,8 @@ export class Cupboard implements OnInit {
    */
   clearSearch(): void {
     this.searchTerm = '';
+    this.searchType = 0;
+    this.errorMessage = '';
     this.loadNeeds();
   }
 
