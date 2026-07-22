@@ -17,7 +17,7 @@ export class Cupboard implements OnInit {
   errorMessage: string = '';
   successMessage: string = '';
 
-  /** Bound to the search box; filters the cupboard by partial name match */
+  /** Bound to the search box, filters the cupboard by partial name match */
   searchTerm: string = '';
   searchType: NeedType = 0;
 
@@ -37,13 +37,16 @@ export class Cupboard implements OnInit {
    */
   loadNeeds(): void {
     this.needService.getNeeds(this.searchTerm || undefined, this.searchType || undefined).subscribe({
-      next: (needs) => this.needs = needs,
+      next: (needs) => {
+        this.needs = needs;
+        this.errorMessage = '';
+      },
       error: () => this.errorMessage = 'Failed to load needs'
     });
   }
 
   /**
-   * Re-runs loadNeeds() with the current searchTerm; bound to the search box
+   * Re-runs loadNeeds() with the current searchTerm bound to the search box
    */
   search(): void {
     this.loadNeeds();

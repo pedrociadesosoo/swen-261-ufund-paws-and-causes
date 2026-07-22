@@ -13,20 +13,19 @@ export class NeedService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Gets all needs or searches by partial name
+   * Gets all needs or searches by partial name and/or type. 
    */
   getNeeds(name?: string, type?: NeedType): Observable<Need[]> {
     if (type && name) {
-      //TODO: make sure this is how to call it with both name and type params
-      return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&type=${type}`);
+      return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&type=${NeedType[type]}`);
     } else {
       if(type)
-        return this.http.get<Need[]>(`${this.apiUrl}?type=${type}`);
+        return this.http.get<Need[]>(`${this.apiUrl}?type=${NeedType[type]}`);
       else if(name)
         return this.http.get<Need[]>(`${this.apiUrl}?name=${name}`);
-      else 
+      else
         return this.http.get<Need[]>(this.apiUrl);
-    } 
+    }
   }
 
   /**
