@@ -4,6 +4,9 @@ package com.ufund.api.ufundapi.model;
  * The fixed set of categories a {@linkplain Need need} can belong to.
  */
 public enum NeedType {
+    
+    SELECT,
+
     /** A physical item being donated (food, clothing, supplies, etc.). */
     ITEM_DONATION,
 
