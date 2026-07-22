@@ -33,6 +33,7 @@
         <th>Cost</th>
         <th>Quantity</th>
         <th>Type</th>
+        <th>Organization</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -43,6 +44,7 @@
         <td>{{ need.cost | currency }}</td>
         <td>{{ need.quantity }}</td>
         <td>{{ need.type }}</td>
+        <td>{{ need.organization}} </td>
         <td>
           <!-- Helper-specific controls -->
           <span *ngIf="isHelper()">

@@ -12,6 +12,7 @@ public class Need{
     @JsonProperty("cost") private double cost;
     @JsonProperty("quantity") private int quantity;
     @JsonProperty("type") private String type;
+    @JsonProperty("organization") private Organization organization;
 
 
     public Need(@JsonProperty("id") int id,
@@ -60,12 +61,19 @@ public class Need{
     }
 
 
-
     public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Organization getOrganization(){
+        return this.organization;
+    }
+
+    public void setOrganization(Organization org){
+        this.organization = org;
     }
 }
