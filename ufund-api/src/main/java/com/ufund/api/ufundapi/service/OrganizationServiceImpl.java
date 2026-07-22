@@ -45,8 +45,8 @@ public class OrganizationServiceImpl implements OrganizationService {
      * {@inheritDoc}
      */
     @Override
-    public Organization updateOrganization(Organization o) throws IOException {
-        return this.ofDAO.updateOrganization(o);
+    public Organization updateOrganization(Organization o, String name) throws IOException {
+        return this.ofDAO.updateOrganization(o, name);
     }
 
     /**

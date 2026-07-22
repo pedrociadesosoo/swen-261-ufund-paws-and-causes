@@ -7,8 +7,13 @@ import { Login } from './login/login';
 import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.component';
 import { Checkout } from './checkout/checkout';
 import { authGuard, managerGuard, helperGuard, unsavedChangesGuard } from './route-guards';
+import { OrganizationListComponent } from './organization-list.component/organization-list.component';
+import { CreateOrgComponent } from './create-org.component/create-org.component';
 
 const routes: Routes = [
+  { path: 'organization', component: OrganizationListComponent, canActivate: [authGuard]},
+  { path: 'organization_edit', component: CreateOrgComponent, canActivate: [authGuard], canDeactivate: [unsavedChangesGuard]},
+  { path: 'edit-org/:name', component: CreateOrgComponent, canActivate: [authGuard], canDeactivate: [unsavedChangesGuard]},
   { path: 'cupboard', component: Cupboard, canActivate: [authGuard] },
   { path: 'cupboard/:id', component: NeedDetail, canActivate: [authGuard] },
   { path: 'add-need', component: AddNeed, canActivate: [managerGuard], canDeactivate: [unsavedChangesGuard] },

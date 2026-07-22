@@ -2,6 +2,7 @@
   <a routerLink="/cupboard">View Cupboard</a>
   <a *ngIf="isManager()" routerLink="/add-need">Add Need</a>
   <a *ngIf="isHelper()" routerLink="/basket">My Basket</a>
+  <a routerLink="/organization">Organizations</a>
   <span style="flex: 1;"></span>
   <a *ngIf="!isLoggedIn()" routerLink="/login">Login</a>
   <button *ngIf="isLoggedIn()" (click)="logout()">Logout</button>

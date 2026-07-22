@@ -1,0 +1,62 @@
+.cupboard-container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background-color: #cc26d5;
+  color: white;
+}
+
+th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover {
+  background-color: #f9f0ff;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+button {
+  margin-top: 1.5rem;
+  padding: 10px 20px;
+  background-color: #cc26d5;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: #a61db0;
+}

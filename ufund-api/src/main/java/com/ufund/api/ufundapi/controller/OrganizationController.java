@@ -112,13 +112,13 @@ public class OrganizationController {
      * @return 403 if null name, 200 on success, 404 on not found, 500 on failure.
      */
     @PostMapping("/{name}")
-    public ResponseEntity<Organization> updateOrganization(@RequestBody Organization o){
-        LOG.info("POST /organization/" + o.getName());
+    public ResponseEntity<Organization> updateOrganization(@RequestBody Organization o, @PathVariable String name){
+        LOG.info("POST /organization/" + name);
         try {
             if (o.getName() == null){
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            Organization updated = oService.updateOrganization(o);
+            Organization updated = oService.updateOrganization(o, name);
             if (updated != null){
                 return new ResponseEntity<>(updated, HttpStatus.OK);
             } else {

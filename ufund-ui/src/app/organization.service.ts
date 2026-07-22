@@ -21,8 +21,8 @@ export class OrganizationService {
     return this.http.post<Organization>(this.API, o);
   }
 
-  updateOrganization(o: Organization): Observable<Organization>{
-    return this.http.post<Organization>(this.API, o);
+  updateOrganization(o: Organization, name:string): Observable<Organization>{
+    return this.http.post<Organization>(`${this.API}/${name}`, o);
   }
 
   deleteOrganization(name: string): Observable<boolean>{
