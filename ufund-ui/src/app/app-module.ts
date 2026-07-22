@@ -15,6 +15,7 @@ import { AuthInterceptor } from './auth-interceptor';
 import { OrganizationListComponent } from './organization-list.component/organization-list.component';
 import { RouterModule } from '@angular/router';
 import { CreateOrgComponent } from './create-org.component/create-org.component';
+import { OrganizationDetailsComponent } from './organization-details.component/organization-details.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CreateOrgComponent } from './create-org.component/create-org.component'
     Login,
     Checkout,
     OrganizationListComponent,
-    CreateOrgComponent
+    CreateOrgComponent,
+    OrganizationDetailsComponent
   ],
   imports: [
     BrowserModule,

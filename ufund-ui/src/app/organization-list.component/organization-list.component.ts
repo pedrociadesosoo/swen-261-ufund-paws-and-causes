@@ -4,6 +4,7 @@ import { Organization } from '../organization';
 import { Need } from '../need.model';
 import { OrganizationService } from '../organization.service';
 import { AccountService } from '../account';
+import { OrganizationDetailsComponent } from '../organization-details.component/organization-details.component';
 
 @Component({
   selector: 'app-organization-list.component',

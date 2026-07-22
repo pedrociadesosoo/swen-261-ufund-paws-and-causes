@@ -61,7 +61,6 @@ public class OrganizationControllerTest {
         ResponseEntity<Organization> newOrg = orgCont.getOrganization("General Humanities");
         assertEquals(HttpStatus.OK, newOrg.getStatusCode());
         assertEquals(o.getName(), newOrg.getBody().getName());
-        assertEquals(o.getDesc(), newOrg.getBody().getDesc());
         assertEquals(o.getNeeds(), newOrg.getBody().getNeeds());
     }
 

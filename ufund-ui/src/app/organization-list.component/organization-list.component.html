@@ -8,7 +8,9 @@
     @for (org of orgs; track org.name){
     <li>
         <h3>
-            {{org.name}}
+            <a [routerLink]="['/organization', org.name]">
+                {{org.name}}
+            </a>
         </h3>
 
         @for (entry of Object.entries(org.needs || {}); track entry[0]) {

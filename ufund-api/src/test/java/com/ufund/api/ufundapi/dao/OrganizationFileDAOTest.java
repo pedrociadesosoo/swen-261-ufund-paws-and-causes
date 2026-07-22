@@ -65,7 +65,7 @@ public class OrganizationFileDAOTest {
     void testGetOrgReturnsOrg() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
         assertEquals("General Humanities", o.getName());
-        assertEquals("We're a nonprofit general charity working for a variety of causes", o.getDesc());
+        assertEquals("We're a nonprofit general charity working for a variety of causes", o.getDescription());
         assertEquals(3, o.getNeeds().size());
     }
 
@@ -87,7 +87,7 @@ public class OrganizationFileDAOTest {
         Organization created = oDao.createOrganization(new Organization("Forest Fighters", "We fight forests", new HashMap<>()));
 
         assertEquals(created.getName(), "Forest Fighters");
-        assertEquals(created.getDesc(), "We fight forests");
+        assertEquals(created.getDescription(), "We fight forests");
         assertTrue(created.getNeeds().isEmpty());
     }
 

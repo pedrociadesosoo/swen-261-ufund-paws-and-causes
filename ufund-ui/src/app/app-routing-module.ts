@@ -9,9 +9,11 @@ import { Checkout } from './checkout/checkout';
 import { authGuard, managerGuard, helperGuard, unsavedChangesGuard } from './route-guards';
 import { OrganizationListComponent } from './organization-list.component/organization-list.component';
 import { CreateOrgComponent } from './create-org.component/create-org.component';
+import { OrganizationDetailsComponent } from './organization-details.component/organization-details.component';
 
 const routes: Routes = [
   { path: 'organization', component: OrganizationListComponent, canActivate: [authGuard]},
+  {path: 'organization/:name', component: OrganizationDetailsComponent, canActivate: [authGuard]},
   { path: 'organization_edit', component: CreateOrgComponent, canActivate: [authGuard], canDeactivate: [unsavedChangesGuard]},
   { path: 'edit-org/:name', component: CreateOrgComponent, canActivate: [authGuard], canDeactivate: [unsavedChangesGuard]},
   { path: 'cupboard', component: Cupboard, canActivate: [authGuard] },

@@ -1,0 +1,33 @@
+<div class="org-detail-container">
+    <h2>Organization Details</h2>
+
+    <div *ngIf="errorMessage" class="error">
+        {{ errorMessage }}
+    </div>
+
+    @if (org) {
+    <div>
+        <table>
+            <tr>
+                <th>Name</th>
+                <td>{{ org.name }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ org.description }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <ul>
+        @for (entry of Object.entries(org.needs || {}); track entry[0]) {
+        <li>
+            <a [routerLink]="['/cupboard', entry[1].id]">
+                {{ entry[1].name }}
+            </a>
+        </li>
+        }
+    </ul>
+    }
+    <button (click)="goBack()">Back to Organization List</button>
+</div>
