@@ -76,66 +76,45 @@ export class Proposals implements OnInit {
    * Saves the edited proposal values as a new need and removes the proposal.
    */
   saveEditedProposal(): void {
-    if (!this.selectedProposal) return;
-
-    const approvedNeed: Need = {
-      id: 0,
+      const updated = {
+      id: this.selectedProposal.id,
       name: this.selectedProposal.name,
       cost: this.selectedProposal.cost,
       quantity: this.selectedProposal.quantity,
-      type: this.selectedProposal.type
+      type: this.selectedProposal.type,
+      username: this.selectedProposal.username,
+      organization: this.selectedProposal.organization,
+      creationDate: this.selectedProposal.creationDate,
+      lastEdited: this.selectedProposal.lastEdited,
+      votes: this.selectedProposal.votes
     };
-
     if (!confirm(`approve "${this.selectedProposal.name}" from the proposals list?`)) return;
-    
-    this.needService.createNeed(approvedNeed).subscribe({
-      next: () => {
-        this.proposalService.deleteProposal(this.selectedProposal!.id).subscribe({
-          next: () => {
-            this.successMessage = `Need "${this.selectedProposal!.name}" approved and added to the cupboard`;
-            this.errorMessage = '';
-            this.selectedProposal = null;
-            this.loadProposals();
-          },
-          error: () => {
-            this.successMessage = '';
-            this.errorMessage = 'Need was created, but removing the proposal failed';
-          }
-        });
-      },
+
+      this.proposalService.updateProposal(updated).subscribe({
+        next: () => {
+          this.selectedProposal = null;
+          this.loadProposals();
+        },
       error: () => {
-        this.successMessage = '';
         this.errorMessage = 'Failed to approve proposal';
       }
     });
   }
 
-    saveProposal(proposal: Proposal): void {
+  saveProposal(proposal: Proposal): void {
+
     if (!confirm(`approve "${proposal.name}" from the proposals list?`)) return;
 
-
-    const approvedNeed: Need = {
-      id: 0,
-      name: proposal.name,
-      cost: proposal.cost,
-      quantity: proposal.quantity,
-      type: proposal.type
-    };
-
-    this.needService.createNeed(approvedNeed).subscribe({
-      next: () => {
-        this.proposalService.deleteProposal(proposal.id).subscribe({
+    this.proposalService.approveProposal(proposal.id).subscribe({
           next: () => {
             this.successMessage = `Need "${proposal.name}" approved and added to the cupboard`;
             this.errorMessage = '';
             this.loadProposals();
-          }
-        });
-      },
-      error: () => {
-        this.successMessage = '',
-        this.errorMessage = "failed to approve proposal"
-      }
+          },
+        error: () => {
+          this.successMessage = '';
+          this.errorMessage = "failed to approve proposal";
+        }
     });
   }
         

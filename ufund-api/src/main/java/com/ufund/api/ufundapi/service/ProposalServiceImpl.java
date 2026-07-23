@@ -6,19 +6,22 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ufund.api.ufundapi.dao.ProposalDAO;
+import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.Proposal;
 
 @Service
 public class ProposalServiceImpl implements ProposalService {
     private ProposalDAO proposalDao;
+    private NeedService needService;
 
     /**
      * Creates a ProposalServiceImpl with the provided {@link ProposalDAO}.
      *
      * @param proposalDao the {@link ProposalDAO} to use for data access
      */
-    public ProposalServiceImpl(ProposalDAO proposalDao) {
+    public ProposalServiceImpl(ProposalDAO proposalDao, NeedService needService) {
         this.proposalDao = proposalDao;
+        this.needService = needService;
     }
 
     /**
@@ -57,5 +60,23 @@ public class ProposalServiceImpl implements ProposalService {
             return null;
         }
     }
+
+    public Proposal approveProposal(int id) throws IOException {
+        Proposal proposal = proposalDao.getProposalById(id);
+        if (proposal == null) { return null;}
+
+        Need need = new Need(id, proposal.getName(), proposal.getCost(), proposal.getQuantity(), proposal.getType());
+
+        needService.createNeed(need);
+
+        proposalDao.deleteProposal(id);
+
+        return proposal;
+    }
+
+    public Proposal updateProposal(Proposal updProposal) throws IOException {
+        return proposalDao.updateProposal(updProposal);
+    }
+    
  
 }
