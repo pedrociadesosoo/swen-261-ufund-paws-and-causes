@@ -67,7 +67,7 @@ public class ProposalServiceImpl implements ProposalService {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) { return null;}
 
-        Need need = new Need(id, proposal.getName(), proposal.getCost(), proposal.getQuantity(), proposal.getType());
+        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), proposal.getType());
 
         needService.createNeed(need);
         proposal.setStatus("approved");

@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
+import com.ufund.api.ufundapi.service.AccountService;
 import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.service.ProposalService;
+import com.ufund.api.ufundapi.model.Account;
+import com.ufund.api.ufundapi.model.ManagerAccount;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.Proposal;
 
@@ -30,6 +33,7 @@ import com.ufund.api.ufundapi.model.Proposal;
 public class ProposalController {
     private ProposalService proposalService;
     private NeedService needService;
+    private AccountService accountService;
 
     private static final Logger LOG = Logger.getLogger(ProposalController.class.getName());
 
@@ -39,11 +43,18 @@ public class ProposalController {
      * @param proposalService the {@link ProposalService} for CRUD operations.
      * This dependency is injected by the Spring framework.
      */
-    public ProposalController(ProposalService proposalService, NeedService needService) {
+    public ProposalController(ProposalService proposalService, NeedService needService, AccountService accountService) {
         this.proposalService = proposalService;
         this.needService = needService;
+        this.accountService = accountService;
     }
 
+    private boolean isManager(String username) throws IOException {
+        if (username == null || username.isBlank())
+            return false;
+        Account account = accountService.getAccount(username);
+        return account instanceof ManagerAccount;
+    }
     /**
      * Responds to a GET request for a {@linkplain Proposal proposal} with the given id.
      *
@@ -114,11 +125,15 @@ public class ProposalController {
                                             @PathVariable int id) {
         LOG.info("DELETE /Proposal/" + id);
         try {
-            Proposal deletedProposal = proposalService.deleteProposal(id);
-            if (deletedProposal != null)
-                return new ResponseEntity<Proposal>(deletedProposal, HttpStatus.OK);
-            else
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (isManager(username)) {
+                Proposal deletedProposal = proposalService.deleteProposal(id);
+                if (deletedProposal != null)
+                    return new ResponseEntity<Proposal>(deletedProposal, HttpStatus.OK);
+                else
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -128,24 +143,30 @@ public class ProposalController {
 
 
     @PostMapping("/{id}/approve")
-    public ResponseEntity<?> ApprovalProposal(@PathVariable int id) {
+    public ResponseEntity<?> ApprovalProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id) {
         try {
-            Proposal proposal = proposalService.getProposalById(id);
+            if (isManager(username)) {
 
-            if (proposal == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                Proposal proposal = proposalService.getProposalById(id);
+
+                if (proposal == null) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+
+                List<Need> matches = needService.findNeeds(proposal.getName());
+
+                if (!matches.isEmpty()) {
+                    return new ResponseEntity<>("Need already exists", HttpStatus.CONFLICT);
+                }
+
+                Proposal approved = proposalService.approveProposal(id);
+                approved.setStatus("approved");
+
+                return new ResponseEntity<>(approved, HttpStatus.OK);
             }
 
-            List<Need> matches = needService.findNeeds(proposal.getName());
+              return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-            if (!matches.isEmpty()) {
-                return new ResponseEntity<>("Need already exists", HttpStatus.CONFLICT);
-            }
-
-            Proposal approved = proposalService.approveProposal(id);
-            approved.setStatus("approved");
-
-            return new ResponseEntity<>(approved, HttpStatus.OK);
 
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -154,18 +175,23 @@ public class ProposalController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proposal> updateProposal(@PathVariable int id,
+    public ResponseEntity<Proposal> updateProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id,
                                                 @RequestBody Proposal updatedProposal) {
         try {
-            Proposal existing = proposalService.getProposalById(id);
-            if (existing == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (isManager(username)) {
+
+                Proposal existing = proposalService.getProposalById(id);
+                if (existing == null) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+
+                updatedProposal.setId(id);
+                Proposal saved = proposalService.updateProposal(updatedProposal);
+
+                return new ResponseEntity<>(saved, HttpStatus.OK);
             }
 
-            updatedProposal.setId(id);
-            Proposal saved = proposalService.updateProposal(updatedProposal);
-
-            return new ResponseEntity<>(saved, HttpStatus.OK);
+             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -174,15 +200,21 @@ public class ProposalController {
 
 
     @PostMapping("/{id}/reject")
-    public ResponseEntity<?> rejectProposal(@PathVariable int id) {
+    public ResponseEntity<?> rejectProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id) {
         try {
-            Proposal rejected = proposalService.rejectProposal(id);
+            if (isManager(username)) {
 
-            if (rejected == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                Proposal rejected = proposalService.rejectProposal(id);
+
+                if (rejected == null) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+
+                return new ResponseEntity<>(rejected, HttpStatus.OK);
             }
 
-            return new ResponseEntity<>(rejected, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
 
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
