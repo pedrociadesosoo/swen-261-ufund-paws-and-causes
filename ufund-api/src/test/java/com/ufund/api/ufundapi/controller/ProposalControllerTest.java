@@ -34,7 +34,7 @@ public class ProposalControllerTest {
 
     @Test
     public void testDeleteProposal() throws Exception {
-        Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>() );
+        Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending" );
         when(proposalService.deleteProposal(3)).thenReturn(proposal);
         ResponseEntity<Proposal> response = proposalController.deleteProposal("manager", 3);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -43,7 +43,7 @@ public class ProposalControllerTest {
 
     @Test
     public void testApproval() throws Exception {
-        Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>());
+        Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
         when(needService.findNeeds("Corn")).thenReturn(List.of());
@@ -59,7 +59,7 @@ public class ProposalControllerTest {
 
     @Test
     public void testApprovalDuplicateNeed() throws Exception {
-        Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>());
+        Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
         Need existingNeed = new Need(1, "Corn", 10.97, 100, "food");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
@@ -73,8 +73,8 @@ public class ProposalControllerTest {
 
     @Test
     public void testUpdateProposal() throws Exception {
-        Proposal existing = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>());
-        Proposal updated = new Proposal(3, "Corn Meal", 12.00, 150, "food", "moss", "moss inc", new HashMap<>());
+        Proposal existing = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
+        Proposal updated = new Proposal(3, "Corn Meal", 12.00, 150, "food", "moss", "moss inc", new HashMap<>(), "pending");
 
         when(proposalService.getProposalById(3)).thenReturn(existing);
         when(proposalService.updateProposal(updated)).thenReturn(updated);

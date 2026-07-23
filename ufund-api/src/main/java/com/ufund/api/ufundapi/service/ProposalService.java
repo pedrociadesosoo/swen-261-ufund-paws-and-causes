@@ -52,5 +52,6 @@ public interface ProposalService{
 
 	Proposal updateProposal(Proposal proposal) throws IOException;
 
+	Proposal rejectProposal(int id) throws IOException;
 
 }

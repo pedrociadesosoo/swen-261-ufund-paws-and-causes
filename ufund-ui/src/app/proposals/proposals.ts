@@ -75,33 +75,35 @@ export class Proposals implements OnInit {
   /**
    * Saves the edited proposal values as a new need and removes the proposal.
    */
-  saveEditedProposal(): void {
-      const updated = {
-      id: this.selectedProposal.id,
-      name: this.selectedProposal.name,
-      cost: this.selectedProposal.cost,
-      quantity: this.selectedProposal.quantity,
-      type: this.selectedProposal.type,
-      username: this.selectedProposal.username,
-      organization: this.selectedProposal.organization,
-      creationDate: this.selectedProposal.creationDate,
-      lastEdited: this.selectedProposal.lastEdited,
-      votes: this.selectedProposal.votes
-    };
-    if (!confirm(`approve "${this.selectedProposal.name}" from the proposals list?`)) return;
+  saveEditedProposal(proposal: Proposal): void {
+    if (!confirm(`Save and attempt approval for "${proposal.name}"?`)) return;
 
-      this.proposalService.updateProposal(updated).subscribe({
-        next: () => {
-          this.selectedProposal = null;
-          this.loadProposals();
-        },
+    this.proposalService.updateProposal(proposal).subscribe({
+      next: (updatedProposal) => {
+        this.proposalService.approveProposal(updatedProposal.id).subscribe({
+          next: () => {
+            this.successMessage = `Changes to "${proposal.name}" saved and approved successfully!`;
+            this.errorMessage = '';
+            this.loadProposals();
+            this.cancelEdit();
+          },
+          error: () => {
+            this.successMessage = ``;
+            this.errorMessage = `Changes to ${proposal.name} were saved, but approval failed.`;
+            this.loadProposals();
+            this.cancelEdit();
+          }
+        });
+      },
       error: () => {
-        this.errorMessage = 'Failed to approve proposal';
+        this.errorMessage = 'Failed to save changes';
+        this.successMessage = '';
+        this.loadProposals();
       }
     });
   }
 
-  saveProposal(proposal: Proposal): void {
+  approveProposal(proposal: Proposal): void {
 
     if (!confirm(`approve "${proposal.name}" from the proposals list?`)) return;
 
@@ -117,6 +119,23 @@ export class Proposals implements OnInit {
         }
     });
   }
+
+  rejectProposal(proposal: Proposal): void {
+    if (!confirm(`Reject "${proposal.name}"?`)) return;
+
+    this.proposalService.rejectProposal(proposal.id).subscribe({
+      next: () => {
+        this.successMessage = `"${proposal.name}" rejected`;
+        this.errorMessage = '';
+        this.loadProposals();
+      },
+      error: () => {
+        this.errorMessage = 'Failed to reject proposal';
+        this.successMessage = '';
+      }
+    });
+  }
+
         
 
   /**
@@ -186,7 +205,8 @@ export class Proposals implements OnInit {
       "Organization",
       "Submitted By",
       "Date",
-      "Votes",
+      "allVotes",
+      "status",
       "Actions"
     ];
 
@@ -198,7 +218,8 @@ export class Proposals implements OnInit {
       "organization",
       "username",
       "creationDate",
-      "votes"
+      "allVotes",
+      "status"
     ];
 
 }

@@ -1,1 +1,1 @@
-[{"id":1,"name":"Blankets","cost":25.0,"quantity":25,"type":"fabric","username":"Moss","organization":"Moss item","votes":{"for":0,"against":0},"allVotes":{"for":0,"against":0},"creationDate":"2026-07-23T04:10:51.630203100Z","lastEdited":null}]
+[{"id":3,"name":"Blankets","cost":30.0,"quantity":25,"type":"fabric","username":"Moss","organization":"Moss item","allVotes":{"for":0,"against":0},"status":"approved","creationDate":"2026-07-23T04:10:51.630203100Z","lastEdited":"2026-07-23T19:31:13.983755900Z"}]

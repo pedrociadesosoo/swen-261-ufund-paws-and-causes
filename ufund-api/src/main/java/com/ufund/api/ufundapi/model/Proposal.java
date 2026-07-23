@@ -15,10 +15,11 @@ public class Proposal{
     @JsonProperty("quantity") private int quantity;
     @JsonProperty("type") private String type;
     @JsonProperty("username") private String username;
-    @JsonProperty("votes") private Map<String, Integer> votes = new HashMap<>();
+    @JsonProperty("allVotes") private Map<String, Integer> allVotes = new HashMap<>();
     @JsonProperty("organization") private String organization;
     @JsonProperty("creationDate") private String creationDate = Instant.now().toString();
     @JsonProperty("lastEdited") private String lastEdited;
+    @JsonProperty("status") private String status;
 
 
     public Proposal(@JsonProperty("id") int id,
@@ -28,7 +29,8 @@ public class Proposal{
                 @JsonProperty("type") String type,
 		@JsonProperty("username") String username,
 		@JsonProperty("organization") String organization,
-        @JsonProperty("votes") Map<String, Integer> votes
+        @JsonProperty("allVotes") Map<String, Integer> allVotes,
+        @JsonProperty("status") String status
 		) {
         this.id = id;
         this.name = name;
@@ -37,7 +39,8 @@ public class Proposal{
         this.type = type;
 	this.username = username;
 	this.organization = organization;
-    this.votes = votes;
+    this.allVotes = allVotes;
+    this.status = status;
     }
 
     public int getId() {
@@ -103,13 +106,24 @@ public class Proposal{
     	this.lastEdited = lastEdited;
     }
 
+    public void setAllVotes(Map<String, Integer> allVotes) {
+        this.allVotes = allVotes;
+    }
+
     public Map<String, Integer> getAllVotes(){
-    	return votes;
+    	return allVotes;
     }
 
     public Integer getUserVoteStatus(String user){
-	// should return one or negative one if they have voted or null if they have not
-    	return votes.get(user);
+    	return allVotes.get(user);
+    }
+
+    public void setStatus(String Status) {
+        this.status = Status;
+    }
+
+    public String getStatus() {
+        return this.status;
     }
 
 }

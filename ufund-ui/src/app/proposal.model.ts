@@ -11,7 +11,8 @@ export interface Proposal {
     organization: string;
     creationDate: string;
     lastEdited: string;
-    votes: Map<string, number>;
+    allVotes: Map<string, number>;
+    status: string;
 
     [key: string]: any;
 }

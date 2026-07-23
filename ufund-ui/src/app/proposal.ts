@@ -43,4 +43,9 @@ export class ProposalService {
   updateProposal(proposal: Proposal): Observable<Proposal> {
     return this.http.put<Proposal>(`${this.apiUrl}/${proposal.id}`, proposal)
   }
+
+  rejectProposal(id: number): Observable<Proposal> {
+    return this.http.post<Proposal>(`${this.apiUrl}/${id}/reject`, {});
+  }
+
 }

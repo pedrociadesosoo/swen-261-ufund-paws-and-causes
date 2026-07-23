@@ -1,6 +1,7 @@
 package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class ProposalServiceImpl implements ProposalService {
      * {@inheritDoc}
      */
     public Proposal createProposal(Proposal newProposal) throws IOException {
+		newProposal.setStatus("pending");
         return proposalDao.createProposal(newProposal);
     }
 
@@ -68,15 +70,22 @@ public class ProposalServiceImpl implements ProposalService {
         Need need = new Need(id, proposal.getName(), proposal.getCost(), proposal.getQuantity(), proposal.getType());
 
         needService.createNeed(need);
-
-        proposalDao.deleteProposal(id);
-
-        return proposal;
+        proposal.setStatus("approved");
+        return proposalDao.updateProposal(proposal);
     }
 
     public Proposal updateProposal(Proposal updProposal) throws IOException {
+        updProposal.setStatus("pending");
         return proposalDao.updateProposal(updProposal);
     }
-    
- 
+
+
+    public Proposal rejectProposal(int id) throws IOException {
+        Proposal proposal = proposalDao.getProposalById(id);
+        if (proposal == null) return null;
+
+        proposal.setStatus("rejected");
+
+        return proposalDao.updateProposal(proposal);
+    }
 }

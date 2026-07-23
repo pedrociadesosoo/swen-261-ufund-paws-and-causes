@@ -2,6 +2,7 @@ package com.ufund.api.ufundapi.controller;
 
 import java.util.List;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
@@ -142,8 +143,7 @@ public class ProposalController {
             }
 
             Proposal approved = proposalService.approveProposal(id);
-
-            proposalService.deleteProposal(id);
+            approved.setStatus("approved");
 
             return new ResponseEntity<>(approved, HttpStatus.OK);
 
@@ -158,15 +158,11 @@ public class ProposalController {
                                                 @RequestBody Proposal updatedProposal) {
         try {
             Proposal existing = proposalService.getProposalById(id);
-
             if (existing == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
 
-            // Ensure the ID stays correct
             updatedProposal.setId(id);
-
-            // Pass the full object to the service
             Proposal saved = proposalService.updateProposal(updatedProposal);
 
             return new ResponseEntity<>(saved, HttpStatus.OK);
@@ -175,5 +171,24 @@ public class ProposalController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @PostMapping("/{id}/reject")
+    public ResponseEntity<?> rejectProposal(@PathVariable int id) {
+        try {
+            Proposal rejected = proposalService.rejectProposal(id);
+
+            if (rejected == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            return new ResponseEntity<>(rejected, HttpStatus.OK);
+
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 }
