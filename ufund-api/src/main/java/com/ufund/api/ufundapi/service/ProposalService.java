@@ -33,9 +33,19 @@ public interface ProposalService{
 	// 		if the new and old vote are different, replace the old vote with
 	// 		the new (I.E. yes to no, no to yes)
 	//
-	/*
-	 * Proposal voteUpdate(int proposalId, String username, int vote) throws IOException;
-	*/
+	/**
+	 * Records a vote from a user on a proposal, toggling per the rules: a
+	 * first-time vote is recorded; an identical repeat vote is removed
+	 * (unvote); a differing vote replaces the previous one (flip).
+	 *
+	 * @param proposalId the id of the {@link Proposal proposal} being voted on
+	 * @param username the user casting the vote
+	 * @param vote the vote value (+1 or -1)
+	 * @return the updated {@link Proposal proposal}, or {@code null} if no
+	 *         proposal has that id (the controller maps null to HTTP 404)
+	 * @throws IOException if an issue with storage access occurs
+	 */
+	Proposal voteUpdate(int proposalId, String username, int vote) throws IOException;
 	/**
 	 * Handles a request to create a new proposal.
 	 *

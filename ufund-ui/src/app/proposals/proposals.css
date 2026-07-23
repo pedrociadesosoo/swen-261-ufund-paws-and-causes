@@ -45,3 +45,30 @@ tbody tr:last-child td {
   color: red;
   margin-bottom: 1rem;
 }
+
+.vote-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vote-btn {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+}
+
+.vote-btn.active {
+  background-color: #cc26d5;
+  color: white;
+  border-color: #cc26d5;
+}
+
+.vote-count {
+  min-width: 1.5em;
+  text-align: center;
+  font-weight: 600;
+}

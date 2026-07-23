@@ -75,6 +75,15 @@ public class ProposalServiceImpl implements ProposalService {
     }
 
     public Proposal updateProposal(Proposal updProposal) throws IOException {
+
+        boolean needExists = needService.getAllNeeds().stream()
+            .anyMatch(n -> n.getName().equalsIgnoreCase(updProposal.getName()) &&
+                        n.getCost() == updProposal.getCost() &&
+                        n.getQuantity() == updProposal.getQuantity() &&
+                        n.getType().equalsIgnoreCase(updProposal.getType()));
+        if (needExists) {
+            throw new IllegalArgumentException("Proposal can't be pending, matching Need already exist");
+        }
         updProposal.setStatus("pending");
         return proposalDao.updateProposal(updProposal);
     }
@@ -84,7 +93,36 @@ public class ProposalServiceImpl implements ProposalService {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) return null;
 
+            boolean needExists = needService.getAllNeeds().stream()
+                .anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()) &&
+                            n.getCost() == proposal.getCost() &&
+                            n.getQuantity() == proposal.getQuantity() &&
+                            n.getType().equalsIgnoreCase(proposal.getType()));
+            if (needExists) {
+                throw new IllegalArgumentException("Proposal can't be rejected, matching Need already exist");
+            }
+
+
         proposal.setStatus("rejected");
+
+        return proposalDao.updateProposal(proposal);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Proposal voteUpdate(int proposalId, String username, int vote) throws IOException {
+        Proposal proposal = proposalDao.getProposalById(proposalId);
+        if (proposal == null)
+            return null;
+
+        Integer current = proposal.getUserVoteStatus(username);
+        if (current == null)            // user hasn't voted yet -> record it
+            proposal.getAllVotes().put(username, vote);
+        else if (current == vote)       // same vote again -> remove it (unvote)
+            proposal.getAllVotes().remove(username);
+        else                            // different vote -> replace it (flip)
+            proposal.getAllVotes().put(username, vote);
 
         return proposalDao.updateProposal(proposal);
     }

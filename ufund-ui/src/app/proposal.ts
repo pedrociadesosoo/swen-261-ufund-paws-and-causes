@@ -48,4 +48,12 @@ export class ProposalService {
     return this.http.post<Proposal>(`${this.apiUrl}/${id}/reject`, {});
   }
 
+
+  /**
+   * Casts a vote on a proposal. Voting the same way again removes the vote,
+   * voting the opposite way flips it. Returns the updated proposal.
+   */
+  vote(id: number, username: string, vote: number): Observable<Proposal> {
+    return this.http.post<Proposal>(`${this.apiUrl}/${id}/vote`, { username, vote });
+  }
 }
