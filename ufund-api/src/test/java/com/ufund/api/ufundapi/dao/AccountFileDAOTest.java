@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ import com.ufund.api.ufundapi.model.HelperAccount;
 import com.ufund.api.ufundapi.model.ManagerAccount;
 import com.ufund.api.ufundapi.model.Need;
 
+@Tag("Persistence-tier")
 public class AccountFileDAOTest {
     private ObjectMapper mockMapper;
     private AccountFileDAO afDao;

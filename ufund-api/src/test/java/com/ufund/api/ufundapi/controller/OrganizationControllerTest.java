@@ -156,6 +156,8 @@ public class OrganizationControllerTest {
 
         Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
+        
+        when(orgService.addNeed(o,newNeed)).thenReturn(true);
 
         ResponseEntity<Boolean> response = orgCont.addNeed(o.getName(), newNeed.getId());
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -171,11 +173,12 @@ public class OrganizationControllerTest {
         Organization o = sampleOrganization();
         o.addNeed(newNeed);
         when(orgService.getOrganization(o.getName())).thenReturn(o);
-
+        when(orgService.addNeed(o,newNeed)).thenReturn(false);
 
         ResponseEntity<Boolean> response = orgCont.addNeed(o.getName(), newNeed.getId());
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals(false, response.getBody());
+        o.removeNeed(newNeed);
     }
 
     @Test
@@ -198,6 +201,7 @@ public class OrganizationControllerTest {
 
         Need need = o.getNeeds().get(1);
         when(needService.getNeedById(need.getId())).thenReturn(need);
+        when(orgService.deleteNeed(o, need)).thenReturn(true);
 
         ResponseEntity<Boolean> response = orgCont.deleteNeed(o.getName(), need.getId());
         assertEquals(HttpStatus.OK, response.getStatusCode());

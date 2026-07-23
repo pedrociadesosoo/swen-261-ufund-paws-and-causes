@@ -11,6 +11,7 @@ import { NeedDetail } from './need-detail/need-detail';
 import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.component';
 import { Login } from './login/login';
 import { Checkout } from './checkout/checkout';
+import { Proposals } from './proposals/proposals';
 import { AuthInterceptor } from './auth-interceptor';
 import { NeedTypeDropdown } from './need-type-dropdown/need-type-dropdown';
 
@@ -23,7 +24,8 @@ import { NeedTypeDropdown } from './need-type-dropdown/need-type-dropdown';
     FundingbasketComponent,
     Login,
     Checkout,
-    NeedTypeDropdown
+    NeedTypeDropdown,
+    Proposals
   ],
   imports: [
     BrowserModule,

@@ -163,7 +163,7 @@ public class OrganizationFileDAOTest {
         assertEquals(3, oDao.getOrganization("General Humanities").getNeeds().size());
     }
 
-    @Test 
+    @Test
     void testDeleteNeedHandleException() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
         Need deletedNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION);
