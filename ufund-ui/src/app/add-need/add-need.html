@@ -50,10 +50,11 @@
 
     <div class="form-group">
       <label for="type">Need Type</label>
-      <select name = "type" [(ngModel)]="need.type" > 
-        <option [ngValue]=1>Item</option>
-        <option [ngValue]=2>Monetary</option>
-        <option [ngValue]=3>Volunteering</option>
+      <select name = "type" [(ngModel)]="need.type" >
+        <option [ngValue]="NeedType.SELECT">Select Type</option>
+        <option [ngValue]="NeedType.ITEM_DONATION">Item</option>
+        <option [ngValue]="NeedType.MONETARY">Monetary</option>
+        <option [ngValue]="NeedType.VOLUNTEERING">Volunteering</option>
     </select>
     </div>
 

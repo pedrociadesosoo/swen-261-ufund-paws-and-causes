@@ -13,13 +13,16 @@ import { NeedType } from '../need-type';
   styleUrl: './cupboard.css',
 })
 export class Cupboard implements OnInit {
+  /** Exposed so the template's dropdown can bind to NeedType.ITEM_DONATION etc. */
+  NeedType = NeedType;
+
   needs: Need[] = [];
   errorMessage: string = '';
   successMessage: string = '';
 
   /** Bound to the search box, filters the cupboard by partial name match */
   searchTerm: string = '';
-  searchType: NeedType = 0;
+  searchType: NeedType = NeedType.SELECT;
 
   constructor(
     private needService: NeedService,
@@ -57,7 +60,7 @@ export class Cupboard implements OnInit {
    */
   clearSearch(): void {
     this.searchTerm = '';
-    this.searchType = 0;
+    this.searchType = NeedType.SELECT;
     this.errorMessage = '';
     this.loadNeeds();
   }

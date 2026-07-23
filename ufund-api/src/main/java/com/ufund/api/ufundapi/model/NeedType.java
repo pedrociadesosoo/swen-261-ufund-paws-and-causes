@@ -4,11 +4,6 @@ package com.ufund.api.ufundapi.model;
  * The fixed set of categories a {@linkplain Need need} can belong to.
  */
 public enum NeedType {
-    /** Corresponds to the SELECT option on the frontend that is used to validate data, 
-     * and is needed here to align the types properly.
-     */
-    SELECT,
-
     /** A physical item being donated (food, clothing, supplies, etc.). */
     ITEM_DONATION,
 

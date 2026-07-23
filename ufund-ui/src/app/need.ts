@@ -17,10 +17,10 @@ export class NeedService {
    */
   getNeeds(name?: string, type?: NeedType): Observable<Need[]> {
     if (type && name) {
-      return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&type=${NeedType[type]}`);
+      return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&type=${type}`);
     } else {
       if(type)
-        return this.http.get<Need[]>(`${this.apiUrl}?type=${NeedType[type]}`);
+        return this.http.get<Need[]>(`${this.apiUrl}?type=${type}`);
       else if(name)
         return this.http.get<Need[]>(`${this.apiUrl}?name=${name}`);
       else
