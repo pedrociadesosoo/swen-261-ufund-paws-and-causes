@@ -8,7 +8,6 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -140,7 +139,7 @@ public class OrganizationFileDAOTest {
         doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
 
         boolean added = oDao.addNeed(o, newNeed);
-        assertThrows(IOException.class, () -> oDao.addNeed(o, newNeed));
+        assertFalse(added);
     }
 
     @Test
@@ -170,7 +169,7 @@ public class OrganizationFileDAOTest {
         doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
 
         boolean deleted = oDao.deleteNeed(o, deletedNeed);
-        assertThrows(IOException.class, () -> oDao.deleteNeed(o, deletedNeed));
+        assertFalse(deleted);
     }
 
 }
