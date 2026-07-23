@@ -2,6 +2,7 @@ package com.ufund.api.ufundapi.dao;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Proposal;
+import com.ufund.api.ufundapi.service.ProposalService;
 
 @Component
 public class ProposalFileDAO implements ProposalDAO {
@@ -95,17 +97,27 @@ public class ProposalFileDAO implements ProposalDAO {
 		}
 	}
 
+
 	@Override
 	public Proposal updateProposal(Proposal proposal) throws IOException {
 		synchronized (proposals) {
-			if (!proposals.containsKey(proposal.getId()))
-				return null;
+			Proposal existing = proposals.get(proposal.getId());
+			if (existing == null) {
+				return null; 
+			}
+			
+			existing.setName(proposal.getName());
+			existing.setCost(proposal.getCost());
+			existing.setQuantity(proposal.getQuantity());
+			existing.setType(proposal.getType());
+			existing.setStatus(proposal.getStatus());
 
-			proposals.put(proposal.getId(), proposal);
+
 			save();
-			return proposal;
+			return existing;
 		}
 	}
+
 
 	@Override
 	public boolean deleteProposal(int id) throws IOException {

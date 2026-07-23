@@ -12,4 +12,7 @@ export interface Proposal {
     creationDate: string;
     lastEdited: string;
     votes: { [username: string]: number };
+    status: string;
+
+    [key: string]: any;
 }

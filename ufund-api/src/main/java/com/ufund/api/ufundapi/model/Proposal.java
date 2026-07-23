@@ -2,9 +2,7 @@ package com.ufund.api.ufundapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Map;
-
 import java.util.HashMap;
 
 import java.time.Instant;
@@ -21,6 +19,7 @@ public class Proposal{
     @JsonProperty("organization") private String organization;
     @JsonProperty("creationDate") private String creationDate = Instant.now().toString();
     @JsonProperty("lastEdited") private String lastEdited;
+    @JsonProperty("status") private String status;
 
 
     public Proposal(@JsonProperty("id") int id,
@@ -29,7 +28,9 @@ public class Proposal{
                 @JsonProperty("quantity") int quantity,
                 @JsonProperty("type") String type,
 		@JsonProperty("username") String username,
-		@JsonProperty("organization") String organization
+		@JsonProperty("organization") String organization,
+        @JsonProperty("votes") Map<String, Integer> votes,
+        @JsonProperty("status") String status
 		) {
         this.id = id;
         this.name = name;
@@ -38,6 +39,8 @@ public class Proposal{
         this.type = type;
 	this.username = username;
 	this.organization = organization;
+    this.votes = votes;
+    this.status = status;
     }
 
     public int getId() {
@@ -103,14 +106,24 @@ public class Proposal{
     	this.lastEdited = lastEdited;
     }
 
-    @JsonIgnore
+    public void setAllVotes(Map<String, Integer> votes) {
+        this.votes = votes;
+    }
+
     public Map<String, Integer> getAllVotes(){
     	return votes;
     }
 
     public Integer getUserVoteStatus(String user){
-	// should return one or negative one if they have voted or null if they have not
     	return votes.get(user);
+    }
+
+    public void setStatus(String Status) {
+        this.status = Status;
+    }
+
+    public String getStatus() {
+        return this.status;
     }
 
 }
