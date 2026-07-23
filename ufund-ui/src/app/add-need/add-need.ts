@@ -63,7 +63,7 @@ export class AddNeed implements OnInit {
       this.errorMessage = 'Name is required.';
       return false;
     }
-    if (this.need.cost <= 0) {
+    if (this.need.cost < 0) {
       this.errorMessage = 'Cost must be greater than 0.';
       return false;
     }
