@@ -2,10 +2,13 @@ package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Service;
+
 import com.ufund.api.ufundapi.dao.OrganizationFileDAO;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.Organization;
 
+@Service
 public class OrganizationServiceImpl implements OrganizationService {
     
     private OrganizationFileDAO ofDAO;

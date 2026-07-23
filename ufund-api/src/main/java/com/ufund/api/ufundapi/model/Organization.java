@@ -14,7 +14,7 @@ public class Organization {
 
     public Organization(@JsonProperty("Name") String name, 
                         @JsonProperty("Description") String description,
-                        @JsonProperty("needs") Map<Integer, Need> needs){
+                        @JsonProperty("Needs") Map<Integer, Need> needs){
         this.name = name;
         this.description = description;
         this.needs = needs != null ? needs : new HashMap<>();
