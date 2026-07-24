@@ -68,7 +68,11 @@ public class ProposalServiceImpl implements ProposalService {
 
         Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), proposal.getType());
 
-        needService.createNeed(need);
+        Need createNeed = needService.createNeed((need));
+        if (createNeed == null) {
+            throw new IllegalStateException("creation failed");
+        }
+
         proposal.setStatus("approved");
         return proposalDao.updateProposal(proposal);
     }

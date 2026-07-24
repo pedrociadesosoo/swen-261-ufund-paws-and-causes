@@ -154,12 +154,13 @@ public class ProposalController {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
 
-                List<Need> matches = needService.findNeeds(proposal.getName());
+                boolean needExists = needService.getAllNeeds().stream().
+                    anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()));
 
-                if (!matches.isEmpty()) {
-                    return new ResponseEntity<>("Need already exists", HttpStatus.CONFLICT);
+
+                if (needExists) {
+                    return new ResponseEntity<>("Need name already exist", HttpStatus.CONFLICT);
                 }
-
                 Proposal approved = proposalService.approveProposal(id);
                 approved.setStatus("approved");
 
@@ -196,16 +197,10 @@ public class ProposalController {
 
              return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-<<<<<<< Updated upstream
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         catch (IOException e) {
-=======
-        }catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (IOException e) {
->>>>>>> Stashed changes
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -227,10 +222,6 @@ public class ProposalController {
 
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
