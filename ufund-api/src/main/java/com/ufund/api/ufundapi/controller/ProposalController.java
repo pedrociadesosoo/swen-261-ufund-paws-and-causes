@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -168,6 +169,8 @@ public class ProposalController {
               return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
 
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -193,10 +196,16 @@ public class ProposalController {
 
              return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
+<<<<<<< Updated upstream
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         catch (IOException e) {
+=======
+        }catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (IOException e) {
+>>>>>>> Stashed changes
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -218,6 +227,10 @@ public class ProposalController {
 
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

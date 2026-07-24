@@ -114,7 +114,11 @@ export class Proposals implements OnInit {
           },
         error: (err: any) => {
           this.successMessage = '';
+<<<<<<< Updated upstream
           this.errorMessage = err.error || "failed to approve proposal";
+=======
+          this.errorMessage =  err.error || "failed to approve proposal";
+>>>>>>> Stashed changes
         }
     });
   }

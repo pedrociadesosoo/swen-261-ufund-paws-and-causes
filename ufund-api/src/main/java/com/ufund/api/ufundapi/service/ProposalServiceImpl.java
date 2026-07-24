@@ -1,7 +1,6 @@
 package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -84,6 +83,7 @@ public class ProposalServiceImpl implements ProposalService {
         if (needExists) {
             throw new IllegalArgumentException("Proposal can't be pending, matching Need already exist");
         }
+        
         updProposal.setStatus("pending");
         return proposalDao.updateProposal(updProposal);
     }
