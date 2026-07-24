@@ -153,7 +153,7 @@ public class ProposalController {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
 
-                List<Need> matches = needService.findNeeds(proposal.getName());
+                List<Need> matches = needService.findNeeds(proposal.getName(), null);
 
                 if (!matches.isEmpty()) {
                     return new ResponseEntity<>("Need already exists", HttpStatus.CONFLICT);

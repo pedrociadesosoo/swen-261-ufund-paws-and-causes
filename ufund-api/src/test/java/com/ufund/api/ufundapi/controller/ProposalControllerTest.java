@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import com.ufund.api.ufundapi.model.HelperAccount;
 import com.ufund.api.ufundapi.model.ManagerAccount;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 import com.ufund.api.ufundapi.model.Proposal;
 import com.ufund.api.ufundapi.service.AccountService;
 import com.ufund.api.ufundapi.service.NeedService;
@@ -48,9 +49,8 @@ public class ProposalControllerTest {
         accountService = mock(AccountService.class);
         proposalController = new ProposalController(proposalService, needService, accountService);
 
-        // "manager" is a stand-in for the X-Username header on requests that should be authorized
         when(accountService.getAccount("manager")).thenReturn(new ManagerAccount("manager", "pw"));
-        // "helper" is a stand-in for a logged-in but non-manager caller, used by the forbidden tests
+        
         when(accountService.getAccount("helper")).thenReturn(new HelperAccount("helper", "pw", new ArrayList<>()));
     }
 
@@ -76,7 +76,7 @@ public class ProposalControllerTest {
         Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
-        when(needService.findNeeds("Corn")).thenReturn(List.of());
+        when(needService.findNeeds("Corn", null)).thenReturn(List.of());
         when(proposalService.approveProposal(3)).thenReturn(proposal);
 
         ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);
@@ -96,10 +96,10 @@ public class ProposalControllerTest {
     @Test
     public void testApprovalDuplicateNeed() throws Exception {
         Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
-        Need existingNeed = new Need(1, "Corn", 10.97, 100, "food");
+        Need existingNeed = new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION);
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
-        when(needService.findNeeds("Corn")).thenReturn(List.of(existingNeed));
+        when(needService.findNeeds("Corn", null)).thenReturn(List.of(existingNeed));
 
         ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);
 
