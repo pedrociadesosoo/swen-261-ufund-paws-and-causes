@@ -68,7 +68,16 @@ public class ProposalServiceImpl implements ProposalService {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) { return null;}
 
-        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), NeedType.valueOf(proposal.getType()));
+        NeedType type;
+        try {
+            type = NeedType.valueOf(proposal.getType());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new IllegalArgumentException(
+                "Proposal has an invalid type (\"" + proposal.getType() +
+                "\"); edit the proposal and set a valid type before approving.");
+        }
+
+        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), type);
 
         needService.createNeed(need);
         proposal.setStatus("approved");

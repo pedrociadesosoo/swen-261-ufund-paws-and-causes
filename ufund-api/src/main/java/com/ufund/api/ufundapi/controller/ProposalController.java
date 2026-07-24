@@ -168,6 +168,8 @@ public class ProposalController {
               return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
 
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

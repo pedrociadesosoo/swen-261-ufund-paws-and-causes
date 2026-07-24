@@ -44,7 +44,14 @@
           <td><input [(ngModel)]="selectedProposal.name" name="name" /></td>
           <td><input type="number" [(ngModel)]="selectedProposal.cost" name="cost" /></td>
           <td><input type="number" [(ngModel)]="selectedProposal.quantity" name="quantity" /></td>
-          <td><input [(ngModel)]="selectedProposal.type" name="type" /></td>
+          <td>
+            <select name="type" [(ngModel)]="selectedProposal.type">
+              <option [ngValue]="NeedType.SELECT">Select Type</option>
+              <option [ngValue]="NeedType.ITEM_DONATION">Item</option>
+              <option [ngValue]="NeedType.MONETARY">Monetary</option>
+              <option [ngValue]="NeedType.VOLUNTEERING">Volunteering</option>
+            </select>
+          </td>
           <td>{{ proposal.organization }}</td>
           <td>{{ proposal.username }}</td>
           <td>{{ proposal.creationDate | date }}</td>
