@@ -148,21 +148,11 @@ public class ProposalController {
         try {
             if (isManager(username)) {
 
-                Proposal proposal = proposalService.getProposalById(id);
+                Proposal approved = proposalService.getProposalById(id);
 
-                if (proposal == null) {
+                if (approved == null) {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
-
-                boolean needExists = needService.getAllNeeds().stream().
-                    anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()));
-
-
-                if (needExists) {
-                    return new ResponseEntity<>("Need name already exist", HttpStatus.CONFLICT);
-                }
-                Proposal approved = proposalService.approveProposal(id);
-                approved.setStatus("approved");
 
                 return new ResponseEntity<>(approved, HttpStatus.OK);
             }
@@ -170,8 +160,8 @@ public class ProposalController {
               return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
 
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
