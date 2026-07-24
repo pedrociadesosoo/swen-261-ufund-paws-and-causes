@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Proposal } from './proposal.model';
+import { Proposals } from './proposals/proposals';
 
 /**
  * Handles HTTP communication with the proposals backend endpoints.
@@ -30,6 +31,23 @@ export class ProposalService {
   getProposalById(id: number): Observable<Proposal> {
     return this.http.get<Proposal>(`${this.apiUrl}/${id}`);
   }
+
+  deleteProposal(id: number): Observable<Proposal> {
+    return this.http.delete<Proposal>(`${this.apiUrl}/${id}`)
+  }
+
+  approveProposal(id: number): Observable<Proposal> {
+    return this.http.post<Proposal>(`${this.apiUrl}/${id}/approve`, {});
+  }
+
+  updateProposal(proposal: Proposal): Observable<Proposal> {
+    return this.http.put<Proposal>(`${this.apiUrl}/${proposal.id}`, proposal)
+  }
+
+  rejectProposal(id: number): Observable<Proposal> {
+    return this.http.post<Proposal>(`${this.apiUrl}/${id}/reject`, {});
+  }
+
 
   /**
    * Casts a vote on a proposal. Voting the same way again removes the vote,

@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, CanDeactivateFn, Router } from '@angular/router';
 import { AccountService } from './account';
 import { AddNeed } from './add-need/add-need';
+import { Proposals } from './proposals/proposals';
 /**
  * Blocks navigation to a route unless someone is currently logged in;
  * redirects anonymous visitors to the login page.
@@ -44,4 +45,10 @@ export const helperGuard: CanActivateFn = () => {
 export const unsavedChangesGuard: CanDeactivateFn<AddNeed> = (component) => {
 	if (component.canDeactivate()) return true;
 	return confirm('You have unsaved changes. Leave this page and discard them?');
+};
+
+
+export const unsavedProposalGuard: CanDeactivateFn<Proposals> = (component) => {
+	if (component.hasUnsavedChanges) return confirm('You have unsaved changes. Leave this page and discard them?');
+  return true;
 };
