@@ -11,6 +11,7 @@ import { NeedDetail } from './need-detail/need-detail';
 import { FundingbasketComponent } from './fundingbasket.component/fundingbasket.component';
 import { Login } from './login/login';
 import { Checkout } from './checkout/checkout';
+import { Proposals } from './proposals/proposals';
 import { AuthInterceptor } from './auth-interceptor';
 import { OrganizationListComponent } from './organization-list.component/organization-list.component';
 import { RouterModule } from '@angular/router';
@@ -28,7 +29,8 @@ import { OrganizationDetailsComponent } from './organization-details.component/o
     Checkout,
     OrganizationListComponent,
     CreateOrgComponent,
-    OrganizationDetailsComponent
+    OrganizationDetailsComponent,
+    Proposals
   ],
   imports: [
     BrowserModule,
