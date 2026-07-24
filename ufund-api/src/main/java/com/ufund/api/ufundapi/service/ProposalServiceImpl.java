@@ -68,6 +68,12 @@ public class ProposalServiceImpl implements ProposalService {
 
         Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), proposal.getType());
 
+		boolean needExists = needService.getAllNeeds().stream().
+			anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()));
+
+		if (needExists) {
+			throw new IllegalArgumentException("Need name already exist");
+		}
         Need createNeed = needService.createNeed((need));
         if (createNeed == null) {
             throw new IllegalStateException("creation failed");
