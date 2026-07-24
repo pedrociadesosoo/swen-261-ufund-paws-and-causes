@@ -75,15 +75,6 @@ public class ProposalServiceImpl implements ProposalService {
     }
 
     public Proposal updateProposal(Proposal updProposal) throws IOException {
-
-        boolean needExists = needService.getAllNeeds().stream()
-            .anyMatch(n -> n.getName().equalsIgnoreCase(updProposal.getName()) &&
-                        n.getCost() == updProposal.getCost() &&
-                        n.getQuantity() == updProposal.getQuantity() &&
-                        n.getType().equalsIgnoreCase(updProposal.getType()));
-        if (needExists) {
-            throw new IllegalArgumentException("Proposal can't be pending, matching Need already exist");
-        }
         updProposal.setStatus("pending");
         return proposalDao.updateProposal(updProposal);
     }
@@ -92,16 +83,6 @@ public class ProposalServiceImpl implements ProposalService {
     public Proposal rejectProposal(int id) throws IOException {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) return null;
-
-            boolean needExists = needService.getAllNeeds().stream()
-                .anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()) &&
-                            n.getCost() == proposal.getCost() &&
-                            n.getQuantity() == proposal.getQuantity() &&
-                            n.getType().equalsIgnoreCase(proposal.getType()));
-            if (needExists) {
-                throw new IllegalArgumentException("Proposal can't be rejected, matching Need already exist");
-            }
-
 
         proposal.setStatus("rejected");
 
