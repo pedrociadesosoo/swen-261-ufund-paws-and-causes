@@ -41,10 +41,10 @@
         </td>
 
         <ng-container *ngIf="selectedProposal?.id === proposal.id">
-          <td><input [(ngModel)]="selectedProposal.name" [ngModelOptions]="{standalone: true}" /></td>
-          <td><input type="number" [(ngModel)]="selectedProposal.cost" [ngModelOptions]="{standalone: true}" /></td>
-          <td><input type="number" [(ngModel)]="selectedProposal.quantity" [ngModelOptions]="{standalone: true}" /></td>
-          <td><input [(ngModel)]="selectedProposal.type" [ngModelOptions]="{standalone: true}" /></td>
+          <td><input [(ngModel)]="selectedProposal.name" name="name" /></td>
+          <td><input type="number" [(ngModel)]="selectedProposal.cost" name="cost" /></td>
+          <td><input type="number" [(ngModel)]="selectedProposal.quantity" name="quantity" /></td>
+          <td><input [(ngModel)]="selectedProposal.type" name="type" /></td>
           <td>{{ proposal.organization }}</td>
           <td>{{ proposal.username }}</td>
           <td>{{ proposal.creationDate | date }}</td>
