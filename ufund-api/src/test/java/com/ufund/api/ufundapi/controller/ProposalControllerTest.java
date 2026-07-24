@@ -74,7 +74,6 @@ public class ProposalControllerTest {
         Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
-        when(needService.findNeeds("Corn")).thenReturn(List.of());
         when(proposalService.approveProposal(3)).thenReturn(proposal);
 
         ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);
@@ -94,14 +93,26 @@ public class ProposalControllerTest {
     @Test
     public void testApprovalDuplicateNeed() throws Exception {
         Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
-        Need existingNeed = new Need(1, "Corn", 10.97, 100, "food");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
-        when(needService.findNeeds("Corn")).thenReturn(List.of(existingNeed));
+        when(proposalService.approveProposal(3)).thenThrow(new IllegalArgumentException("Need name already exist"));
 
         ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Need name already exist", response.getBody());
+    }
+
+    @Test 
+    public void testApprovalIllegalState() throws Exception {
+        Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
+        
+        when(proposalService.getProposalById(3)).thenReturn(proposal);
+        when(proposalService.approveProposal(3)).thenThrow(new IllegalStateException("creation failed"));
+        ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("creation failed", response.getBody());
     }
 
 
