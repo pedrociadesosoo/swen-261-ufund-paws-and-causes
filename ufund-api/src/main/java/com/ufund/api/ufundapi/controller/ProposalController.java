@@ -175,7 +175,7 @@ public class ProposalController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proposal> updateProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id,
+    public ResponseEntity<?> updateProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id,
                                                 @RequestBody Proposal updatedProposal) {
         try {
             if (isManager(username)) {
@@ -193,7 +193,10 @@ public class ProposalController {
 
              return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        } catch (IOException e) {
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -215,8 +218,10 @@ public class ProposalController {
 
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-
-        } catch (IOException e) {
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

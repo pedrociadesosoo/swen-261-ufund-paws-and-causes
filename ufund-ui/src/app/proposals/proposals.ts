@@ -55,9 +55,9 @@ export class Proposals implements OnInit {
         this.errorMessage = '';
         this.loadProposals();
       },
-      error: () => {
+      error: (err: any) => {
         this.successMessage = '';
-        this.errorMessage = 'Failed to delete proposal';
+        this.errorMessage = err.error || 'Failed to delete proposal';
       }
     });
   }
@@ -86,16 +86,16 @@ export class Proposals implements OnInit {
             this.loadProposals();
             this.cancelEdit();
           },
-          error: () => {
+          error: (err: any) => {
             this.successMessage = ``;
-            this.errorMessage = `Changes to ${proposal.name} were saved, but approval failed.`;
+            this.errorMessage = err.error || `Changes to ${proposal.name} were saved, but approval failed.`;
             this.loadProposals();
             this.cancelEdit();
           }
         });
       },
-      error: () => {
-        this.errorMessage = 'Failed to save changes';
+      error: (err: any) => {
+        this.errorMessage = err.error || 'Failed to save changes';
         this.successMessage = '';
         this.loadProposals();
       }
@@ -112,9 +112,9 @@ export class Proposals implements OnInit {
             this.errorMessage = '';
             this.loadProposals();
           },
-        error: () => {
+        error: (err: any) => {
           this.successMessage = '';
-          this.errorMessage = "failed to approve proposal";
+          this.errorMessage = err.error || "failed to approve proposal";
         }
     });
   }
@@ -128,8 +128,8 @@ export class Proposals implements OnInit {
         this.errorMessage = '';
         this.loadProposals();
       },
-      error: () => {
-        this.errorMessage = 'Failed to reject proposal';
+      error: (err: any) => {
+        this.errorMessage = err.error || 'Failed to reject proposal';
         this.successMessage = '';
       }
     });

@@ -92,7 +92,9 @@ public class ProposalServiceImpl implements ProposalService {
     public Proposal rejectProposal(int id) throws IOException {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) return null;
-
+            if ("rejected".equalsIgnoreCase(proposal.getStatus())) {
+                    throw new IllegalArgumentException("Proposal is already rejected");
+                }
             boolean needExists = needService.getAllNeeds().stream()
                 .anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()) &&
                             n.getCost() == proposal.getCost() &&
