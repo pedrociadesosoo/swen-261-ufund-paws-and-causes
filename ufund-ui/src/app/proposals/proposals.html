@@ -44,10 +44,10 @@
       </ng-container>
         <td *ngIf="selectedProposal?.id !== proposal.id">
           <div  *ngIf="isManager()" >
-            <button (click)="$event.stopPropagation(); editProposal(proposal)">Edit</button>
+            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); editProposal(proposal)">Edit</button>
             <button (click)="$event.stopPropagation(); deleteProposal(proposal)">Delete</button>
-            <button (click)="$event.stopPropagation(); approveProposal(proposal)">approve</button>
-            <button (click)="$event.stopPropagation(); rejectProposal(proposal)">Reject</button>
+            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); approveProposal(proposal)">Approve</button>
+            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); rejectProposal(proposal)">Reject</button>
           </div>
         </td>
 
