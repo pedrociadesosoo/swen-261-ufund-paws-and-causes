@@ -68,6 +68,11 @@ public class ProposalServiceImpl implements ProposalService {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) { return null;}
 
+        if (!"pending".equals(proposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + proposal.getStatus() + "; only pending proposals can be approved.");
+        }
+
         NeedType type;
         try {
             type = NeedType.valueOf(proposal.getType());
@@ -93,6 +98,11 @@ public class ProposalServiceImpl implements ProposalService {
     public Proposal rejectProposal(int id) throws IOException {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) return null;
+
+        if (!"pending".equals(proposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + proposal.getStatus() + "; only pending proposals can be rejected.");
+        }
 
         proposal.setStatus("rejected");
 

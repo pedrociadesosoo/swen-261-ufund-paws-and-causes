@@ -1,6 +1,4 @@
 
-
-
 <div class="proposals-container">
   <h2>Proposals</h2>
 
@@ -26,7 +24,20 @@
         <td *ngFor="let field of proposalValues">
           <ng-container [ngSwitch]="field">
             <span *ngSwitchCase="'creationDate'">{{ proposal[field] | date }}</span>
-            <span *ngSwitchCase="'votes'">{{ getVoteDisplay(proposal[field]) }}</span>
+            <span *ngSwitchCase="'votes'">
+              <span *ngIf="isHelper()" class="vote-controls">
+                <button
+                  class="vote-btn"
+                  [class.active]="myVote(proposal) === 1"
+                  (click)="$event.stopPropagation(); upvote(proposal)">&#9650;</button>
+                <span class="vote-count">{{ netVotes(proposal) }}</span>
+                <button
+                  class="vote-btn"
+                  [class.active]="myVote(proposal) === -1"
+                  (click)="$event.stopPropagation(); downvote(proposal)">&#9660;</button>
+              </span>
+              <span *ngIf="!isHelper()">{{ netVotes(proposal) }}</span>
+            </span>
             <span *ngSwitchDefault>{{ proposal[field] }}</span>
           </ng-container>
         </td>

@@ -39,7 +39,6 @@ public class ProposalController {
      * Creates a REST API controller for {@linkplain Proposal proposals}.
      *
      * @param proposalService the {@link ProposalService} for CRUD operations.
-     * This dependency is injected by the Spring framework.
      */
     public ProposalController(ProposalService proposalService, NeedService needService, AccountService accountService) {
         this.proposalService = proposalService;
@@ -57,8 +56,7 @@ public class ProposalController {
      * Responds to a GET request for a {@linkplain Proposal proposal} with the given id.
      *
      * @param id the id used to locate the {@link Proposal proposal}
-     * @return ResponseEntity with the {@link Proposal proposal} and HTTP status OK
-     * if found, NOT_FOUND if no proposal has that id
+     * @return ResponseEntity with the {@link Proposal proposal}
      */
     @GetMapping("/{id}")
     public ResponseEntity<Proposal> getProposal(@PathVariable int id) throws IOException{
@@ -71,12 +69,10 @@ public class ProposalController {
     }
 
     /**
-     * Responds to a GET request for all {@linkplain Proposal proposals}, or
-     * searches by partial name if the name parameter is provided.
+     * Responds to a GET request for all {@linkplain Proposal proposals}
      *
      * @param name optional search term to filter proposals by partial name
-     * @return ResponseEntity with an array of {@link Proposal proposals} and HTTP
-     * status OK
+     * @return ResponseEntity with an array of {@link Proposal proposals} 
      */
     @GetMapping("")
     public ResponseEntity<Proposal[]> getProposals(@RequestParam(required = false) String name) {
@@ -91,13 +87,9 @@ public class ProposalController {
 
     /**
      * Creates a {@linkplain Proposal proposal} from the provided proposal object.
-     * The owning username is taken from the request body, and the id is assigned
-     * by the persistence tier (any id in the body is ignored).
      *
      * @param proposal the {@link Proposal proposal} to create, from the JSON body
-     * @return ResponseEntity with the created {@link Proposal proposal} and HTTP
-     * status CREATED, CONFLICT if the user already has a pending proposal,
-     * INTERNAL_SERVER_ERROR on a storage failure
+     * @return ResponseEntity with the created {@link Proposal proposal} 
      */
     @PostMapping("")
     public ResponseEntity<Proposal> createProposal(@RequestBody Proposal proposal) {
@@ -141,8 +133,6 @@ public class ProposalController {
         }
     }
 
-
-
     @PostMapping("/{id}/approve")
     public ResponseEntity<?> ApprovalProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id) {
         LOG.info("PUT /proposal/" + id + "/approve");
@@ -166,11 +156,12 @@ public class ProposalController {
 
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<Proposal> updateProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id,
@@ -197,7 +188,6 @@ public class ProposalController {
         }
     }
 
-
     @PostMapping("/{id}/reject")
     public ResponseEntity<?> rejectProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id) {
         LOG.info("PUT /proposal/" + id + "/reject");
@@ -216,13 +206,12 @@ public class ProposalController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
 
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 
     /**
      * Records a vote on the {@linkplain Proposal proposal} with the given id.
@@ -232,9 +221,7 @@ public class ProposalController {
      *
      * @param id the id of the {@link Proposal proposal} being voted on
      * @param req the {@link VoteRequest} carrying the username and vote value
-     * @return ResponseEntity with the updated {@link Proposal proposal} and HTTP
-     * status OK, NOT_FOUND if no proposal has that id, INTERNAL_SERVER_ERROR on
-     * a storage failure
+     * @return ResponseEntity with the updated {@link Proposal proposal} 
      */
     @PostMapping("/{id}/vote")
     public ResponseEntity<Proposal> voteUpdate(@PathVariable int id, @RequestBody VoteRequest req) {
