@@ -1,14 +1,13 @@
 package com.ufund.api.ufundapi.controller;
 
-import java.util.List;
 import java.io.IOException;
-import java.time.Instant;
-import java.util.logging.Logger;
+import java.util.List;
 import java.util.logging.Level;
-
+import java.util.logging.Logger;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,15 +17,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
-import com.ufund.api.ufundapi.service.AccountService;
-import com.ufund.api.ufundapi.service.NeedService;
-import com.ufund.api.ufundapi.service.ProposalService;
 import com.ufund.api.ufundapi.model.Account;
 import com.ufund.api.ufundapi.model.ManagerAccount;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.Proposal;
+import com.ufund.api.ufundapi.service.AccountService;
+import com.ufund.api.ufundapi.service.NeedService;
+import com.ufund.api.ufundapi.service.ProposalService;
 
 @RestController
 @RequestMapping("proposals")
@@ -64,6 +62,7 @@ public class ProposalController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Proposal> getProposal(@PathVariable int id) throws IOException{
+        LOG.info("GET /proposal/" + id);
         Proposal proposal = proposalService.getProposalById(id);
         if (proposal != null)
             return new ResponseEntity<>(proposal, HttpStatus.OK);
@@ -81,6 +80,7 @@ public class ProposalController {
      */
     @GetMapping("")
     public ResponseEntity<Proposal[]> getProposals(@RequestParam(required = false) String name) {
+        LOG.info("GET /proposals");
         List<Proposal> proposals;
         if (name != null && !name.isBlank())
             proposals = proposalService.findProposals(name);
@@ -101,6 +101,7 @@ public class ProposalController {
      */
     @PostMapping("")
     public ResponseEntity<Proposal> createProposal(@RequestBody Proposal proposal) {
+        LOG.info("POST /proposal/");
         try {
             Proposal created = proposalService.createProposal(proposal);
             if (created == null)
@@ -144,6 +145,7 @@ public class ProposalController {
 
     @PostMapping("/{id}/approve")
     public ResponseEntity<?> ApprovalProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id) {
+        LOG.info("PUT /proposal/" + id + "/approve");
         try {
             if (isManager(username)) {
 
@@ -151,12 +153,6 @@ public class ProposalController {
 
                 if (proposal == null) {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                }
-
-                List<Need> matches = needService.findNeeds(proposal.getName(), null);
-
-                if (!matches.isEmpty()) {
-                    return new ResponseEntity<>("Need already exists", HttpStatus.CONFLICT);
                 }
 
                 Proposal approved = proposalService.approveProposal(id);
@@ -179,6 +175,7 @@ public class ProposalController {
     @PutMapping("/{id}")
     public ResponseEntity<Proposal> updateProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id,
                                                 @RequestBody Proposal updatedProposal) {
+        LOG.info("PUT /proposal/" + id + "/save");
         try {
             if (isManager(username)) {
 
@@ -203,6 +200,7 @@ public class ProposalController {
 
     @PostMapping("/{id}/reject")
     public ResponseEntity<?> rejectProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id) {
+        LOG.info("PUT /proposal/" + id + "/reject");
         try {
             if (isManager(username)) {
 
@@ -240,6 +238,7 @@ public class ProposalController {
      */
     @PostMapping("/{id}/vote")
     public ResponseEntity<Proposal> voteUpdate(@PathVariable int id, @RequestBody VoteRequest req) {
+        LOG.info("PUT /proposal/" + id + "/vote");
         try {
             Proposal updated = proposalService.voteUpdate(id, req.getUsername(), req.getVote());
             if (updated == null)
