@@ -70,8 +70,7 @@ public class NeedController {
      * Responds to GET request for a {@linkplain Need need} for the given id
      *
      * @param id The id used to locate the {@link Need need}
-     * @return ResponseEntity with {@link Need need} and HTTP status OK if found,
-     * NOT_FOUND if not found, INTERNAL_SERVER_ERROR otherwise
+     * @return ResponseEntity with {@link Need need} 
      */
     @GetMapping("/{id}")
     public ResponseEntity<Need> getNeed(@PathVariable int id) {
@@ -95,8 +94,7 @@ public class NeedController {
      * 
      * @param name Optional search term to filter needs by partial name
      * @param type type of need to filter with
-     * @return ResponseEntity with array of {@link Need need} objects and HTTP status OK,
-     * INTERNAL_SERVER_ERROR otherwise
+     * @return ResponseEntity with array of {@link Need need} objects 
      */
     @GetMapping("")
     public ResponseEntity<Need[]> getNeeds(
@@ -120,7 +118,6 @@ public class NeedController {
      * @param need The {@link Need need} to create
      * @return ResponseEntity with created {@link Need need} and HTTP status CREATED,
      * FORBIDDEN if the caller isn't a manager, CONFLICT if need with same name exists,
-     * INTERNAL_SERVER_ERROR otherwise
      */
     @PostMapping("")
     public ResponseEntity<Need> createNeed(@RequestHeader(value = "X-Username", required = false) String username,

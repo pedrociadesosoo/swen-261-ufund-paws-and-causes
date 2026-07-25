@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
+import com.ufund.api.ufundapi.dao.ProposalDAO;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedType;
 
@@ -23,11 +24,13 @@ class NeedServiceTest {
 
     private NeedServiceImpl service;
     private NeedDAO mockDao;
+    private ProposalDAO mockProposalDAO;
 
     @BeforeEach
     void setup() {
         mockDao = mock(NeedDAO.class);
-        service = new NeedServiceImpl(mockDao);
+        mockProposalDAO = mock(ProposalDAO.class);
+        service = new NeedServiceImpl(mockDao, mockProposalDAO);
     }
 
     @Test

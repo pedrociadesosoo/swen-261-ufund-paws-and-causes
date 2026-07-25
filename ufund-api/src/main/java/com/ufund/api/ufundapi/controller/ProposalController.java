@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -139,9 +140,9 @@ public class ProposalController {
         try {
             if (isManager(username)) {
 
-                Proposal proposal = proposalService.getProposalById(id);
+                Proposal existing = proposalService.getProposalById(id);
 
-                if (proposal == null) {
+                if (existing == null) {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
 
@@ -164,7 +165,7 @@ public class ProposalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Proposal> updateProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id,
+    public ResponseEntity<?> updateProposal(@RequestHeader(value = "X-Username", required = false) String username, @PathVariable int id,
                                                 @RequestBody Proposal updatedProposal) {
         LOG.info("PUT /proposal/" + id + "/save");
         try {
@@ -183,7 +184,10 @@ public class ProposalController {
 
              return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
-        } catch (IOException e) {
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -206,6 +210,8 @@ public class ProposalController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
 
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {

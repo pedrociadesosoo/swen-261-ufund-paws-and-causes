@@ -1,4 +1,4 @@
-﻿---
+---
 geometry: margin=1in
 ---
 # PROJECT Design Documentation
@@ -26,8 +26,6 @@ This is a summary of the project.
 >  _**[Sprint 2 & 4]** Provide a very brief statement about the project and the most
 > important user group and user goals._
 
-The UFund project is a nonprofit website for the express purpose of funding the needed resources for animal shelter and rescue operations. User will either help fund needs by interacting with the website, or manage the needs as an administrator. These users will be those who truly care about helping animals and the organizations who work with them directly.
-
 ### Glossary and Acronyms
 > _**[Sprint 2 & 4]** Provide a table of terms and acronyms._
 
@@ -38,10 +36,6 @@ The UFund project is a nonprofit website for the express purpose of funding the 
 | DAO | Data Access Object |
 | Need | An item the cupboard is collecting (id, name, quantity, unit) |
 | Cupboard | The full collection of Needs managed by the U-Fund |
-| Helper | The user who funds needs and interacts with the project at a surface level
-| Manager | The user who organizes the needs present to Helpers and oversees the operations on the website.
-| Cupboard | The collection of needs present in the API's system, editable by Managers, and can be added to Helper's funding Baskets
-| Funding Baskets | The collection of needs present in a Helper's collection, so they can checkout their needs effectively.
 
 
 ## Requirements
@@ -55,32 +49,6 @@ This section describes the features of the application.
 ### Definition of MVP
 > _**[Sprint 2 & 4]** Provide a simple description of the Minimum Viable Product._
 
-A Minimum Viable product consists of the following:
-
--   **Minimal Authentication for Helper/U-fund Manager login & logout**
-
--   The server will (admittedly insecurely) trust the browser of who the user is. A simple login is all that is minimally required.
--   A user (helper or U-fund Manager) can login and logout of the application.
--   An U-fund Manager logs in using the reserved username **admin.**
--   Any other username can be assumed to be a helper.
-
--   **Helper functionality**
-
--   Helper can see list of needs
--   Helper can search for a need
--   Helper can add/remove an need to their funding basket
--   Helper can proceed to **check-out** and fund all needs they are supporting
-
--   **Needs Management**
-
--   U-fund Manager(s) can add, remove and edit the data of all their needs stored in their needs cupboard
--   A U-fund Manager cannot see contents of funding basket(s)
-
--   **Data Persistence**
-
--   The system must save everything to files such that the next user will see a change in the needs cupboard based on the previous user's actions.
-
-
 ### MVP Features
 >  _**[Sprint 4]** Provide a list of top-level Epics and/or Stories of the MVP._
 
@@ -92,14 +60,17 @@ A Minimum Viable product consists of the following:
 
 This section describes the application domain.
 
-![Domain Model](uvision_revised.drawio-1-1.png)
+![Domain Model](domain-model-placeholder.png)
 
 > _**[Sprint 2 & 4]** Provide a high-level overview of the domain for this application. You
 > can discuss the more important domain entities and their relationship
 > to each other._
 
-The central domain entity is the **Need**, which represents a single item the U-Fund cupboard is collecting (e.g. "Canned Soup", quantity 50, unit "cans"). These needs are stored in the  **Cupboard**,  or the complete collection of Needs available to view for any user . There are two types of users that can interact with the cupboard, both of which varying in authorization. The **Manager** (the
-U-Fund administrator) maintains the cupboard by getting, creating, modifying, and removing Needs through the REST API. However, the **User** only interacts with the cupboard by adding its' needs to their **Funding Basket**, which they use to store their needs and eventually send them to the **Checkout**. Once in the Checkout, the needs can be paid for, and the cycle of adding needs to the funding basket and paying for them in the Checkout can be repeated constantly.
+The central domain entity for Sprint 1 is the **Need**, which represents a single
+item the U-Fund cupboard is collecting (e.g. "Canned Soup", quantity 50, unit
+"cans"). The **Cupboard** is the complete collection of Needs. A **Manager** (the
+U-Fund administrator) maintains the cupboard by getting, creating, modifying, and
+removing Needs through the REST API.
 
 
 ## Architecture and Design
@@ -273,8 +244,6 @@ Classes supporting this layer:
   array of Needs with status `200 OK` (an empty array when the cupboard is empty).
   The remaining CRUD endpoints (get-by-id, search, create, update, delete) are
   declared and owned by other team members.
-* **`FundingBasketController`** —  REST controller mapped to the `/fundingbaskets` route, which works with ResponseEntities to retrieve, create and delete FundingBaskets. In addition, they organize the services to add and remove needs from FundingBaskets, using `addNeed()` and `removeNeed()` respectively.
-* **`AccountController`** —  REST controller mapped to the `/accounts` route, which orchestrates the registration, login and logout of accounts using the body of the account. When registering, it calls upon **`AccountService`** to create an account. This tier also contains the logic for the account, including not allowing for duplicate usernames and password authentication.
 
 > _At appropriate places as part of this narrative provide **one** or more updated and **properly labeled**
 > static models (UML class diagrams). See the class diagram in the **Summary** section above for the Sprint 1 API/Business/Persistence relationships._
@@ -287,14 +256,14 @@ Classes supporting this layer:
 > _**[Sprint 1, 2, 3]** List the classes supporting this layer and provide a brief description of their purpose._
 
 The Business Layer contains the application's business logic. It sits between the API
-Layer and the Persistence Layer so that controllers never talk to DAOs directly. This keeps business rules in one place and makes the controllers thin.
+Layer and the Persistence Layer so that controllers never talk to DAOs directly. This
+keeps business rules in one place and makes the controllers thin.
 
 Classes supporting this layer:
 
-* **`NeedService`** — Spring `@Service` that implements the Need operations. For Sprint 1, `getAllNeeds()` retrieves the entire cupboard from the DAO. It also provides the supporting CRUD operations used by the other Sprint 1 stories.
-* **`FundingBasketService`** — Spring `@Service` that implements the FundingBasket operations. Provides CRUD functionality and logic for the FundingBasket, and additionally handles any logic not specified by the Persistence or Controller tiers.
-* **`AccountService`** — Spring `@Service` that implements the Account operations. Provides CRUD functionality to Accounts and also handles miscellaneous logic, such as determining if a username is valid using `isValidUsername()`
-
+* **`NeedService`** — Spring `@Service` that implements the Need operations. For
+  Sprint 1, `getAllNeeds()` retrieves the entire cupboard from the DAO. It also
+  provides the supporting CRUD operations used by the other Sprint 1 stories.
 
 ![Business Layer class diagram](business-layer.png)
 
@@ -309,14 +278,12 @@ how data is actually persisted.
 
 Classes supporting this layer:
 
-* **`NeedDAO`** — interface defining the persistence contract (`getAllNeeds`, `getNeedById`, `addNeed`, `updateNeed`, `deleteNeed`).
-* **`NeedFileDAO`** — `@Repository` implementation that persists Needs to a JSON file (`data/needs.json`) using a Jackson `ObjectMapper`. On startup it loads the file into an in-memory `Map` cache; reads (such as `getAllNeeds()`) are served from the cache, and writes are saved back to disk
-* **`FundingBasketDAO`** — interface defining the persistence contract (`getFundingBasket`, `getFundingBasketArray`, `createFundingBasket`, `deleteFundingBasket`, `addNeed`,` removeNeed`)
-* **`FundingBasketFileDAO`** — `@Repository` implementation that persists FundingBaskets to a JSON file (`data/fundingbaskets.json`) using a Jackson `ObjectMapper`. On startup it loads the file into an in-memory `Map` cache; reads (such as `getAllNeeds()`) are served from the cache, and writes are saved back to disk
-* **`AccountDAO`** — interface defining the persistence contract (`getAccount`, `createAccount`, `addAllAccounts`)
-* **`AccountFileDAO`** — `@Repository` implementation that persists Needs to a JSON file (`data/accounts.json`) using a Jackson `ObjectMapper`. On startup it loads the file into an in-memory `Map` cache; reads (such as `getAllNeeds()`) are served from the cache, and writes are saved back to disk
-
-
+* **`NeedDAO`** — interface defining the persistence contract
+  (`getAllNeeds`, `getNeedById`, `addNeed`, `updateNeed`, `deleteNeed`).
+* **`NeedFileDAO`** — `@Repository` implementation that persists Needs to a JSON file
+  (`data/needs.json`) using a Jackson `ObjectMapper`. On startup it loads the file
+  into an in-memory `Map` cache; reads (such as `getAllNeeds()`) are served from the
+  cache, and writes are saved back to disk.
 
 ![Persistence Layer class diagram](persistence-layer.png)
 
@@ -328,7 +295,7 @@ Classes supporting this layer:
 The Data tier is the actual storage mechanism. In Sprint 1 the data is stored as a
 JSON document, `data/needs.json`, whose location is configured by the `needs.file`
 property in `application.properties`. The file holds a JSON array of Need objects.
-The Persistence Layer (`NeedFileDAO`, `AccountFileDAO`, `FundingBasketFileDAO`, etc.) is the only component that reads or writes this
+The Persistence Layer (`NeedFileDAO`) is the only component that reads or writes this
 file, keeping the storage format isolated from the rest of the system.
 
 ## OO Design Principles
@@ -379,13 +346,6 @@ For Sprint 1 the team applied the following object-oriented design principles:
 > have not had any testing yet. Highlight the issues found during
 > acceptance testing and if there are any concerns._
 
-The majority of acceptance criteria tests have passed with a total of 20 tests, however the remaining 6 unit tests failed due to partial functionality. This partial functionality mostly focused on authentication, with such examples including Helpers being able to add needs and there being a single basket for all users. These issues highlight the need for more robust authentication and linking events to specific users to avoid conflicts and create greater data security. A more robust list of errors can be found below.
-* **Given I am logged in as a Helper, when I exit the Angular website with a populated funding basket, that funding basket's contents are saved.** --> HS; 7/7; basket is not saved in account information, there is a singular shared basked that shows up for everything.
-* **Given I am logged in as a Helper, when I log out with a populated funding basket, the funding basket's contents are saved.** --> HS; 7/7; basket is not saved in account information, there is a singlular shared basked that shows up for everything.
-* **Given I have a helper account with a saved funding basket, when I log in, the system loads the contents of my funding basket.** --> HS; 7/7; basket is not saved in account information, there is a singlular shared basked that shows up for everything.
-
-The full list is found at this link: https://tinyurl.com/4rdxr6jz
-
 ### Unit Testing and Code Coverage
 > _**[Sprint 4]** Discuss your unit testing strategy. Report on the code coverage
 > achieved from unit testing of the code base. Discuss the team's
@@ -394,11 +354,8 @@ The full list is found at this link: https://tinyurl.com/4rdxr6jz
 
 > _**[Sprint 2, 3 & 4]** **Include images of your code coverage report.** If there are any anomalies, discuss
 > those._
-> ![CodeCoverageSprint2](CodeCoverageSprint2.png)
 
-**Sprint 2 Status:** 79% of code covered by unit tests, only significant outlier is business layer. Majority of branches are also covered at 75%. Written using Mockito and JUnit5. All unit tests run correctly save for one or two that have been stubbed for the time being.
-
-**Sprint 1 status :** Unit tests are written per layer using JUnit 5 and
+**Sprint 1 status (current):** Unit tests are written per layer using JUnit 5 and
 Mockito — `NeedControllerTest` (API), `NeedServiceTest` (Business), and
 `NeedFileDAOTest` (Persistence) — covering both acceptance criteria of the
 *Get Entire Cupboard* story (full list → 200, empty cupboard → empty array → 200).
@@ -417,9 +374,6 @@ criteria confirmed at the live HTTP boundary.
   controller and the DAO so business logic is centralized and controllers stay thin.
   Justification: improves separation of concerns and testability, and supports the
   Dependency Inversion principle.
-* **(2026/06/15): Sprint 1** — Implemented the *Get Entire Cupboard* story end-to-end(`GET /needs`) and introduced `NeedFileDAO`, a JSON-file-backed persistence implementation, so the application can actually start and serve data.
-* **(2026/07/06): Sprint 2** — Implemented basic front end functionality with partially functional Cupboard, FundingBasket, and Login pages. Also added AddNeed functionality. Done to standardize the version of Angular being used and the type of building it has to avoid further conflicts
-* **(2026/07/07): Sprint 2** — Implemented remaining functionality for frontend, including reworked logic on the user's end. This was to ensure the demo was not partially complete and to go over acceptance testing missed the previous day.
-
-
-
+* **(2026/06/15): Sprint 1** — Implemented the *Get Entire Cupboard* story end-to-end
+  (`GET /needs`) and introduced `NeedFileDAO`, a JSON-file-backed persistence
+  implementation, so the application can actually start and serve data.
