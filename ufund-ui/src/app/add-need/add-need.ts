@@ -4,6 +4,8 @@ import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { NgForm } from '@angular/forms';
 import { NeedType } from '../need-type';
+import { Organization } from '../organization';
+
 
 @Component({
   selector: 'app-add-need',
@@ -15,12 +17,19 @@ export class AddNeed implements OnInit {
   /** Exposed so the template's dropdown can bind to NeedType.ITEM_DONATION etc. */
   NeedType = NeedType;
 
+  org: Organization = {
+    name: '',
+    description: '',
+    needs: {}
+  }
+
   need: Need = {
     id: 0,
     name: '',
     cost: 0,
     quantity: 0,
-    type: NeedType.SELECT
+    type: NeedType.SELECT,
+    organization: this.org
   };
   errorMessage: string = '';
   successMessage: string = '';
