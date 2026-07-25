@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { NgForm } from '@angular/forms';
+import { NeedType } from '../need-type';
+
 @Component({
   selector: 'app-add-need',
   standalone: false,
@@ -10,23 +12,24 @@ import { NgForm } from '@angular/forms';
   styleUrl: './add-need.css',
 })
 export class AddNeed implements OnInit {
+  /** Exposed so the template's dropdown can bind to NeedType.ITEM_DONATION etc. */
+  NeedType = NeedType;
+
   need: Need = {
     id: 0,
     name: '',
     cost: 0,
     quantity: 0,
-    type: ''
+    type: NeedType.SELECT
   };
   errorMessage: string = '';
   successMessage: string = '';
-  // True once a save succeeds, so canDeactivate() lets the user leave without
-  // a warning even though the form is still technically "dirty".
+
   private submitted: boolean = false;
 
-  // Reference to the template's #needForm, used by canDeactivate() to check
-  // whether the user has typed anything since the page loaded.
+ 
   @ViewChild('needForm') needForm?: NgForm;
-  /** True when editing an existing need (route has an :id param) rather than creating a new one */
+  /** True when editing an existing need rather than creating a new one */
   isEditMode: boolean = false;
 
   constructor(
@@ -60,7 +63,7 @@ export class AddNeed implements OnInit {
       this.errorMessage = 'Name is required.';
       return false;
     }
-    if (this.need.cost <= 0) {
+    if (this.need.cost < 0) {
       this.errorMessage = 'Cost must be greater than 0.';
       return false;
     }
@@ -68,7 +71,7 @@ export class AddNeed implements OnInit {
       this.errorMessage = 'Quantity must be greater than 0.';
       return false;
     }
-    if (!this.need.type || this.need.type.trim() === '') {
+    if (this.need.type == NeedType.SELECT) {
       this.errorMessage = 'Type is required.';
       return false;
     }
@@ -87,7 +90,7 @@ export class AddNeed implements OnInit {
       this.needService.updateNeed(this.need.id, this.need).subscribe({
         next: (updated) => {
           this.successMessage = `Need "${updated.name}" updated successfully!`;
-	  this.submitted = true; // saved successfully, so the deactivate guard won't warn on this navigate
+	  this.submitted = true; 
           this.router.navigate(['/cupboard']);
         },
         error: () => this.errorMessage = 'Failed to update need. Please try again.'
@@ -98,7 +101,7 @@ export class AddNeed implements OnInit {
     this.needService.createNeed(this.need).subscribe({
       next: (created) => {
         this.successMessage = `Need "${created.name}" added successfully!`;
-	this.submitted = true; // saved successfully, so the deactivate guard won't warn on this navigate
+	this.submitted = true; 
         this.router.navigate(['/cupboard']);
       },
       error: (err) => {
@@ -124,5 +127,4 @@ export class AddNeed implements OnInit {
   canDeactivate():boolean {
 	  return this.submitted || !this.needForm?.dirty;
   }
-
 }

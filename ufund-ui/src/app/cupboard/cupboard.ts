@@ -4,6 +4,7 @@ import { Need } from '../need.model';
 import { Router } from '@angular/router';
 import { AccountService } from '../account';
 import { FundingbasketService } from '../fundingbasket.service';
+import { NeedType } from '../need-type';
 import { Organization } from '../organization';
 import { OrganizationService } from '../organization.service';
 
@@ -14,12 +15,16 @@ import { OrganizationService } from '../organization.service';
   styleUrl: './cupboard.css',
 })
 export class Cupboard implements OnInit {
+  /** Exposed so the template's dropdown can bind to NeedType.ITEM_DONATION etc. */
+  NeedType = NeedType;
+
   needs: Need[] = [];
   errorMessage: string = '';
   successMessage: string = '';
 
-  /** Bound to the search box; filters the cupboard by partial name match */
+  /** Bound to the search box, filters the cupboard by partial name match */
   searchTerm: string = '';
+  searchType: NeedType = NeedType.SELECT;
 
   constructor(
     private needService: NeedService,
@@ -36,14 +41,17 @@ export class Cupboard implements OnInit {
    * Loads needs from the API, filtered by searchTerm when one is set
    */
   loadNeeds(): void {
-    this.needService.getNeeds(this.searchTerm || undefined).subscribe({
-      next: (needs) => this.needs = needs,
+    this.needService.getNeeds(this.searchTerm || undefined, this.searchType || undefined).subscribe({
+      next: (needs) => {
+        this.needs = needs;
+        this.errorMessage = '';
+      },
       error: () => this.errorMessage = 'Failed to load needs'
     });
   }
 
   /**
-   * Re-runs loadNeeds() with the current searchTerm; bound to the search box
+   * Re-runs loadNeeds() with the current searchTerm bound to the search box
    */
   search(): void {
     this.loadNeeds();
@@ -54,6 +62,8 @@ export class Cupboard implements OnInit {
    */
   clearSearch(): void {
     this.searchTerm = '';
+    this.searchType = NeedType.SELECT;
+    this.errorMessage = '';
     this.loadNeeds();
   }
 

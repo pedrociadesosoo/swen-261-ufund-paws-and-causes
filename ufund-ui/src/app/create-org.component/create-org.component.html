@@ -1,0 +1,42 @@
+<div class="add-org-container">
+  <h2>{{ isEditMode ? 'Edit Organization' : 'Add Organization' }}</h2>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="success">
+    {{ successMessage }}
+  </div>
+
+  <form (ngSubmit)="onSubmit()" #orgForm="ngForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input
+        id="name"
+        type="text"
+        [(ngModel)]="org.name"
+        name="name"
+        required
+        placeholder="Enter organization name"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <input
+        id="description"
+        type="text"
+        [(ngModel)]="org.description"
+        name="description"
+        required
+        placeholder="Enter description"
+      />
+    </div>
+
+    <div class="button-group">
+      <button type="submit">{{ isEditMode ? 'Save Changes' : 'Add Organization' }}</button>
+      <button type="button" (click)="goToOrgList()">Cancel</button>
+    </div>
+  </form>
+</div>

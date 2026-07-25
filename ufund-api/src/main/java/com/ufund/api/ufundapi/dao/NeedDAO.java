@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.util.List;
 
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 
 
 
 public interface NeedDAO {
     List<Need> getAllNeeds();
     List<Need> findNeeds(String containsText);
+    List<Need> findNeeds(String containsText, NeedType type);
+    List<Need> findNeeds(NeedType type);
     
 
     Need getNeedById(int id);

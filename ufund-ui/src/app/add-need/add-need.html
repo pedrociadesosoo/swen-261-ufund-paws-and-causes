@@ -49,15 +49,13 @@
     </div>
 
     <div class="form-group">
-      <label for="type">Type</label>
-      <input
-        id="type"
-        type="text"
-        [(ngModel)]="need.type"
-        name="type"
-        required
-        placeholder="Enter type (e.g. food, clothing)"
-      />
+      <label for="type">Need Type</label>
+      <select name = "type" [(ngModel)]="need.type" >
+        <option [ngValue]="NeedType.SELECT">Select Type</option>
+        <option [ngValue]="NeedType.ITEM_DONATION">Item</option>
+        <option [ngValue]="NeedType.MONETARY">Monetary</option>
+        <option [ngValue]="NeedType.VOLUNTEERING">Volunteering</option>
+    </select>
     </div>
 
     <div class="button-group">

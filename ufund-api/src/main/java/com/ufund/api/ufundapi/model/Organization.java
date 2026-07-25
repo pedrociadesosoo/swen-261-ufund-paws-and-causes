@@ -4,16 +4,18 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 public class Organization {
     private static final Logger LOG = Logger.getLogger(Organization.class.getName());
 
-    @JsonProperty("Name") private String name;
-    @JsonProperty("Description") private String description;
-    @JsonProperty("Needs") private Map<Integer, Need> needs;
+    @JsonProperty("name") private String name;
+    @JsonProperty("description") private String description;
+    @JsonProperty("needs") private Map<Integer, Need> needs;
 
-    public Organization(@JsonProperty("Name") String name, 
-                        @JsonProperty("Description") String description,
+    public Organization(@JsonProperty("name") String name, 
+                        @JsonProperty("description") String description,
                         @JsonProperty("needs") Map<Integer, Need> needs){
         this.name = name;
         this.description = description;
@@ -28,11 +30,13 @@ public class Organization {
         this.name = name;
     }
 
-    public String getDesc(){
+
+
+    public String getDescription(){
         return this.description;
     }
 
-    public void setDesc(String description){
+    public void setDescription(String description){
         this.description = description;
     }
 
@@ -57,6 +61,14 @@ public class Organization {
      */
     public void removeNeed(Need need){
         this.needs.remove(need.getId());
+    }
+
+    /**
+     * Ignore any unknown properties during deserialization (e.g., legacy 'desc' field)
+     */
+    @JsonAnySetter
+    public void ignoreUnknownProperty(String name, Object value) {
+        // Do nothing - silently ignore unknown fields
     }
 
 }

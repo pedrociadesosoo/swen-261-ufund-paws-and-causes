@@ -2,10 +2,13 @@ package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Service;
+
 import com.ufund.api.ufundapi.dao.OrganizationFileDAO;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.Organization;
 
+@Service
 public class OrganizationServiceImpl implements OrganizationService {
     
     private OrganizationFileDAO ofDAO;
@@ -42,8 +45,8 @@ public class OrganizationServiceImpl implements OrganizationService {
      * {@inheritDoc}
      */
     @Override
-    public boolean updateOrganization(Organization o) throws IOException {
-        return this.ofDAO.updateOrganization(o);
+    public Organization updateOrganization(Organization o, String name) throws IOException {
+        return this.ofDAO.updateOrganization(o, name);
     }
 
     /**
