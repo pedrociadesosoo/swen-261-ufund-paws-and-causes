@@ -50,7 +50,7 @@
 
     <div class="form-group">
       <label for="type">Need Type</label>
-      <select name = "type" [(ngModel)]="need.type" >
+      <select name="type" [(ngModel)]="need.type" >
         <option [ngValue]="NeedType.SELECT">Select Type</option>
         <option [ngValue]="NeedType.ITEM_DONATION">Item</option>
         <option [ngValue]="NeedType.MONETARY">Monetary</option>
@@ -59,8 +59,9 @@
     </div>
 
     <div class="form-group">
-      <label for="type">Need Organization</label>
-      <select name = "type" [(ngModel)]="need.organization" >
+      <label for="organization">Need Organization</label>
+      <select name="organization" [(ngModel)]="need.organization" >
+        <option [ngValue]="blankOrg">Select Organization</option>
         <option *ngFor="let org of this.orgList" [ngValue]="org">{{org.name}}</option>
        </select>
     </div>

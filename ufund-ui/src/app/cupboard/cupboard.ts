@@ -84,6 +84,7 @@ export class Cupboard implements OnInit {
     this.searchTerm = '';
     this.searchType = NeedType.SELECT;
     this.errorMessage = '';
+    this.searchOrg = this.blankOrg;
     this.loadNeeds();
   }
 
