@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { Router } from '@angular/router';
@@ -21,20 +21,40 @@ export class Cupboard implements OnInit {
   needs: Need[] = [];
   errorMessage: string = '';
   successMessage: string = '';
+  blankOrg : Organization = {
+    name: '',
+    description: '',
+    needs: {}
+  }
 
   /** Bound to the search box, filters the cupboard by partial name match */
   searchTerm: string = '';
   searchType: NeedType = NeedType.SELECT;
+  searchOrg: Organization = this.blankOrg;
+
+  orgList: Organization[] = [];
 
   constructor(
     private needService: NeedService,
     private router: Router,
     private accountService: AccountService,
-    private fbService: FundingbasketService
+    private fbService: FundingbasketService,
+    private orgService: OrganizationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadNeeds();
+    this.orgService.getOrganizationArray().subscribe({
+      next: (orgs) => {
+        this.orgList = orgs;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Loading failure';
+        this.cdr.detectChanges();
+      }
+    })
   }
 
   /**

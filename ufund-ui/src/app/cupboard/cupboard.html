@@ -3,11 +3,16 @@
 
   
   <div class="search-bar">
-    <select name = "type" [(ngModel)]="searchType">
+    <select name="type" [(ngModel)]="searchType">
         <option [ngValue]="NeedType.SELECT">Any Type</option>
         <option [ngValue]="NeedType.ITEM_DONATION">Item</option>
         <option [ngValue]="NeedType.MONETARY">Monetary</option>
         <option [ngValue]="NeedType.VOLUNTEERING">Volunteering</option>
+    </select>
+
+    <select name="org"[(ngModel)]="searchOrg">
+      <option [ngValue]="blankOrg">Any Org</option>
+      <option *ngFor="let org of this.orgList" [ngValue]="org">{{org.name}}</option>
     </select>
     
     <input

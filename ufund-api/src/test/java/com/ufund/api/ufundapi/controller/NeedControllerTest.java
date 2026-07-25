@@ -24,18 +24,21 @@ import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedType;
 import com.ufund.api.ufundapi.service.AccountService;
 import com.ufund.api.ufundapi.service.NeedService;
+import com.ufund.api.ufundapi.service.OrganizationService;
 
 @Tag("Controller-tier")
 public class NeedControllerTest {
     private NeedController needController;
     private NeedService needService;
+    private OrganizationService orgService;
     private AccountService accountService;
 
     @BeforeEach
     public void setupNeedController() throws IOException {
         needService = mock(NeedService.class);
         accountService = mock(AccountService.class);
-        needController = new NeedController(needService, accountService);
+        orgService = mock(OrganizationService.class);
+        needController = new NeedController(needService, accountService, orgService);
 
         // "manager" is a stand-in for the X-Username header on requests that should be authorized
         when(accountService.getAccount("manager")).thenReturn(new ManagerAccount("manager", "pw"));
