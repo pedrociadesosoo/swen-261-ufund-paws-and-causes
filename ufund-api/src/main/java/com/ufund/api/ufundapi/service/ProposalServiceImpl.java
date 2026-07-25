@@ -1,7 +1,6 @@
 package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -84,7 +83,17 @@ public class ProposalServiceImpl implements ProposalService {
 
         Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), type);
 
-        needService.createNeed(need);
+		boolean needExists = needService.getAllNeeds().stream().
+			anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()));
+
+		if (needExists) {
+			throw new IllegalArgumentException("Need name already exist");
+		}
+        Need createNeed = needService.createNeed((need));
+        if (createNeed == null) {
+            throw new IllegalStateException("creation failed");
+        }
+
         proposal.setStatus("approved");
         return proposalDao.updateProposal(proposal);
     }
