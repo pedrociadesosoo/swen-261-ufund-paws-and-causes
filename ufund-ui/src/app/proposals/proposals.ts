@@ -4,6 +4,7 @@ import { Proposal } from '../proposal.model';
 import { AccountService } from '../account';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
+import { NeedType } from '../need-type';
 import { HostListener } from '@angular/core';
 
 /**
@@ -21,6 +22,7 @@ export class Proposals implements OnInit {
   successMessage: string = '';
   selectedProposal: any;
   originalProposal: any;
+  NeedType = NeedType;
 
   constructor(
     private proposalService: ProposalService,

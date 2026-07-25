@@ -1,1 +1,1 @@
-[{"id":3,"name":"flour","cost":8.0,"quantity":25,"type":"food","username":"Moss","organization":"Moss item","votes":{"for":0,"against":0},"status":"rejected","allVotes":{"for":0,"against":0},"creationDate":"2026-07-23T04:10:51.630203100Z","lastEdited":"2026-07-23T19:31:13.983755900Z"}]
+[{"id":3,"name":"Blankets","cost":35.0,"quantity":25,"type":"ITEM_DONATION","username":"Moss","organization":"Moss item","votes":{},"status":"pending","allVotes":{},"creationDate":"2026-07-23T04:10:51.630203100Z","lastEdited":"2026-07-23T19:31:13.983755900Z"}]

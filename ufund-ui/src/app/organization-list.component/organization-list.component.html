@@ -1,0 +1,60 @@
+<h2>Organizations List</h2>
+
+<div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+</div>
+
+<ol class="organization-list">
+    @for (org of orgs; track org.name){
+    <li>
+        <h3>
+            <a [routerLink]="['/organization', org.name]">
+                {{org.name}}
+            </a>
+        </h3>
+
+        @for (entry of Object.entries(org.needs || {}); track entry[0]) {
+    <li>
+        <a [routerLink]="['/cupboard', entry[1].id]">
+            {{ entry[1].name }}
+        </a>
+        @if (isManager()){
+        <button type="button" (click)="deleteNeed(org.name, entry[1].id)">
+            Remove from Org
+        </button>
+        }
+    </li>
+    }
+
+    @if (isManager()){
+    <button type="button" (click)="editOrganization(org.name)">
+        Edit Organization
+    </button>
+    }
+
+    @if (isManager()){
+    <button type="button">
+        <a routerLink="/organization_add_need">
+            Add Need to Org
+        </a>
+    </button>
+    }
+
+    @if (isManager()){
+    <button type="button" (click)="deleteOrganization(org.name)">
+        Delete Org
+    </button>
+    }
+
+    </li>
+    }
+
+    @if (isManager()){
+    <button type="button">
+        <a routerLink="/organization_edit">
+            Create New Org
+        </a>
+    </button>
+    }
+
+</ol>

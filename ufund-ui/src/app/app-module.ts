@@ -13,6 +13,11 @@ import { Login } from './login/login';
 import { Checkout } from './checkout/checkout';
 import { Proposals } from './proposals/proposals';
 import { AuthInterceptor } from './auth-interceptor';
+import { OrganizationListComponent } from './organization-list.component/organization-list.component';
+import { RouterModule } from '@angular/router';
+import { CreateOrgComponent } from './create-org.component/create-org.component';
+import { OrganizationDetailsComponent } from './organization-details.component/organization-details.component';
+import { NeedTypeDropdown } from './need-type-dropdown/need-type-dropdown';
 
 @NgModule({
   declarations: [
@@ -23,13 +28,18 @@ import { AuthInterceptor } from './auth-interceptor';
     FundingbasketComponent,
     Login,
     Checkout,
-    Proposals
+    OrganizationListComponent,
+    CreateOrgComponent,
+    OrganizationDetailsComponent,
+    Proposals,
+    NeedTypeDropdown
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    RouterModule,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

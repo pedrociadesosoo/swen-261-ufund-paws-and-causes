@@ -23,6 +23,7 @@ import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.model.Account;
 import com.ufund.api.ufundapi.model.ManagerAccount;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 
 @RestController
 @RequestMapping("needs")
@@ -85,21 +86,21 @@ public class NeedController {
 
     /**
      * Responds to GET request for all {@linkplain Need needs} or searches
-     * by partial name if name parameter is provided
+     * by partial name if name parameter is provided and by need type if
+     * type parameter is provided
      * 
      * @param name Optional search term to filter needs by partial name
+     * @param type type of need to filter with
      * @return ResponseEntity with array of {@link Need need} objects and HTTP status OK,
      * INTERNAL_SERVER_ERROR otherwise
      */
     @GetMapping("")
-    public ResponseEntity<Need[]> getNeeds(@RequestParam(required = false) String name) {
+    public ResponseEntity<Need[]> getNeeds(
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) NeedType type) {
         LOG.info("GET /needs" + (name != null ? "?name=" + name : ""));
         try {
-            List<Need> needs;
-            if (name != null && !name.isBlank())
-                needs = needService.findNeeds(name);
-            else
-                needs = needService.getAllNeeds();
+            List<Need> needs = needService.findNeeds(name, type);         
             return new ResponseEntity<>(needs.toArray(new Need[0]), HttpStatus.OK);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());

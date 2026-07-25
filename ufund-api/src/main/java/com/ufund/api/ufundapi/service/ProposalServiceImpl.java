@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ufund.api.ufundapi.dao.ProposalDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 import com.ufund.api.ufundapi.model.Proposal;
 
 @Service
@@ -66,7 +67,21 @@ public class ProposalServiceImpl implements ProposalService {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) { return null;}
 
-        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), proposal.getType());
+        if (!"pending".equals(proposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + proposal.getStatus() + "; only pending proposals can be approved.");
+        }
+
+        NeedType type;
+        try {
+            type = NeedType.valueOf(proposal.getType());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new IllegalArgumentException(
+                "Proposal has an invalid type (\"" + proposal.getType() +
+                "\"); edit the proposal and set a valid type before approving.");
+        }
+
+        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), type);
 
 		boolean needExists = needService.getAllNeeds().stream().
 			anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()));
@@ -84,16 +99,6 @@ public class ProposalServiceImpl implements ProposalService {
     }
 
     public Proposal updateProposal(Proposal updProposal) throws IOException {
-
-        boolean needExists = needService.getAllNeeds().stream()
-            .anyMatch(n -> n.getName().equalsIgnoreCase(updProposal.getName()) &&
-                        n.getCost() == updProposal.getCost() &&
-                        n.getQuantity() == updProposal.getQuantity() &&
-                        n.getType().equalsIgnoreCase(updProposal.getType()));
-        if (needExists) {
-            throw new IllegalArgumentException("Proposal can't be pending, matching Need already exist");
-        }
-        
         updProposal.setStatus("pending");
         return proposalDao.updateProposal(updProposal);
     }
@@ -102,18 +107,11 @@ public class ProposalServiceImpl implements ProposalService {
     public Proposal rejectProposal(int id) throws IOException {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) return null;
-            if ("rejected".equalsIgnoreCase(proposal.getStatus())) {
-                    throw new IllegalArgumentException("Proposal is already rejected");
-                }
-            boolean needExists = needService.getAllNeeds().stream()
-                .anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()) &&
-                            n.getCost() == proposal.getCost() &&
-                            n.getQuantity() == proposal.getQuantity() &&
-                            n.getType().equalsIgnoreCase(proposal.getType()));
-            if (needExists) {
-                throw new IllegalArgumentException("Proposal can't be rejected, matching Need already exist");
-            }
 
+        if (!"pending".equals(proposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + proposal.getStatus() + "; only pending proposals can be rejected.");
+        }
 
         proposal.setStatus("rejected");
 
