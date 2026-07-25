@@ -52,7 +52,7 @@
         <td>{{ need.cost | currency }}</td>
         <td>{{ need.quantity }}</td>
         <td>{{ need.type }}</td>
-        <td>{{ need.organization}} </td>
+        <td><a routerLink="=/{need.organization.name}"> {{need.organization}} </a></td>
         <td>
           <!-- Helper-specific controls -->
           <span *ngIf="isHelper()">

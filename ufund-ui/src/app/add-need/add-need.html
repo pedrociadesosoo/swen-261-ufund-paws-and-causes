@@ -58,6 +58,13 @@
     </select>
     </div>
 
+    <div class="form-group">
+      <label for="type">Need Organization</label>
+      <select name = "type" [(ngModel)]="need.organization" >
+        <option *ngFor="let org of this.orgList" [ngValue]="org">{{org.name}}</option>
+       </select>
+    </div>
+
     <div class="button-group">
       <button type="submit">{{ isEditMode ? 'Save Changes' : 'Add Need' }}</button>
       <button type="button" (click)="goToCupboard()">Cancel</button>
