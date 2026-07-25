@@ -17,6 +17,7 @@ import { OrganizationListComponent } from './organization-list.component/organiz
 import { RouterModule } from '@angular/router';
 import { CreateOrgComponent } from './create-org.component/create-org.component';
 import { OrganizationDetailsComponent } from './organization-details.component/organization-details.component';
+import { NeedTypeDropdown } from './need-type-dropdown/need-type-dropdown';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { OrganizationDetailsComponent } from './organization-details.component/o
     OrganizationListComponent,
     CreateOrgComponent,
     OrganizationDetailsComponent,
-    Proposals
+    Proposals,
+    NeedTypeDropdown
   ],
   imports: [
     BrowserModule,
