@@ -140,9 +140,9 @@ public class ProposalController {
         try {
             if (isManager(username)) {
 
-                Proposal approved = proposalService.getProposalById(id);
+                Proposal existing = proposalService.getProposalById(id);
 
-                if (approved == null) {
+                if (existing == null) {
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
 
@@ -210,6 +210,8 @@ public class ProposalController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
 
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {

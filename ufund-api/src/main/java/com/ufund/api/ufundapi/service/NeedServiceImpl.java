@@ -6,8 +6,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
+import com.ufund.api.ufundapi.dao.ProposalDAO;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedType;
+import com.ufund.api.ufundapi.model.Proposal;
 
 @Service
 public class NeedServiceImpl implements NeedService {
@@ -89,7 +91,7 @@ public class NeedServiceImpl implements NeedService {
                         if (proposal.getName().equalsIgnoreCase(deletedNeed.getName()) &&
                             proposal.getCost() == deletedNeed.getCost() &&
                             proposal.getQuantity() == deletedNeed.getQuantity() &&
-                            proposal.getType().equalsIgnoreCase(deletedNeed.getType())) {
+                            proposal.getType().equalsIgnoreCase(deletedNeed.getType().name())) {
                             proposal.setStatus("rejected");
                             proposalDao.updateProposal(proposal);
                         }

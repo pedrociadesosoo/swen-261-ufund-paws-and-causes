@@ -15,6 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.ufund.api.ufundapi.dao.NeedDAO;
+import com.ufund.api.ufundapi.dao.ProposalDAO;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedType;
 
