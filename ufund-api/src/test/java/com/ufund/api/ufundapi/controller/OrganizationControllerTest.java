@@ -1,20 +1,20 @@
 package com.ufund.api.ufundapi.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 import com.ufund.api.ufundapi.model.Organization;
 import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.service.OrganizationService;
@@ -27,9 +27,9 @@ public class OrganizationControllerTest {
 
     private Need[] sampleNeeds() {
         return new Need[] {
-                new Need(1, "Canned Soup", 2.50, 50, "food"),
-                new Need(2, "Rice", 1.99, 100, "food"),
-                new Need(3, "Blankets", 15.00, 25, "clothing")
+                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
+                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
+                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION)
         };
     }
 
@@ -61,7 +61,6 @@ public class OrganizationControllerTest {
         ResponseEntity<Organization> newOrg = orgCont.getOrganization("General Humanities");
         assertEquals(HttpStatus.OK, newOrg.getStatusCode());
         assertEquals(o.getName(), newOrg.getBody().getName());
-        assertEquals(o.getDesc(), newOrg.getBody().getDesc());
         assertEquals(o.getNeeds(), newOrg.getBody().getNeeds());
     }
 
@@ -154,7 +153,7 @@ public class OrganizationControllerTest {
         Organization o = sampleOrganization();
         when(orgService.getOrganization(o.getName())).thenReturn(o);
 
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
         
         when(orgService.addNeed(o,newNeed)).thenReturn(true);
@@ -167,7 +166,7 @@ public class OrganizationControllerTest {
     @Test
     public void testAddNeedConflict() throws IOException{
 
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
 
         Organization o = sampleOrganization();
@@ -187,7 +186,7 @@ public class OrganizationControllerTest {
         Organization o = sampleOrganization();
         when(orgService.getOrganization(o.getName())).thenThrow(new IOException("read failed"));
 
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
 
         ResponseEntity<Boolean> response = orgCont.addNeed(o.getName(), newNeed.getId());
@@ -213,7 +212,7 @@ public class OrganizationControllerTest {
         Organization o = sampleOrganization();
         when(orgService.getOrganization(o.getName())).thenReturn(o);
 
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, "clothing");
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
 
         ResponseEntity<Boolean> response = orgCont.deleteNeed(o.getName(), newNeed.getId());

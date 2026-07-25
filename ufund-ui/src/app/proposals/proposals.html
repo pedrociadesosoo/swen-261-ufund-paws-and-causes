@@ -1,6 +1,4 @@
 
-
-
 <div class="proposals-container">
   <h2>Proposals</h2>
 
@@ -26,17 +24,30 @@
         <td *ngFor="let field of proposalValues">
           <ng-container [ngSwitch]="field">
             <span *ngSwitchCase="'creationDate'">{{ proposal[field] | date }}</span>
-            <span *ngSwitchCase="'votes'">{{ getVoteDisplay(proposal[field]) }}</span>
+            <span *ngSwitchCase="'votes'">
+              <span *ngIf="isHelper()" class="vote-controls">
+                <button
+                  class="vote-btn"
+                  [class.active]="myVote(proposal) === 1"
+                  (click)="$event.stopPropagation(); upvote(proposal)">&#9650;</button>
+                <span class="vote-count">{{ netVotes(proposal) }}</span>
+                <button
+                  class="vote-btn"
+                  [class.active]="myVote(proposal) === -1"
+                  (click)="$event.stopPropagation(); downvote(proposal)">&#9660;</button>
+              </span>
+              <span *ngIf="!isHelper()">{{ netVotes(proposal) }}</span>
+            </span>
             <span *ngSwitchDefault>{{ proposal[field] }}</span>
           </ng-container>
         </td>
       </ng-container>
         <td *ngIf="selectedProposal?.id !== proposal.id">
           <div  *ngIf="isManager()" >
-            <button (click)="$event.stopPropagation(); editProposal(proposal)">Edit</button>
+            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); editProposal(proposal)">Edit</button>
             <button (click)="$event.stopPropagation(); deleteProposal(proposal)">Delete</button>
-            <button (click)="$event.stopPropagation(); approveProposal(proposal)">approve</button>
-            <button (click)="$event.stopPropagation(); rejectProposal(proposal)">Reject</button>
+            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); approveProposal(proposal)">Approve</button>
+            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); rejectProposal(proposal)">Reject</button>
           </div>
         </td>
 
@@ -44,7 +55,14 @@
           <td><input [(ngModel)]="selectedProposal.name" name="name" /></td>
           <td><input type="number" [(ngModel)]="selectedProposal.cost" name="cost" /></td>
           <td><input type="number" [(ngModel)]="selectedProposal.quantity" name="quantity" /></td>
-          <td><input [(ngModel)]="selectedProposal.type" name="type" /></td>
+          <td>
+            <select name="type" [(ngModel)]="selectedProposal.type">
+              <option [ngValue]="NeedType.SELECT">Select Type</option>
+              <option [ngValue]="NeedType.ITEM_DONATION">Item</option>
+              <option [ngValue]="NeedType.MONETARY">Monetary</option>
+              <option [ngValue]="NeedType.VOLUNTEERING">Volunteering</option>
+            </select>
+          </td>
           <td>{{ proposal.organization }}</td>
           <td>{{ proposal.username }}</td>
           <td>{{ proposal.creationDate | date }}</td>

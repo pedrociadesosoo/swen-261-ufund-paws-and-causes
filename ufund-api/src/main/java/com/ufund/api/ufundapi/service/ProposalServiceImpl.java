@@ -1,13 +1,13 @@
 package com.ufund.api.ufundapi.service;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.ufund.api.ufundapi.dao.ProposalDAO;
 import com.ufund.api.ufundapi.model.Need;
+import com.ufund.api.ufundapi.model.NeedType;
 import com.ufund.api.ufundapi.model.Proposal;
 
 @Service
@@ -67,9 +67,33 @@ public class ProposalServiceImpl implements ProposalService {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) { return null;}
 
-        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), proposal.getType());
+        if (!"pending".equals(proposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + proposal.getStatus() + "; only pending proposals can be approved.");
+        }
 
-        needService.createNeed(need);
+        NeedType type;
+        try {
+            type = NeedType.valueOf(proposal.getType());
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new IllegalArgumentException(
+                "Proposal has an invalid type (\"" + proposal.getType() +
+                "\"); edit the proposal and set a valid type before approving.");
+        }
+
+        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), type);
+
+		boolean needExists = needService.getAllNeeds().stream().
+			anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()));
+
+		if (needExists) {
+			throw new IllegalArgumentException("Need name already exist");
+		}
+        Need createNeed = needService.createNeed((need));
+        if (createNeed == null) {
+            throw new IllegalStateException("creation failed");
+        }
+
         proposal.setStatus("approved");
         return proposalDao.updateProposal(proposal);
     }
@@ -83,6 +107,11 @@ public class ProposalServiceImpl implements ProposalService {
     public Proposal rejectProposal(int id) throws IOException {
         Proposal proposal = proposalDao.getProposalById(id);
         if (proposal == null) return null;
+
+        if (!"pending".equals(proposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + proposal.getStatus() + "; only pending proposals can be rejected.");
+        }
 
         proposal.setStatus("rejected");
 

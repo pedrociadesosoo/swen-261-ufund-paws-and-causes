@@ -61,6 +61,18 @@ public class OrganizationController {
         }
     }
 
+    @GetMapping("")
+    public ResponseEntity<Organization[]> getOrganizationArray(){
+        LOG.info("GET /organization");
+        try{
+            Organization[] orgs = oService.getOrganizationArray();
+            return new ResponseEntity<>(orgs, HttpStatus.OK);
+        } catch (IOException e){
+            LOG.log(Level.SEVERE, e.getLocalizedMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);         
+        }
+    }
+
     /**
      * POST /organization - Creates the new organization
      * with all of the relevant information carried on from
@@ -100,14 +112,14 @@ public class OrganizationController {
      * @return 403 if null name, 200 on success, 404 on not found, 500 on failure.
      */
     @PostMapping("/{name}")
-    public ResponseEntity<Boolean> updateOrganization(@RequestBody Organization o){
-        LOG.info("POST /organization/" + o.getName());
+    public ResponseEntity<Organization> updateOrganization(@RequestBody Organization o, @PathVariable String name){
+        LOG.info("POST /organization/" + name);
         try {
             if (o.getName() == null){
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            boolean updated = oService.updateOrganization(o);
-            if (updated == true){
+            Organization updated = oService.updateOrganization(o, name);
+            if (updated != null){
                 return new ResponseEntity<>(updated, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
