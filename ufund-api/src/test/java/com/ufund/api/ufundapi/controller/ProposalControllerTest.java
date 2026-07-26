@@ -73,7 +73,7 @@ public class ProposalControllerTest {
         Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
-        when(needService.findNeeds("Corn", null)).thenReturn(List.of());
+        when(needService.findNeeds("Corn", null, null)).thenReturn(List.of());
         when(proposalService.approveProposal(3)).thenReturn(proposal);
 
         ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);
@@ -96,7 +96,7 @@ public class ProposalControllerTest {
         Need existingNeed = new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
-        when(needService.findNeeds("Corn", null)).thenReturn(List.of(existingNeed));
+        when(needService.findNeeds("Corn", null, null)).thenReturn(List.of(existingNeed));
         when(proposalService.approveProposal(3)).thenReturn(proposal);
 
         ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);

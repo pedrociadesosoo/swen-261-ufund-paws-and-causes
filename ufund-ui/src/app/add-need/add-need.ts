@@ -92,10 +92,10 @@ export class AddNeed implements OnInit {
       this.errorMessage = 'Type is required.';
       return false;
     }
-    /*if(!this.need.org || this.need.org.trim() === ''){
+    if(!this.need.organization || this.need.organization.trim() === ''){
       this.errorMessage = 'Organization is required.';
       return false;
-    }*/
+    }
     return true;
   }
 

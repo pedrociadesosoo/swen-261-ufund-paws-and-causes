@@ -69,7 +69,7 @@ class NeedServiceTest {
             new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"));
         when(mockDao.findNeeds("Canned")).thenReturn(needs);
 
-        List<Need> result = service.findNeeds("Canned", null);
+        List<Need> result = service.findNeeds("Canned", null, null);
 
         assertEquals(1, result.size());
         assertEquals("Canned Soup", result.get(0).getName());
@@ -83,7 +83,7 @@ class NeedServiceTest {
     void testFindNeedsStringNoMatch() throws IOException {
         when(mockDao.findNeeds("xyz")).thenReturn(Collections.emptyList());
 
-        List<Need> result = service.findNeeds("xyz", null);
+        List<Need> result = service.findNeeds("xyz", null, null);
 
         assertTrue(result.isEmpty());
         verify(mockDao).findNeeds("xyz");
@@ -99,7 +99,7 @@ class NeedServiceTest {
             new Need(2, "Canned Beans", 1.99, 100, NeedType.ITEM_DONATION, "test"));
         when(mockDao.findNeeds("Canned")).thenReturn(needs);
 
-        List<Need> result = service.findNeeds("Canned", null);
+        List<Need> result = service.findNeeds("Canned", null, null);
 
         assertEquals(2, result.size());
         verify(mockDao).findNeeds("Canned");
@@ -125,7 +125,7 @@ class NeedServiceTest {
 
         when(mockDao.findNeedsWithType(NeedType.ITEM_DONATION)).thenReturn(expected);
 
-        List<Need> result = service.findNeeds(null, NeedType.ITEM_DONATION);
+        List<Need> result = service.findNeeds(null, NeedType.ITEM_DONATION, null);
         verify(mockDao).findNeedsWithType(NeedType.ITEM_DONATION);
         assertEquals(4, result.size());
         for(Need need: result){
@@ -147,7 +147,7 @@ class NeedServiceTest {
 
         when(mockDao.getAllNeeds()).thenReturn(needs);
 
-        List<Need> result = service.findNeeds(null, null);
+        List<Need> result = service.findNeeds(null, null, null);
         verify(mockDao).getAllNeeds();
         assertEquals(6, result.size());       
     }
@@ -171,7 +171,7 @@ class NeedServiceTest {
 
         when(mockDao.findNeeds("a", NeedType.ITEM_DONATION)).thenReturn(expected);
 
-        List<Need> result = service.findNeeds("a", NeedType.ITEM_DONATION);
+        List<Need> result = service.findNeeds("a", NeedType.ITEM_DONATION, null);
         //verify(this).getAllNeeds();
         assertEquals(2, result.size());       
     }
@@ -183,7 +183,7 @@ class NeedServiceTest {
 
         when(mockDao.findNeeds("a",NeedType.VOLUNTEERING)).thenReturn(expected);
 
-        List<Need> result = service.findNeeds("a", NeedType.VOLUNTEERING);
+        List<Need> result = service.findNeeds("a", NeedType.VOLUNTEERING, null);
         assertEquals(0, result.size());       
     }
 }

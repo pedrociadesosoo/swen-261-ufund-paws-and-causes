@@ -61,8 +61,8 @@
     <div class="form-group">
       <label for="organization">Need Organization</label>
       <select name="organization" [(ngModel)]="need.organization" >
-        <option [ngValue]="">Select Organization</option>
-        <option *ngFor="let org of this.orgList" [ngValue]="org">{{org.name}}</option>
+        <option [ngValue]="''">Select Organization</option>
+        <option *ngFor="let org of this.orgList" [ngValue]="org.name">{{org.name}}</option>
        </select>
     </div>
 

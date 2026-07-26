@@ -142,7 +142,7 @@ public class NeedControllerTest {
     public void testSearchNeeds() throws Exception {
         List<Need> needs = new ArrayList<>();
         needs.add(new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test"));
-        when(needService.findNeeds("Cor", null)).thenReturn(needs);
+        when(needService.findNeeds("Cor", null, null)).thenReturn(needs);
         ResponseEntity<Need[]> response = needController.getNeeds("Cor", null, null);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().length);
@@ -150,7 +150,7 @@ public class NeedControllerTest {
 
     @Test
     public void testSearchNeedsHandleException() throws Exception {
-        doThrow(new RuntimeException()).when(needService).findNeeds("Cor", null);
+        doThrow(new RuntimeException()).when(needService).findNeeds("Cor", null, null);
         ResponseEntity<Need[]> response = needController.getNeeds("Cor", null, null);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
