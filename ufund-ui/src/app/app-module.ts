@@ -18,6 +18,7 @@ import { RouterModule } from '@angular/router';
 import { CreateOrgComponent } from './create-org.component/create-org.component';
 import { OrganizationDetailsComponent } from './organization-details.component/organization-details.component';
 import { NeedTypeDropdown } from './need-type-dropdown/need-type-dropdown';
+import { CreateProposal } from './create-proposal/create-proposal';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { NeedTypeDropdown } from './need-type-dropdown/need-type-dropdown';
     CreateOrgComponent,
     OrganizationDetailsComponent,
     Proposals,
-    NeedTypeDropdown
+    NeedTypeDropdown,
+    CreateProposal
   ],
   imports: [
     BrowserModule,

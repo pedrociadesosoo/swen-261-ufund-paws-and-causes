@@ -2,6 +2,8 @@
 <div class="proposals-container">
   <h2>Proposals</h2>
 
+  <button *ngIf="isHelper()" routerLink="/create-proposal">Propose a New Need</button>
+
   <div *ngIf="errorMessage" class="error">
     {{ errorMessage }}
   </div>

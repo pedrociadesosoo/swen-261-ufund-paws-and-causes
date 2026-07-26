@@ -32,6 +32,13 @@ export class ProposalService {
     return this.http.get<Proposal>(`${this.apiUrl}/${id}`);
   }
 
+  /**
+   * Submits a new proposal for review
+   */
+  createProposal(proposal: Proposal): Observable<Proposal> {
+    return this.http.post<Proposal>(this.apiUrl, proposal);
+  }
+
   deleteProposal(id: number): Observable<Proposal> {
     return this.http.delete<Proposal>(`${this.apiUrl}/${id}`)
   }
