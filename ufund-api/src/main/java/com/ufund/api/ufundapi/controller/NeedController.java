@@ -102,6 +102,10 @@ public class NeedController {
         @RequestParam(required = false) NeedType type,
         @RequestParam(required = false) String org
     ) {
+        if (org != null) {
+            org.replaceAll("_", " ");
+        }
+
         LOG.info("GET /needs" + (name != null ? "?name=" + name : "") +
             (type != null ? "&type=" + type : "") +
             (org != null ? "&org=" + org : "")

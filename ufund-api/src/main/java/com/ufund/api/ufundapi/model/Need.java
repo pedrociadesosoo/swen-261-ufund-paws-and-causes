@@ -12,7 +12,7 @@ public class Need{
     @JsonProperty("cost") private double cost;
     @JsonProperty("quantity") private int quantity;
     @JsonProperty("type") private NeedType type;
-    @JsonProperty("string") private String orgName;
+    @JsonProperty("orgName") private String orgName;
 
 
     public Need(@JsonProperty("id") int id,

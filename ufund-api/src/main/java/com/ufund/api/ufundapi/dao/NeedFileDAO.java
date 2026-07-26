@@ -146,7 +146,7 @@ public class NeedFileDAO implements NeedDAO {
             if (
                 (type == null || need.getType() == type) &&
                 (org == null || 
-                    need.getName().toLowerCase().contains(org.toLowerCase()))
+                    need.getOrganization().toLowerCase().contains(org.toLowerCase()))
             ) {
                 needArrayList.add(need);
             }

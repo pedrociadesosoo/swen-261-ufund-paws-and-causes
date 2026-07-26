@@ -16,7 +16,9 @@ export class NeedService {
    * Gets all needs or searches by partial name and/or type. 
    */
   getNeeds(name?: string, type?: NeedType, org?: string): Observable<Need[]> {
-    if(org){
+    if(org != null){
+      org.replaceAll(' ', '_')
+
       if (type && name) {
         return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&type=${type}&org=${org}`);
       } else {
