@@ -1,1 +1,12 @@
-[{"id":1,"name":"Winter Coats","cost":50.0,"quantity":10,"type":"ITEM_DONATION","organization":{"name":"Lynx Lovers","description":"We love lynxes and other animals!","needs":{}}},{"id":2,"name":"Canned Corn","cost":5.0,"quantity":100,"type":"ITEM_DONATION","organization":{"name":"test","description":"test","needs":{}}},{"id":4,"name":"Canned Beans","cost":3.0,"quantity":150,"type":"ITEM_DONATION","organization":{"name":"test","description":"test","needs":{}}},{"id":6,"name":"Winter Hat","cost":1.0,"quantity":1,"type":"ITEM_DONATION","organization":{"name":"test","description":"test","needs":{}}},{"id":7,"name":"Flowers for Terminal Patients","cost":10.0,"quantity":6,"type":"ITEM_DONATION","organization":{"name":"test","description":"test","needs":{}}},{"id":8,"name":"Winter Gloves","cost":10.0,"quantity":10,"type":"ITEM_DONATION","organization":{"name":"test","description":"test","needs":{}}},{"id":9,"name":"Cat food","cost":10.0,"quantity":2,"type":"ITEM_DONATION","organization":{"name":"test","description":"test","needs":{}}},{"id":15,"name":"Blankets","cost":35.0,"quantity":25,"type":"ITEM_DONATION","organization":{"name":"test","description":"test","needs":{}}},{"id":16,"name":"test","cost":1.0,"quantity":1,"type":"ITEM_DONATION","organization":{"name":"test","description":"test","needs":{}}},{"id":17,"name":"testIL","cost":1.0,"quantity":1,"type":"ITEM_DONATION","organization":{"name":"Lynx Lovers","description":"We love lynxes and other animals!","needs":{}}}]
+[
+    {"id":1,"name":"Winter Coats","cost":50.0,"quantity":10,"type":"ITEM_DONATION","organization":"Lynx Lovers"},
+    {"id":2,"name":"Canned Corn","cost":5.0,"quantity":100,"type":"ITEM_DONATION","organization":"test"},
+    {"id":4,"name":"Canned Beans","cost":3.0,"quantity":150,"type":"ITEM_DONATION","organization":"test"},
+    {"id":6,"name":"Winter Hat","cost":1.0,"quantity":1,"type":"ITEM_DONATION","organization":"test"},
+    {"id":7,"name":"Flowers for Terminal Patients","cost":10.0,"quantity":6,"type":"ITEM_DONATION","organization":"test"},
+    {"id":8,"name":"Winter Gloves","cost":10.0,"quantity":10,"type":"ITEM_DONATION","organization":"test"},
+    {"id":9,"name":"Cat food","cost":10.0,"quantity":2,"type":"ITEM_DONATION","organization":"test"},
+    {"id":15,"name":"Blankets","cost":35.0,"quantity":25,"type":"ITEM_DONATION","organization":"test"},
+    {"id":16,"name":"test","cost":1.0,"quantity":1,"type":"ITEM_DONATION","organization":"test"},
+    {"id":17,"name":"testIL","cost":1.0,"quantity":1,"type":"ITEM_DONATION","organization":"test"}
+]

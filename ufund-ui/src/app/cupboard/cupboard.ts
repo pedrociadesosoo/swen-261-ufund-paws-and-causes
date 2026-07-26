@@ -21,16 +21,11 @@ export class Cupboard implements OnInit {
   needs: Need[] = [];
   errorMessage: string = '';
   successMessage: string = '';
-  blankOrg : Organization = {
-    name: '',
-    description: '',
-    needs: {}
-  }
 
   /** Bound to the search box, filters the cupboard by partial name match */
   searchTerm: string = '';
   searchType: NeedType = NeedType.SELECT;
-  searchOrg: Organization = this.blankOrg;
+  searchOrg: string = '';
 
   orgList: Organization[] = [];
 
@@ -61,7 +56,11 @@ export class Cupboard implements OnInit {
    * Loads needs from the API, filtered by searchTerm when one is set
    */
   loadNeeds(): void {
-    this.needService.getNeeds(this.searchTerm || undefined, this.searchType || undefined).subscribe({
+    this.needService.getNeeds(
+      this.searchTerm || undefined, 
+      this.searchType || undefined, 
+      this.searchOrg || undefined
+    ).subscribe({
       next: (needs) => {
         this.needs = needs;
         this.errorMessage = '';
@@ -84,7 +83,7 @@ export class Cupboard implements OnInit {
     this.searchTerm = '';
     this.searchType = NeedType.SELECT;
     this.errorMessage = '';
-    this.searchOrg = this.blankOrg;
+    this.searchOrg = '';
     this.loadNeeds();
   }
 

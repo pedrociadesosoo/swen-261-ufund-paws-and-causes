@@ -27,9 +27,9 @@ public class OrganizationControllerTest {
 
     private Need[] sampleNeeds() {
         return new Need[] {
-                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION)
+                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test")
         };
     }
 
@@ -153,7 +153,7 @@ public class OrganizationControllerTest {
         Organization o = sampleOrganization();
         when(orgService.getOrganization(o.getName())).thenReturn(o);
 
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
         
         when(orgService.addNeed(o,newNeed)).thenReturn(true);
@@ -166,7 +166,7 @@ public class OrganizationControllerTest {
     @Test
     public void testAddNeedConflict() throws IOException{
 
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
 
         Organization o = sampleOrganization();
@@ -186,7 +186,7 @@ public class OrganizationControllerTest {
         Organization o = sampleOrganization();
         when(orgService.getOrganization(o.getName())).thenThrow(new IOException("read failed"));
 
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
 
         ResponseEntity<Boolean> response = orgCont.addNeed(o.getName(), newNeed.getId());
@@ -212,7 +212,7 @@ public class OrganizationControllerTest {
         Organization o = sampleOrganization();
         when(orgService.getOrganization(o.getName())).thenReturn(o);
 
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
         when(needService.getNeedById(newNeed.getId())).thenReturn(newNeed);
 
         ResponseEntity<Boolean> response = orgCont.deleteNeed(o.getName(), newNeed.getId());

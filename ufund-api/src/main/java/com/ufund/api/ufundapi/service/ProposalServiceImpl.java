@@ -81,7 +81,7 @@ public class ProposalServiceImpl implements ProposalService {
                 "\"); edit the proposal and set a valid type before approving.");
         }
 
-        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), type);
+        Need need = new Need(0, proposal.getName(), proposal.getCost(), proposal.getQuantity(), type, proposal.getOrganization());
 
 		boolean needExists = needService.getAllNeeds().stream().
 			anyMatch(n -> n.getName().equalsIgnoreCase(proposal.getName()));

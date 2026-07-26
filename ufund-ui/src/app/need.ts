@@ -15,17 +15,31 @@ export class NeedService {
   /**
    * Gets all needs or searches by partial name and/or type. 
    */
-  getNeeds(name?: string, type?: NeedType): Observable<Need[]> {
-    if (type && name) {
-      return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&type=${type}`);
-    } else {
-      if(type)
-        return this.http.get<Need[]>(`${this.apiUrl}?type=${type}`);
-      else if(name)
-        return this.http.get<Need[]>(`${this.apiUrl}?name=${name}`);
-      else
-        return this.http.get<Need[]>(this.apiUrl);
+  getNeeds(name?: string, type?: NeedType, org?: string): Observable<Need[]> {
+    if(org){
+      if (type && name) {
+        return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&type=${type}&org=${org}`);
+      } else {
+        if(type)
+          return this.http.get<Need[]>(`${this.apiUrl}?type=${type}&org=${org}`);
+        else if(name)
+          return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&org=${org}`);
+        else
+          return this.http.get<Need[]>(`${this.apiUrl}?org=${org}`);
+      }
+    } else { 
+      if (type && name) {
+        return this.http.get<Need[]>(`${this.apiUrl}?name=${name}&type=${type}`);
+      } else {
+        if(type)
+          return this.http.get<Need[]>(`${this.apiUrl}?type=${type}`);
+        else if(name)
+          return this.http.get<Need[]>(`${this.apiUrl}?name=${name}`);
+        else
+          return this.http.get<Need[]>(this.apiUrl);
+      }
     }
+    
   }
 
   /**

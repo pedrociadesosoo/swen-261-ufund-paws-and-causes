@@ -139,6 +139,79 @@ public class NeedFileDAO implements NeedDAO {
         return needArray;
     }
 
+    private Need[] getNeedArray(NeedType type, String org) {
+        ArrayList<Need> needArrayList = new ArrayList<>();
+
+        for (Need need : needs.values()) {
+            if (
+                (type == null || need.getType() == type) &&
+                (org == null || 
+                    need.getName().toLowerCase().contains(org.toLowerCase()))
+            ) {
+                needArrayList.add(need);
+            }
+        }
+
+        Need[] needArray = new Need[needArrayList.size()];
+        needArrayList.toArray(needArray);
+        return needArray;
+    }
+
+    private Need[] getNeedArray(String containsText, String org) {
+        ArrayList<Need> needArrayList = new ArrayList<>();
+
+        for (Need need : needs.values()) {
+            if (
+                (containsText == null || 
+                    need.getName().toLowerCase().contains(containsText.toLowerCase())) &&
+                (org == null || 
+                    need.getName().toLowerCase().contains(org.toLowerCase()))
+            ) {
+                needArrayList.add(need);
+            }
+        }
+
+        Need[] needArray = new Need[needArrayList.size()];
+        needArrayList.toArray(needArray);
+        return needArray;
+    }
+
+    private Need[] getNeedArray(String containsText, NeedType type, String org) {
+        ArrayList<Need> needArrayList = new ArrayList<>();
+
+        for (Need need : needs.values()) {
+            if (
+                (type == null || need.getType() == type) &&
+                (containsText == null || 
+                    need.getName().toLowerCase().contains(containsText.toLowerCase())) &&
+                (org == null || 
+                    need.getOrganization().toLowerCase().contains(org.toLowerCase()))
+            ) {
+                needArrayList.add(need);
+            }
+        }
+
+        Need[] needArray = new Need[needArrayList.size()];
+        needArrayList.toArray(needArray);
+        return needArray;
+    }
+
+    private Need[] getNeedArrayOrg(String org) {
+        ArrayList<Need> needArrayList = new ArrayList<>();
+
+        for (Need need : needs.values()) {
+            if (org == null || need.getOrganization().toLowerCase().contains(org.toLowerCase())) {
+                needArrayList.add(need);
+            }
+        }
+
+        Need[] needArray = new Need[needArrayList.size()];
+        needArrayList.toArray(needArray);
+        return needArray;
+    }
+
+    
+
     /**
      * Saves the {@linkplain Need needs} from the map into the file as an array of JSON objects
      * 
@@ -278,9 +351,37 @@ public class NeedFileDAO implements NeedDAO {
     * {@inheritDoc}
      */
     @Override
-    public List<Need> findNeeds(NeedType type) {
+    public List<Need> findNeedsWithType(NeedType type) {
         synchronized (needs) {
             return new ArrayList<Need>(Arrays.asList(getNeedArray(type)));
+        }
+    }
+
+    @Override
+    public List<Need> findNeeds(String containsText, NeedType type, String org) {
+        synchronized (needs) {
+            return new ArrayList<Need>(Arrays.asList(getNeedArray(containsText, type, org)));
+        }
+    }
+
+    @Override
+    public List<Need> findNeeds(NeedType type, String org) {
+        synchronized (needs) {
+            return new ArrayList<Need>(Arrays.asList(getNeedArray(type, org)));
+        }
+    }
+
+    @Override
+    public List<Need> findNeeds(String containsText, String org) {
+        synchronized (needs) {
+            return new ArrayList<Need>(Arrays.asList(getNeedArray(containsText, org)));
+        }
+    }
+
+    @Override
+    public List<Need> findNeedsWithOrg(String org) {
+        synchronized (needs) {
+            return new ArrayList<>(Arrays.asList(getNeedArrayOrg(org)));
         }
     }
 }

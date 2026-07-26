@@ -1,5 +1,4 @@
 import { NeedType } from "./need-type";
-import { Organization } from "./organization";
 
 export interface Need {
     id: number;
@@ -7,5 +6,5 @@ export interface Need {
     cost: number;
     quantity: number;
     type: NeedType;
-    organization: Organization;
+    organization: string;
 }

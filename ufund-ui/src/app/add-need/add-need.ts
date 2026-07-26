@@ -20,21 +20,13 @@ export class AddNeed implements OnInit {
   NeedType = NeedType;
   orgList: Organization[] = [];
 
-  blankOrg: Organization = {
-    name: '',
-    description: '',
-    needs: {}
-  }
-
-  org: Organization = this.blankOrg;
-
   need: Need = {
     id: 0,
     name: '',
     cost: 0,
     quantity: 0,
     type: NeedType.SELECT,
-    organization: this.org
+    organization: ''
   };
   errorMessage: string = '';
   successMessage: string = '';
@@ -100,10 +92,10 @@ export class AddNeed implements OnInit {
       this.errorMessage = 'Type is required.';
       return false;
     }
-    if(this.org == this.blankOrg){
+    /*if(!this.need.org || this.need.org.trim() === ''){
       this.errorMessage = 'Organization is required.';
       return false;
-    }
+    }*/
     return true;
   }
 

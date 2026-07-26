@@ -1,22 +1,21 @@
 package com.ufund.api.ufundapi.dao;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.FundingBasket;
@@ -31,9 +30,9 @@ public class FundingBasketFileDAOTest {
 
     private Need[] sampleNeeds() {
         return new Need[] {
-                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION)
+                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test")
         };
     }
 
@@ -114,7 +113,7 @@ public class FundingBasketFileDAOTest {
     @Test
     void testAddNeedFB() throws IOException {
         FundingBasket fb = fbdao.getFundingBasket(1);
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
 
         boolean added = fbdao.addNeed(fb, newNeed);
 
@@ -125,7 +124,7 @@ public class FundingBasketFileDAOTest {
     @Test
     void testAddNeedFBDuplicate() throws IOException {
         FundingBasket fb = fbdao.getFundingBasket(1);
-        Need dupNeed = new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION);
+        Need dupNeed = new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test");
 
         boolean added = fbdao.addNeed(fb, dupNeed);
 
@@ -136,7 +135,7 @@ public class FundingBasketFileDAOTest {
     @Test
     void testAddNeedFBSaveFail() throws IOException {
         FundingBasket fb = fbdao.getFundingBasket(1);
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
         doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(FundingBasket[].class));
 
         assertThrows(IOException.class, () -> fbdao.addNeed(fb, newNeed));
@@ -145,7 +144,7 @@ public class FundingBasketFileDAOTest {
     @Test
     void testRemoveNeedFB() throws IOException {
         FundingBasket fb = fbdao.getFundingBasket(1);
-        Need need = new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION);
+        Need need = new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test");
 
         boolean removed = fbdao.removeNeed(fb, need);
 
@@ -156,7 +155,7 @@ public class FundingBasketFileDAOTest {
     @Test
     void testRemoveNeedFBMissing() throws IOException {
         FundingBasket fb = fbdao.getFundingBasket(1);
-        Need need = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need need = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
 
         boolean removed = fbdao.removeNeed(fb, need);
 

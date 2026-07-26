@@ -48,7 +48,7 @@ public class NeedControllerTest {
 
     @Test
     public void testCreateNeed() throws IOException {
-        Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION);
+        Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION, "test");
         when(needService.createNeed(need)).thenReturn(need);
         ResponseEntity<Need> response = needController.createNeed("manager", need);
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
@@ -57,8 +57,8 @@ public class NeedControllerTest {
 
     @Test
     void testCreateNeedConflict() throws IOException {
-        Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION);
-        Need other = new Need(666, "corn", 5, 2, NeedType.ITEM_DONATION);
+        Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION, "test");
+        Need other = new Need(666, "corn", 5, 2, NeedType.ITEM_DONATION, "test");
         when(needService.getNeedArray("corn")).thenReturn(new Need[] {need});
         ResponseEntity<Need> response = needController.createNeed("manager", other);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
@@ -68,7 +68,7 @@ public class NeedControllerTest {
 
     @Test
     void testCreateNeedIOE() throws IOException{
-         Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION);
+         Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION, "test");
          when(needService.getNeedArray("corn")).thenReturn(new Need[0]);
          when(needService.createNeed(need)).thenThrow(new IOException("IO Failure"));
 
@@ -83,7 +83,7 @@ public class NeedControllerTest {
      */
     @Test
     void testCreateNeedForbiddenForNonManager() throws IOException {
-        Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION);
+        Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION, "test");
         ResponseEntity<Need> response = needController.createNeed("helper", need);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         verify(needService, never()).createNeed(any());
@@ -91,7 +91,7 @@ public class NeedControllerTest {
 
     @Test
     public void testUpdateNeedGetNeedFailed() throws Exception {
-        Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION);
+        Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
         when(needService.updateNeed(need.getId(), need)).thenReturn(null);
         ResponseEntity<Need> response = needController.updateNeed("manager", need.getId(), need);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -99,7 +99,7 @@ public class NeedControllerTest {
 
     @Test
     public void testUpdateNeedHandleException() throws Exception {
-        Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION);
+        Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
         doThrow(new IOException()).when(needService).updateNeed(need.getId(), need);
         ResponseEntity<Need> response = needController.updateNeed("manager", need.getId(), need);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
@@ -110,7 +110,7 @@ public class NeedControllerTest {
      */
     @Test
     public void testUpdateNeedForbiddenForNonManager() throws Exception {
-        Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION);
+        Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
         ResponseEntity<Need> response = needController.updateNeed("helper", need.getId(), need);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         verify(needService, never()).updateNeed(any(int.class), any());
@@ -121,7 +121,7 @@ public class NeedControllerTest {
      */
     @Test
     public void testDeleteNeed() throws Exception {
-        Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION);
+        Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
         when(needService.deleteNeed(3)).thenReturn(need);
         ResponseEntity<Need> response = needController.deleteNeed("manager", 3);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -141,9 +141,9 @@ public class NeedControllerTest {
     @Test
     public void testSearchNeeds() throws Exception {
         List<Need> needs = new ArrayList<>();
-        needs.add(new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION));
+        needs.add(new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test"));
         when(needService.findNeeds("Cor", null)).thenReturn(needs);
-        ResponseEntity<Need[]> response = needController.getNeeds("Cor", null);
+        ResponseEntity<Need[]> response = needController.getNeeds("Cor", null, null);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().length);
     }
@@ -151,7 +151,7 @@ public class NeedControllerTest {
     @Test
     public void testSearchNeedsHandleException() throws Exception {
         doThrow(new RuntimeException()).when(needService).findNeeds("Cor", null);
-        ResponseEntity<Need[]> response = needController.getNeeds("Cor", null);
+        ResponseEntity<Need[]> response = needController.getNeeds("Cor", null, null);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
@@ -160,7 +160,7 @@ public class NeedControllerTest {
      */
     @Test
     public void testGetNeed() throws Exception {
-	Need need = new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION);
+	Need need = new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
         when(needService.getNeedById(1)).thenReturn(need);
 
 	ResponseEntity<Need> response = needController.getNeed(1);

@@ -99,10 +99,16 @@ public class NeedController {
     @GetMapping("")
     public ResponseEntity<Need[]> getNeeds(
         @RequestParam(required = false) String name,
-        @RequestParam(required = false) NeedType type) {
-        LOG.info("GET /needs" + (name != null ? "?name=" + name : ""));
+        @RequestParam(required = false) NeedType type,
+        @RequestParam(required = false) String org
+    ) {
+        LOG.info("GET /needs" + (name != null ? "?name=" + name : "") +
+            (type != null ? "&type=" + type : "") +
+            (org != null ? "&org=" + org : "")
+        );
+
         try {
-            List<Need> needs = needService.findNeeds(name, type);         
+            List<Need> needs = needService.findNeeds(name, type, org);         
             return new ResponseEntity<>(needs.toArray(new Need[0]), HttpStatus.OK);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
@@ -129,7 +135,7 @@ public class NeedController {
             Need[] existing = needService.getNeedArray(need.getName());
             if (existing != null && existing.length > 0)
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
-            organizationService.addNeed(need.getOrganization(), need);
+            organizationService.addNeed(organizationService.getOrganization(need.getOrganization()), need);
             return new ResponseEntity<>(needService.createNeed(need), HttpStatus.CREATED);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
@@ -158,8 +164,8 @@ public class NeedController {
             Need updated = needService.updateNeed(id, need);
             if (updated != null){
                 if (existing.getOrganization().equals(updated.getOrganization())) {
-                    organizationService.addNeed(updated.getOrganization(), updated);
-                    organizationService.deleteNeed(existing.getOrganization(), existing);
+                    organizationService.addNeed(organizationService.getOrganization(updated.getOrganization()), updated);
+                    organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
                 }
                 return new ResponseEntity<>(updated, HttpStatus.OK);
             }else
@@ -187,7 +193,7 @@ public class NeedController {
             if (!isManager(username))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             Need existing = needService.getNeedById(id);
-            organizationService.deleteNeed(existing.getOrganization(), existing);
+            organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
             Need deletedNeed = needService.deleteNeed(id);
             if (deletedNeed != null)
                 return new ResponseEntity<Need>(deletedNeed, HttpStatus.OK);

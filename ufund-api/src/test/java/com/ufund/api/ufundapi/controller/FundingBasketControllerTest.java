@@ -1,19 +1,18 @@
 package com.ufund.api.ufundapi.controller;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -32,9 +31,9 @@ public class FundingBasketControllerTest {
 
     private Need[] sampleNeeds() {
         return new Need[] {
-                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION)
+                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test")
         };
     }
 
@@ -159,7 +158,7 @@ public class FundingBasketControllerTest {
     @Test
     public void testAddNeedFB() throws IOException {
         FundingBasket fb = sampleFB();
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
 
         when(fbService.getFundingBasket(1)).thenReturn(fb);
         when(needService.getNeedById(4)).thenReturn(newNeed);
@@ -203,7 +202,7 @@ public class FundingBasketControllerTest {
     @Test
     public void testRemoveNeedFB() throws IOException {
         FundingBasket fb = sampleFB();
-        Need need = new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION);
+        Need need = new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test");
 
         when(fbService.getFundingBasket(1)).thenReturn(fb);
         when(needService.getNeedById(3)).thenReturn(need);
