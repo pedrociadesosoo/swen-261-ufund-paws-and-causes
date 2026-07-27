@@ -19,7 +19,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let proposal of proposals">
+      <tr *ngFor="let proposal of proposals" (click)="onRowClick(proposal)" style="cursor: pointer;">
       <ng-container *ngIf="selectedProposal?.id !== proposal.id">
         <td *ngFor="let field of proposalValues">
           <ng-container [ngSwitch]="field">
