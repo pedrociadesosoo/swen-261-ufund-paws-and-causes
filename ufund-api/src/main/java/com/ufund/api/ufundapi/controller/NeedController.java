@@ -197,7 +197,7 @@ public class NeedController {
             if (!isManager(username))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             Need existing = needService.getNeedById(id);
-            organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
+            //organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
             Need deletedNeed = needService.deleteNeed(id);
             if (deletedNeed != null)
                 return new ResponseEntity<Need>(deletedNeed, HttpStatus.OK);

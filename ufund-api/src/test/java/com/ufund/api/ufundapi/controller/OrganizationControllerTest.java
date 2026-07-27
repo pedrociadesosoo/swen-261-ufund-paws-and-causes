@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -161,6 +163,9 @@ public class OrganizationControllerTest {
         ResponseEntity<Boolean> response = orgCont.addNeed(o.getName(), newNeed.getId());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(true, response.getBody());
+        verify(orgService, times(1)).addNeed(o, newNeed);
+        //assertEquals(sampleOrganization().getNeeds().size()+1, orgService.getOrganization("General Humanities").getNeeds().size());
+
     }
 
     @Test

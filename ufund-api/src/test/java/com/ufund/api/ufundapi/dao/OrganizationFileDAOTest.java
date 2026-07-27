@@ -37,7 +37,7 @@ public class OrganizationFileDAOTest {
         };
     }
 
-        private Organization sampleOrganization(){
+    private Organization sampleOrganization(){
         Need[] needs = sampleNeeds();
         Map<Integer, Need> needMap = new HashMap<>();
 
@@ -117,9 +117,29 @@ public class OrganizationFileDAOTest {
         Organization o = oDao.getOrganization("General Humanities");
         Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
 
+        Map<Integer, Need> saveNeeds = o.getNeeds();
+
         boolean added = oDao.addNeed(o, newNeed);
         assertTrue(added);
         assertEquals(4, oDao.getOrganization("General Humanities").getNeeds().size());
+        assertEquals(sampleOrganization().getNeeds().size()+1, oDao.getOrganization("General Humanities").getNeeds().size());
+        assertTrue(oDao.getOrganization("General Humanities").getNeeds().containsValue(newNeed));
+        assertTrue(oDao.getOrganization("General Humanities").getNeeds().containsKey(newNeed.getId()));
+        assertEquals(
+            newNeed, 
+            oDao.getOrganization("General Humanities").getNeeds().get(newNeed.getId()));
+        assertEquals(
+            newNeed, 
+            oDao.getOrganization("General Humanities").getNeeds().get(4));
+        assertEquals(
+            saveNeeds.get(1), 
+            oDao.getOrganization("General Humanities").getNeeds().get(1));
+        assertEquals(
+            saveNeeds.get(2), 
+            oDao.getOrganization("General Humanities").getNeeds().get(2));
+            assertEquals(
+            saveNeeds.get(3), 
+            oDao.getOrganization("General Humanities").getNeeds().get(3));
     }
 
     @Test

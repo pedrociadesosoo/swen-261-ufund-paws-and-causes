@@ -3,5 +3,5 @@ import { Need } from "./need.model";
 export interface Organization {
     name: string;
     description: string;
-    needs: { [key: string]: Need };
+    needs: Map<number, Need>;
 }
