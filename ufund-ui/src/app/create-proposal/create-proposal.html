@@ -60,13 +60,10 @@
 
     <div class="form-group">
       <label for="organization">Organization</label>
-      <input
-        id="organization"
-        type="text"
-        [(ngModel)]="proposal.organization"
-        name="organization"
-        placeholder="Enter organization (optional)"
-      />
+      <select id="organization" name="organization" [(ngModel)]="proposal.organization">
+        <option value="">None</option>
+        <option *ngFor="let org of organizations" [value]="org.name">{{ org.name }}</option>
+      </select>
     </div>
 
     <div class="button-group">

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { ViewChild } from '@angular/core';
@@ -6,6 +6,8 @@ import { ProposalService } from '../proposal';
 import { Proposal } from '../proposal.model';
 import { AccountService } from '../account';
 import { NeedType } from '../need-type';
+import { OrganizationService } from '../organization.service';
+import { Organization } from '../organization';
 
 
 @Component({
@@ -14,8 +16,10 @@ import { NeedType } from '../need-type';
   templateUrl: './create-proposal.html',
   styleUrl: './create-proposal.css',
 })
-export class CreateProposal {
+export class CreateProposal implements OnInit {
   NeedType = NeedType;
+
+  organizations: Organization[] = [];
 
   proposal: Proposal = {
     id: 0,
@@ -41,9 +45,16 @@ export class CreateProposal {
   constructor(
     private proposalService: ProposalService,
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private organizationService: OrganizationService
   ) {}
-	
+
+  ngOnInit(): void {
+    this.organizationService.getOrganizationArray().subscribe({
+      next: (orgs) => this.organizations = orgs
+    });
+  }
+
   //validates proposal input fields
   validate(): boolean {
 	//A proposal must have a name
