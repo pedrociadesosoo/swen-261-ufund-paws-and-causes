@@ -262,8 +262,7 @@ export class Proposals implements OnInit {
       "Submitted By",
       "Date",
       "votes",
-      "status",
-      "Actions"
+      "status"
     ];
 
     proposalValues = [
