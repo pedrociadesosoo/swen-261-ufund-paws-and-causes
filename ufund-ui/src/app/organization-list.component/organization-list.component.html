@@ -18,11 +18,6 @@
             <a [routerLink]="['/cupboard', entry[1].id]">
                 {{ entry[1].name }}
             </a>
-            @if (isManager()){
-            <button type="button" (click)="deleteNeed(org.name, entry[1].id)">
-                Remove from Org
-            </button>
-            }
         </ul>
     }
 
@@ -30,15 +25,8 @@
         <button type="button" (click)="editOrganization(org.name)">
             Edit Organization
         </button>
-        }
-
-        @if (isManager()){
-        <button type="button">
-            <a routerLink="/organization_add_need">
-                Add Need to Org
-            </a>
-        </button>
     }
+
 
     @if (isManager()){
         <button type="button" (click)="deleteOrganization(org.name)">
