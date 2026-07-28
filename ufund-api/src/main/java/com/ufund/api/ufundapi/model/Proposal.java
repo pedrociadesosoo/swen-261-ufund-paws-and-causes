@@ -98,6 +98,14 @@ public class Proposal{
     	this.organization = organization;
     }
 
+    public String getCreationDate(){
+    	return creationDate;
+    }
+
+    public void setCreationDate(String creationDate){
+    	this.creationDate = creationDate;
+    }
+
     public String getLastEdited(){
     	return lastEdited;
     }
@@ -106,10 +114,12 @@ public class Proposal{
     	this.lastEdited = lastEdited;
     }
 
+    @JsonIgnore
     public void setAllVotes(Map<String, Integer> votes) {
         this.votes = votes;
     }
 
+    @JsonIgnore
     public Map<String, Integer> getAllVotes(){
     	return votes;
     }

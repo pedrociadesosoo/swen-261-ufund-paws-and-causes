@@ -10,6 +10,7 @@ import { OrganizationListComponent } from './organization-list.component/organiz
 import { CreateOrgComponent } from './create-org.component/create-org.component';
 import { OrganizationDetailsComponent } from './organization-details.component/organization-details.component';
 import { Proposals } from './proposals/proposals';
+import { CreateProposal } from './create-proposal/create-proposal';
 import { ProposalDetail } from './proposal-detail/proposal-detail';
 import { authGuard, managerGuard, helperGuard, unsavedChangesGuard, unsavedProposalGuard } from './route-guards';
 
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'basket', component: FundingbasketComponent, canActivate: [helperGuard] },
   { path: 'checkout/:id', component: Checkout, canActivate: [helperGuard] },
   { path: 'proposals', component: Proposals, canActivate: [authGuard], canDeactivate: [unsavedProposalGuard] },
+  { path: 'create-proposal', component: CreateProposal, canActivate: [helperGuard], canDeactivate: [unsavedChangesGuard] },
   { path: 'proposals/:id', component: ProposalDetail, canActivate: [authGuard] },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];
