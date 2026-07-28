@@ -22,7 +22,11 @@
       <option [ngValue]="''">Any Org</option>
       <option *ngFor="let org of orgOptions" [ngValue]="org">{{ org }}</option>
     </select>
-    <button (click)="clearFilters()">Clear</button>
+    <label *ngIf="isHelper()" class="my-proposals-toggle">
+      <input type="checkbox" [(ngModel)]="showMyProposalsOnly" (change)="applyFilters()" />
+      My Proposals Only
+    </label>
+    <button *ngIf="isManager()" (click)="toggleHideDecided()">{{ hideDecidedProposals ? 'Show All' : 'Clear Decided' }}</button>
   </div>
 
   <div *ngIf="errorMessage" class="error">
