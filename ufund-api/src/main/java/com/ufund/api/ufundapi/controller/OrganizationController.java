@@ -1,10 +1,8 @@
 package com.ufund.api.ufundapi.controller;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -142,6 +140,10 @@ public class OrganizationController {
         try{
             if (name == null){
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            for (int needId : oService.getOrganization(name).getNeeds().keySet()) {
+                needService.deleteNeed(needId);
             }
 
             boolean updated = oService.deleteOrganization(name);

@@ -139,8 +139,9 @@ public class NeedController {
             Need[] existing = needService.getNeedArray(need.getName());
             if (existing != null && existing.length > 0)
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
-            organizationService.addNeed(organizationService.getOrganization(need.getOrganization()), need);
-            return new ResponseEntity<>(needService.createNeed(need), HttpStatus.CREATED);
+            Need created = needService.createNeed(need);
+            organizationService.addNeed(organizationService.getOrganization(created.getOrganization()), created);
+            return new ResponseEntity<>(created, HttpStatus.CREATED);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -164,10 +165,11 @@ public class NeedController {
         try {
             if (!isManager(username))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            
             Need existing = needService.getNeedById(id);
             Need updated = needService.updateNeed(id, need);
             if (updated != null){
-                if (existing.getOrganization().equals(updated.getOrganization())) {
+                if (!existing.getOrganization().equals(updated.getOrganization())) {
                     organizationService.addNeed(organizationService.getOrganization(updated.getOrganization()), updated);
                     organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
                 }
@@ -196,8 +198,9 @@ public class NeedController {
         try {
             if (!isManager(username))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+
             Need existing = needService.getNeedById(id);
-            //organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
+            organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
             Need deletedNeed = needService.deleteNeed(id);
             if (deletedNeed != null)
                 return new ResponseEntity<Need>(deletedNeed, HttpStatus.OK);
