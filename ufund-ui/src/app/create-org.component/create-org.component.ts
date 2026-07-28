@@ -66,7 +66,12 @@ export class CreateOrgComponent implements OnInit{
   }
 
   onSubmit(): void {
-    if (!confirm(`Create organization?`)) return;
+    if(this.isEditMode){
+      if (!confirm(`Update organization?`)) return;
+    } else { 
+      if (!confirm(`Create organization?`)) return;
+    }
+
     this.errorMessage = '';
     if (!this.validate()) return;
   
