@@ -25,6 +25,25 @@ export class Proposals implements OnInit {
   originalProposal: any;
   NeedType = NeedType;
 
+  /** The proposals shown in the table, after filtering and sorting */
+  filteredProposals: Proposal[] = [];
+
+  /** Search box: partial, case-insensitive match on the proposal name */
+  searchTerm: string = '';
+  /** Type dropdown filter; '' means "any type" */
+  filterType: string = '';
+  /** Organization dropdown filter; '' means "any organization" */
+  filterOrg: string = '';
+  /** The distinct organizations found in the proposals, for the Org dropdown */
+  orgOptions: string[] = [];
+
+  /** Column currently sorted by; '' means unsorted (original order) */
+  sortField: string = '';
+  /** Sort direction for the active column */
+  sortDirection: 'asc' | 'desc' = 'asc';
+  /** Only these columns can be clicked to sort */
+  private readonly sortableFields = ['name', 'cost', 'quantity', 'type', 'organization', 'creationDate'];
+
   constructor(
     private proposalService: ProposalService,
     private accountService: AccountService,
@@ -41,9 +60,82 @@ export class Proposals implements OnInit {
    */
   loadProposals(): void {
     this.proposalService.getProposals().subscribe({
-      next: (proposals) => this.proposals = proposals,
+      next: (proposals) => {
+        this.proposals = proposals;
+        // Distinct, non-empty org names for the Organization filter dropdown
+        this.orgOptions = [...new Set(
+          proposals.map(p => p.organization).filter(org => !!org)
+        )];
+        this.applyFilters();
+      },
       error: () => this.errorMessage = 'Failed to load proposals'
     });
+  }
+
+  /**
+   * Applies the search box, the Type/Org dropdowns, and the current sort to
+   * produce the list shown in the table. Called whenever any of those change.
+   */
+  applyFilters(): void {
+    const term = this.searchTerm.trim().toLowerCase();
+
+    let result = this.proposals.filter(p => {
+      const matchesName = !term || p.name.toLowerCase().includes(term);
+      const matchesType = !this.filterType || p.type === this.filterType;
+      const matchesOrg = !this.filterOrg || p.organization === this.filterOrg;
+      return matchesName && matchesType && matchesOrg;
+    });
+
+    if (this.sortField) {
+      const direction = this.sortDirection === 'asc' ? 1 : -1;
+      result = result.sort((a, b) => this.compare(a, b, this.sortField) * direction);
+    }
+
+    this.filteredProposals = result;
+  }
+
+  /**
+   * Handles a click on a sortable column header. Clicking the active column
+   * toggles asc/desc; clicking a new column sorts it ascending.
+   */
+  setSort(field: string): void {
+    if (!this.isSortable(field)) return;
+
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';
+    }
+    this.applyFilters();
+  }
+
+  /** True for the six columns the user is allowed to sort by. */
+  isSortable(field: string): boolean {
+    return this.sortableFields.includes(field);
+  }
+
+  /** Resets the search box and both dropdowns, then refreshes the list. */
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.filterType = '';
+    this.filterOrg = '';
+    this.applyFilters();
+  }
+
+  /**
+   * Orders two proposals by one field for an ascending sort: numbers by value,
+   * dates by time, everything else alphabetically. The caller flips the sign
+   * for a descending sort.
+   */
+  private compare(a: Proposal, b: Proposal, field: string): number {
+    if (field === 'cost' || field === 'quantity') {
+      return a[field] - b[field];
+    }
+    if (field === 'creationDate') {
+      return new Date(a[field]).getTime() - new Date(b[field]).getTime();
+    }
+    return String(a[field] ?? '').localeCompare(String(b[field] ?? ''));
   }
 
 
@@ -212,6 +304,7 @@ export class Proposals implements OnInit {
       next: (updated) => {
         const index = this.proposals.findIndex(p => p.id === updated.id);
         if (index !== -1) this.proposals[index] = updated;
+        this.applyFilters();
       },
       error: () => this.errorMessage = 'Failed to cast vote'
     });
