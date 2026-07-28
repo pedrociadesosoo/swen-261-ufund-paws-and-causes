@@ -165,14 +165,10 @@ public class NeedController {
         try {
             if (!isManager(username))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            
-            Need existing = needService.getNeedById(id);
+
             Need updated = needService.updateNeed(id, need);
             if (updated != null){
-                if (!existing.getOrganization().equals(updated.getOrganization())) {
-                    organizationService.addNeed(organizationService.getOrganization(updated.getOrganization()), updated);
-                    organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
-                }
+                
                 return new ResponseEntity<>(updated, HttpStatus.OK);
             }else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
