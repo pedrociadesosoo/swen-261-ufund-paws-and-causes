@@ -1,9 +1,9 @@
 package com.ufund.api.ufundapi.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ufund.api.ufundapi.service.AccountService;
-import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.model.Account;
 import com.ufund.api.ufundapi.model.ManagerAccount;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedType;
+import com.ufund.api.ufundapi.service.AccountService;
+import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.service.OrganizationService;
 
 @RestController
@@ -196,11 +196,11 @@ public class NeedController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
             Need existing = needService.getNeedById(id);
-            organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
-            Need deletedNeed = needService.deleteNeed(id);
-            if (deletedNeed != null)
+            if (existing != null){
+                organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
+                Need deletedNeed = needService.deleteNeed(id);
                 return new ResponseEntity<Need>(deletedNeed, HttpStatus.OK);
-            else
+            }else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
