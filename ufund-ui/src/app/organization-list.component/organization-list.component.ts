@@ -49,6 +49,7 @@ export class OrganizationListComponent {
   }
 
   deleteOrganization(name: string): void{
+    if (!confirm(`Delete organization ${name}?`)) return
     this.orgService.deleteOrganization(name).subscribe({
       next: (success) => {
         if (success) {

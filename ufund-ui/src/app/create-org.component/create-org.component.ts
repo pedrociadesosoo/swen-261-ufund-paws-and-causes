@@ -66,6 +66,7 @@ export class CreateOrgComponent implements OnInit{
   }
 
   onSubmit(): void {
+    if (!confirm(`Create organization?`)) return;
     this.errorMessage = '';
     if (!this.validate()) return;
   
@@ -100,6 +101,7 @@ export class CreateOrgComponent implements OnInit{
    * Navigates back to the cupboard
    */
   goToOrgList(): void {
+  if (!confirm(`Cancel organization creation?`)) return
     this.router.navigate(['/organization']);
   }
   /**
