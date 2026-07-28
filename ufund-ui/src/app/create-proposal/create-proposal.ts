@@ -92,7 +92,7 @@ export class CreateProposal implements OnInit {
 		  next: (created) => {
 			  this.successMessage = `Proposal "${created.name}" added successfully!`;
 			  this.submitted = true;
-			  this.router.navigate(['/cupboard']);
+			  this.router.navigate(['/proposals']);
 		  },
 		  error: (err) => {
 			  if (err.status === 409)
