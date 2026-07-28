@@ -161,6 +161,9 @@ public class ProposalController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            LOG.log(Level.SEVERE, "Unexpected error approving proposal " + id, e);
+            return new ResponseEntity<>("Unexpected error approving proposal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -189,6 +192,9 @@ public class ProposalController {
         }
         catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            LOG.log(Level.SEVERE, "Unexpected error updating proposal " + id, e);
+            return new ResponseEntity<>("Unexpected error updating proposal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -216,6 +222,9 @@ public class ProposalController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            LOG.log(Level.SEVERE, "Unexpected error rejecting proposal " + id, e);
+            return new ResponseEntity<>("Unexpected error rejecting proposal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
