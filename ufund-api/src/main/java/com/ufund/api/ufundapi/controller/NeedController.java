@@ -140,7 +140,7 @@ public class NeedController {
             if (existing != null && existing.length > 0)
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             Need created = needService.createNeed(need);
-            organizationService.addNeed(organizationService.getOrganization(created.getOrganization()), created);
+            //organizationService.addNeed(organizationService.getOrganization(created.getOrganization()), created);
             return new ResponseEntity<>(created, HttpStatus.CREATED);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
