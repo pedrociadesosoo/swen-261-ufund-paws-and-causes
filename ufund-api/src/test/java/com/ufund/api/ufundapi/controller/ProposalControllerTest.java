@@ -55,14 +55,14 @@ public class ProposalControllerTest {
     public void testDeleteProposal() throws Exception {
         Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending" );
         when(proposalService.deleteProposal(3)).thenReturn(proposal);
-        ResponseEntity<Proposal> response = proposalController.deleteProposal("manager", 3);
+        ResponseEntity<?> response = proposalController.deleteProposal("manager", 3);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(proposal, response.getBody());
     }
 
     @Test
     public void testDeleteProposalForbiddenForNonManager() throws Exception {
-        ResponseEntity<Proposal> response = proposalController.deleteProposal("helper", 3);
+        ResponseEntity<?> response = proposalController.deleteProposal("helper", 3);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         verify(proposalService, never()).deleteProposal(any(int.class));
     }
@@ -170,7 +170,7 @@ public class ProposalControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
-    @Test 
+    @Test
     public void testRejectProposalAlreadyRejected() throws Exception {
         when(proposalService.rejectProposal(3)).thenThrow(new IllegalArgumentException("Proposal is already rejected"));
 
@@ -178,5 +178,15 @@ public class ProposalControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Proposal is already rejected", response.getBody());
+    }
+
+    @Test
+    public void testDeleteProposalAlreadyDecided() throws Exception {
+        when(proposalService.deleteProposal(3)).thenThrow(new IllegalStateException("Proposal has already been approved; only pending proposals can be deleted."));
+
+        ResponseEntity<?> response = proposalController.deleteProposal("manager", 3);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Proposal has already been approved; only pending proposals can be deleted.", response.getBody());
     }
 }

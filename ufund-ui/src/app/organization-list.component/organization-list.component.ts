@@ -55,11 +55,11 @@ export class OrganizationListComponent {
         if (success) {
           this.getOrganizationArray();
         } else {
-          this.errorMessage = 'Failed to create organization';
+          this.errorMessage = 'Failed to delete organization';
         }
-      }, 
+      },
         error: () => {
-        this.errorMessage = 'Failed to create organization';
+        this.errorMessage = 'Failed to delete organization';
         this.cdr.detectChanges();
       }
     })

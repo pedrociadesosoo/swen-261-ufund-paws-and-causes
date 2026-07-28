@@ -58,7 +58,16 @@ public class ProposalServiceImpl implements ProposalService {
 
     public Proposal deleteProposal(int id) throws IOException {
         Proposal deletedProposal = proposalDao.getProposalById(id);
-        if (deletedProposal != null && proposalDao.deleteProposal(id)) {
+        if (deletedProposal == null) {
+            return null;
+        }
+
+        if (!"pending".equals(deletedProposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + deletedProposal.getStatus() + "; only pending proposals can be deleted.");
+        }
+
+        if (proposalDao.deleteProposal(id)) {
             return deletedProposal;
         } else {
             return null;
@@ -127,6 +136,11 @@ public class ProposalServiceImpl implements ProposalService {
         Proposal proposal = proposalDao.getProposalById(proposalId);
         if (proposal == null)
             return null;
+
+        if (!"pending".equals(proposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + proposal.getStatus() + "; voting is only allowed while pending.");
+        }
 
         Integer current = proposal.getUserVoteStatus(username);
         if (current == null)            // user hasn't voted yet -> record it

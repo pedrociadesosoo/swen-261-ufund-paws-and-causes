@@ -7,6 +7,8 @@ import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { NeedType } from '../need-type';
 import { HostListener } from '@angular/core';
+import { OrganizationService } from '../organization.service';
+import { Organization } from '../organization';
 
 /**
  * Lists all pending proposals so any logged-in user can see what's been submitted for review.
@@ -24,6 +26,7 @@ export class Proposals implements OnInit {
   selectedProposal: any;
   originalProposal: any;
   NeedType = NeedType;
+  organizations: Organization[] = [];
 
   /** The proposals shown in the table, after filtering and sorting */
   filteredProposals: Proposal[] = [];
@@ -48,11 +51,15 @@ export class Proposals implements OnInit {
     private proposalService: ProposalService,
     private accountService: AccountService,
     private needService: NeedService,
-    private router: Router
+    private router: Router,
+    private organizationService: OrganizationService
   ) {}
 
   ngOnInit(): void {
     this.loadProposals();
+    this.organizationService.getOrganizationArray().subscribe({
+      next: (orgs) => this.organizations = orgs
+    });
   }
 
   /**
@@ -306,7 +313,7 @@ export class Proposals implements OnInit {
         if (index !== -1) this.proposals[index] = updated;
         this.applyFilters();
       },
-      error: () => this.errorMessage = 'Failed to cast vote'
+      error: (err: any) => this.errorMessage = err.error || 'Failed to cast vote'
     });
   }
 

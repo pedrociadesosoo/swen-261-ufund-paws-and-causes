@@ -46,10 +46,17 @@ public class NeedServiceImpl implements NeedService {
      * {@inheritDoc}
      */
     public Need createNeed(Need need) throws IOException {
-        com.ufund.api.ufundapi.model.Organization org = orgService.getOrganization(need.getOrganization());
+        String orgName = need.getOrganization();
+
+        // No organization specified is valid - the need just isn't tied to one.
+        if (orgName == null || orgName.isBlank()) {
+            return needDao.createNeed(need);
+        }
+
+        com.ufund.api.ufundapi.model.Organization org = orgService.getOrganization(orgName);
         if (org == null) {
             throw new IllegalArgumentException(
-                "Organization \"" + need.getOrganization() + "\" does not exist; create it first or fix the spelling before approving.");
+                "Organization \"" + orgName + "\" does not exist; create it first or fix the spelling before approving.");
         }
 
         Need created = needDao.createNeed(need);

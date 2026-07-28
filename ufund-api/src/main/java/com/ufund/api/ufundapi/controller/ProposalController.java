@@ -115,7 +115,7 @@ public class ProposalController {
      * manager, NOT_FOUND if not found, INTERNAL_SERVER_ERROR otherwise
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Proposal> deleteProposal(@RequestHeader(value = "X-Username", required = false) String username,
+    public ResponseEntity<?> deleteProposal(@RequestHeader(value = "X-Username", required = false) String username,
                                             @PathVariable int id) {
         LOG.info("DELETE /Proposal/" + id);
         try {
@@ -128,6 +128,8 @@ public class ProposalController {
             }
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -239,13 +241,15 @@ public class ProposalController {
      * @return ResponseEntity with the updated {@link Proposal proposal} 
      */
     @PostMapping("/{id}/vote")
-    public ResponseEntity<Proposal> voteUpdate(@PathVariable int id, @RequestBody VoteRequest req) {
+    public ResponseEntity<?> voteUpdate(@PathVariable int id, @RequestBody VoteRequest req) {
         LOG.info("PUT /proposal/" + id + "/vote");
         try {
             Proposal updated = proposalService.voteUpdate(id, req.getUsername(), req.getVote());
             if (updated == null)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             return new ResponseEntity<>(updated, HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

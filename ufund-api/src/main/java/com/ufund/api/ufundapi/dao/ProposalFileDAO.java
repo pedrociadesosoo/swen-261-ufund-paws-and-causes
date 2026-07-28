@@ -86,7 +86,8 @@ public class ProposalFileDAO implements ProposalDAO {
 	public Proposal createProposal(Proposal proposal) throws IOException {
 		synchronized (proposals) {
 			for (Proposal existing : proposals.values()) {
-				if (existing.getUsername().equals(proposal.getUsername()))
+				if (existing.getUsername().equals(proposal.getUsername()) &&
+					"pending".equals(existing.getStatus()))
 					return null;
 			}
 
@@ -111,6 +112,7 @@ public class ProposalFileDAO implements ProposalDAO {
 			existing.setQuantity(proposal.getQuantity());
 			existing.setType(proposal.getType());
 			existing.setStatus(proposal.getStatus());
+			existing.setOrganization(proposal.getOrganization());
 
 
 			save();
