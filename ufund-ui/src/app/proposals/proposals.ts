@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ProposalService } from '../proposal';
 import { Proposal } from '../proposal.model';
 import { AccountService } from '../account';
@@ -27,7 +28,8 @@ export class Proposals implements OnInit {
   constructor(
     private proposalService: ProposalService,
     private accountService: AccountService,
-    private needService: NeedService
+    private needService: NeedService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +66,15 @@ export class Proposals implements OnInit {
     });
   }
 
+
+  /**
+   * Navigates to the proposal's detail view, unless it's currently being
+   * edited inline (in which case clicking the row shouldn't navigate away).
+   */
+  onRowClick(proposal: Proposal): void {
+    if (this.selectedProposal?.id === proposal.id) return;
+    this.router.navigate(['/proposals', proposal.id]);
+  }
 
   /**
    * Opens the inline editor for a proposal.
@@ -251,8 +262,7 @@ export class Proposals implements OnInit {
       "Submitted By",
       "Date",
       "votes",
-      "status",
-      "Actions"
+      "status"
     ];
 
     proposalValues = [
