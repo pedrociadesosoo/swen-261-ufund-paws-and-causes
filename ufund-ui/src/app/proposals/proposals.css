@@ -118,6 +118,15 @@ tbody tr:last-child td {
   min-width: 180px;
 }
 
+.my-proposals-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.95em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 /* Only sortable headers get a hover cue */
 th.sortable:hover {
   background-color: #b31fbb;

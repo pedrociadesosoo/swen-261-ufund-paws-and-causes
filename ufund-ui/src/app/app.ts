@@ -38,10 +38,22 @@ export class App {
   }
 
   /**
+   * The logged-in user's username, or '' if no one is logged in. Used by the
+   * nav bar so people can see who they're signed in as.
+   */
+  currentUsername(): string {
+    return this.accountService.getCurrentAccount()?.username ?? '';
+  }
+
+  /**
+   * A label for the logged-in user's account type
+   */
+  currentAccountTypeLabel(): string {
+    return this.isManager() ? 'Manager' : 'Helper';
+  }
+
+  /**
    * Logs the current user out and returns them to the login page.
-   * Navigates first and only clears the session if navigation actually
-   * succeeds, so a canDeactivate guard (e.g. unsaved-changes on Edit Need)
-   * can cancel the navigation and the user stays logged in.
    */
   logout(): void {
     this.router.navigate(['/login']).then(navigated => {
