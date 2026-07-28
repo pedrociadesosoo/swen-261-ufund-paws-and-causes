@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -116,6 +117,23 @@ public class FundingBasketControllerTest {
         verify(fbService, never()).createFundingBasket(any());
     }
 
+    /**
+     * tests that createFundingBasket returns HttpStatus.INTERNAL_SERVER_ERROR when IOException occurs
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testCreateFBException() throws IOException {
+        //set up test data
+        FundingBasket testFB = sampleFB();
+
+        //force throw exception
+        doThrow(new IOException()).when(fbService).createFundingBasket(testFB);
+
+        //verify response is HttpStatus.INTERNAL_SERVER_ERROR
+        ResponseEntity<FundingBasket> response = fbCont.createFundingBasket("helper1", testFB);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
     @Test
     public void testGetFBArray() throws IOException {
         FundingBasket[] baskets = new FundingBasket[] { sampleFB(), new FundingBasket(2, new HashMap<>()) };
@@ -137,6 +155,24 @@ public class FundingBasketControllerTest {
         verify(fbService, never()).getFundingBasketsByOwner(any());
     }
 
+    /**
+     * tests that getFundingBasketArray returns HttpStatus.INTERNAL_SERVER_ERROR 
+     * when IOException occurs
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testGetFBArrayException() throws IOException {
+        //set up test data
+        String testUsername = "test";
+
+        //force throw exception
+        doThrow(new IOException()).when(fbService).getFundingBasketsByOwner(testUsername);
+
+        //verify response is HttpStatus.INTERNAL_SERVER_ERROR
+        ResponseEntity<FundingBasket[]> response = fbCont.getFundingBasketArray(testUsername);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
     @Test
     public void testDeleteFB() throws IOException {
         when(fbService.deleteFundingBasket(1)).thenReturn(true);
@@ -153,6 +189,24 @@ public class FundingBasketControllerTest {
         ResponseEntity<Boolean> response = fbCont.deleteFundingBasket(99);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals(null, response.getBody());
+    }
+
+    /**
+     * tests that deleteFundingBasket returns HttpStatus.INTERNAL_SERVER_ERROR 
+     * when IOException occurs
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testDeleteFBException() throws IOException {
+        //set up test data
+        int testId = 1;
+
+        //force throw exception
+        doThrow(new IOException()).when(fbService).deleteFundingBasket(testId);
+
+        //verify response is HttpStatus.INTERNAL_SERVER_ERROR
+        ResponseEntity<Boolean> response = fbCont.deleteFundingBasket(testId);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Test
@@ -199,6 +253,24 @@ public class FundingBasketControllerTest {
         verify(fbService, never()).addNeed(any(), any());
     }
 
+    /**
+     * tests that addNeed returns HttpStatus.INTERNAL_SERVER_ERROR when IOException occurs
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testAddNeedFBException() throws IOException {
+        //set up test data
+        int testFBId = 1;
+        int testNeedId = 1;
+
+        //force throw exception
+        doThrow(new IOException()).when(fbService).getFundingBasket(testFBId);
+
+        //verify response is HttpStatus.INTERNAL_SERVER_ERROR
+        ResponseEntity<Boolean> response = fbCont.addNeed(testFBId, testNeedId);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
     @Test
     public void testRemoveNeedFB() throws IOException {
         FundingBasket fb = sampleFB();
@@ -230,6 +302,76 @@ public class FundingBasketControllerTest {
         ResponseEntity<Boolean> response = fbCont.removeNeed(99, 3);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         verify(fbService, never()).removeNeed(any(), any());
+    }
+
+    /**
+     * tests that removeNeed returns HttpStatus.INTERNAL_SERVER_ERROR when IOException occurs
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testRemoveNeedFBException() throws IOException {
+        //set up test data
+        int testFBId = 1;
+        int testNeedId = 1;
+
+        //force throw exception
+        doThrow(new IOException()).when(fbService).getFundingBasket(testFBId);
+
+        //verify response is HttpStatus.INTERNAL_SERVER_ERROR
+        ResponseEntity<Boolean> response = fbCont.removeNeed(testFBId, testNeedId);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    /**
+     * tests that checkout returns HttpStatus.INTERNAL_SERVER_ERROR when IOException occurs
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testCheckoutException() throws IOException {
+        //set up test data
+        int testId = 1;
+
+        //force throw exception
+        doThrow(new IOException()).when(fbService).getFundingBasket(testId);
+
+        //verify response is HttpStatus.INTERNAL_SERVER_ERROR
+        ResponseEntity<Boolean> response = fbCont.checkout(testId);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    /**
+     * tests that checkout returns HttpStatus.NOT_FOUND when Fundingbasket is null
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testCheckoutNull() throws IOException {
+        //set up test data
+        int testId = 1;
+
+        //force return null
+        when(fbService.getFundingBasket(testId)).thenReturn(null);
+
+        //verify response is HttpStatus.NOTFOUND
+        ResponseEntity<Boolean> response = fbCont.checkout(testId);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    /**
+     * tests that checkout returns HttpStatus.OK when Fundingbasket is valid
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testCheckoutExists() throws IOException {
+        //set up test data
+        int testId = 1;
+        FundingBasket testBasket = sampleFB();
+
+        //force return valid basket
+        when(fbService.getFundingBasket(testId)).thenReturn(testBasket);
+
+        //verify response is HttpStatus.OK
+        ResponseEntity<Boolean> response = fbCont.checkout(testId);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
 }

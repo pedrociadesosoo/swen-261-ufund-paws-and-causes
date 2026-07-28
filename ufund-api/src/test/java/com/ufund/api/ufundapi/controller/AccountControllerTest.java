@@ -75,6 +75,22 @@ public class AccountControllerTest {
 
     }
 
+    /**
+     * tests register returns HttpStatus.INTERNAL_SERVER_ERROR when IOException 
+     * occurs
+     * @throws IOException when underlying storage issue occurs
+     */
+    @Test
+    public void testRegisterException() throws IOException{
+        //force throw exception
+        when(accountService.isValidUsername("charlieg")).thenReturn(true);
+        doThrow(new IOException()).when(accountService).createAccount("charlieg", "12345");
+
+        //verify HttpStatus.INTERNAL_SERVER_ERROR is returned
+        ResponseEntity<Account> response = accountController.register(body);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
     @Test
     public void testLogin() throws IOException{
         String password = "12345";
