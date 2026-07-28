@@ -3,9 +3,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Organization {
     private static final Logger LOG = Logger.getLogger(Organization.class.getName());
@@ -29,8 +28,6 @@ public class Organization {
     public void setName(String name){
         this.name = name;
     }
-
-
 
     public String getDescription(){
         return this.description;

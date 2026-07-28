@@ -73,7 +73,8 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.version}</version>
 				<configuration>
-					<destFile>${project.build.directory}/coverage-reports/jacoco-unit.exec</destFile>
+					<destfile>/target/coverage-reports/jacoco-unit.exec</destfile>
+					<datafile>/target/coverage-reports/jacoco-unit.exec</datafile>
 				</configuration>
 				<executions>
 					<execution>

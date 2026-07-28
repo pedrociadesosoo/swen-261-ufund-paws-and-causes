@@ -25,12 +25,14 @@ class NeedServiceTest {
     private NeedServiceImpl service;
     private NeedDAO mockDao;
     private ProposalDAO mockProposalDAO;
+    private OrganizationService mockOService;
 
     @BeforeEach
     void setup() {
         mockDao = mock(NeedDAO.class);
         mockProposalDAO = mock(ProposalDAO.class);
-        service = new NeedServiceImpl(mockDao, mockProposalDAO);
+        mockOService = mock(OrganizationService.class);
+        service = new NeedServiceImpl(mockDao, mockProposalDAO, mockOService);
     }
 
     @Test

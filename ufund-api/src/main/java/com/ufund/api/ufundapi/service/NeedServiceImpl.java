@@ -15,15 +15,17 @@ import com.ufund.api.ufundapi.model.Proposal;
 public class NeedServiceImpl implements NeedService {
     private NeedDAO needDao;
     private ProposalDAO proposalDao;
+    private OrganizationService orgService;
     
     /**
      * Creates a NeedServiceImpl with the provided {@link NeedDAO}
      *
      * @param needDao The {@link NeedDAO} to use for data access
      */
-    public NeedServiceImpl(NeedDAO needDao, ProposalDAO proposalDao) {
+    public NeedServiceImpl(NeedDAO needDao, ProposalDAO proposalDao, OrganizationService orgService) {
         this.needDao = needDao;
         this.proposalDao = proposalDao;
+        this.orgService = orgService;
     }
 
     /**
@@ -44,7 +46,9 @@ public class NeedServiceImpl implements NeedService {
      * {@inheritDoc}
      */
     public Need createNeed(Need need) throws IOException {
-        return needDao.createNeed(need);
+        Need created = needDao.createNeed(need);
+        orgService.addNeed(orgService.getOrganization(created.getOrganization()), created);
+        return created;
     }
 
     /**
