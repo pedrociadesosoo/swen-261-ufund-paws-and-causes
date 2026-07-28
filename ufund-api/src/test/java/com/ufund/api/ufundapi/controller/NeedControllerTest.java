@@ -40,9 +40,7 @@ public class NeedControllerTest {
         orgService = mock(OrganizationService.class);
         needController = new NeedController(needService, accountService, orgService);
 
-        // "manager" is a stand-in for the X-Username header on requests that should be authorized
         when(accountService.getAccount("manager")).thenReturn(new ManagerAccount("manager", "pw"));
-        // "helper" is a stand-in for a logged-in but non-manager caller, used by the forbidden tests
         when(accountService.getAccount("helper")).thenReturn(new HelperAccount("helper", "pw", new ArrayList<>()));
     }
 
@@ -122,6 +120,7 @@ public class NeedControllerTest {
     @Test
     public void testDeleteNeed() throws Exception {
         Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
+        when(needService.getNeedById(3)).thenReturn(need);
         when(needService.deleteNeed(3)).thenReturn(need);
         ResponseEntity<Need> response = needController.deleteNeed("manager", 3);
         assertEquals(HttpStatus.OK, response.getStatusCode());

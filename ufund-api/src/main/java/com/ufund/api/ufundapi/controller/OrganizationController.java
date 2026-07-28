@@ -142,8 +142,11 @@ public class OrganizationController {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
 
-            for (int needId : oService.getOrganization(name).getNeeds().keySet()) {
-                needService.deleteNeed(needId);
+            Organization org = oService.getOrganization(name);
+            if (org != null) {
+                for (int needId : org.getNeeds().keySet()) {
+                    needService.deleteNeed(needId);
+                }
             }
 
             boolean updated = oService.deleteOrganization(name);

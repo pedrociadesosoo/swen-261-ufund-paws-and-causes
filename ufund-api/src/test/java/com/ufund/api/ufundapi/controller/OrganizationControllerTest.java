@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -126,10 +127,12 @@ public class OrganizationControllerTest {
     @Test
     public void testDeleteOrganization() throws IOException{
         Organization o = sampleOrganization();
+        when(orgService.getOrganization(o.getName())).thenReturn(o);
         when(orgService.deleteOrganization(o.getName())).thenReturn(true);
 
         ResponseEntity<Boolean> response = orgCont.deleteOrganization(o.getName());
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(needService, times(o.getNeeds().size())).deleteNeed(any(int.class));
     }
 
     @Test
