@@ -69,5 +69,14 @@ class NeedTest {
         need.setType(newType);
         assertEquals(newType, need.getType());
     }
+
+    @Test
+    public void testSetOrg() {
+        Need need = new Need(1, "Winter Coats", 50.0, 10, NeedType.ITEM_DONATION, "test");
+        String newOrg = "org";
+
+        need.setOrganization(newOrg);
+        assertEquals(newOrg, need.getOrganization());
+    }
 }
 

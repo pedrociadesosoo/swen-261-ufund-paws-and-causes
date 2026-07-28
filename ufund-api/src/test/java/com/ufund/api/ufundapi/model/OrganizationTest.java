@@ -57,4 +57,12 @@ class OrganizationTest {
             before.getNeeds().get(3).getId(), 
             org.getNeeds().get(3).getId());
     }
+
+    @Test
+    public void testSetDescription(){
+        Organization testOrg = sampleOrganization();
+        testOrg.setDescription("new description");
+        assertEquals("new description", testOrg.getDescription());
+
+    }
 }

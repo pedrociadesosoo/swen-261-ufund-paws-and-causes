@@ -179,7 +179,7 @@ class NeedServiceTest {
     }
 
     @Test
-    void testFindNeedsBothNoMatches() throws IOException {
+    public void testFindNeedsBothNoMatches() throws IOException {
         //set up test data        
         List<Need> expected = Arrays.asList();
 
@@ -188,4 +188,30 @@ class NeedServiceTest {
         List<Need> result = service.findNeeds("a", NeedType.VOLUNTEERING, null);
         assertEquals(0, result.size());       
     }
+
+    @Test 
+    public void testGetNeedById() throws IOException{
+        int testId = 1;
+        service.getNeedById(testId);
+        verify(mockDao).getNeedById(testId);
+    }
+
+    @Test 
+    public void testGetNeedArrayType() throws IOException{
+        service.getNeedArray(NeedType.ITEM_DONATION);
+        verify(mockDao).findNeedsWithType(NeedType.ITEM_DONATION);
+    }
+
+    @Test 
+    public void testGetNeedArrayName() throws IOException{
+        service.getNeedArray("test");
+        verify(mockDao).findNeeds("test");
+    }
+
+    @Test 
+    public void testGetNeedArrayNameAndType() throws IOException{
+        service.getNeedArray("test", NeedType.ITEM_DONATION);
+        verify(mockDao).findNeeds("test", NeedType.ITEM_DONATION);
+    }
+
 }
