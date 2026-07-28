@@ -96,3 +96,29 @@ tbody tr:last-child td {
   background-color: #f8d7da;
   color: #a71d2a;
 }
+
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar input,
+.search-bar select {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95em;
+}
+
+.search-bar input {
+  flex: 1;
+  min-width: 180px;
+}
+
+/* Only sortable headers get a hover cue */
+th.sortable:hover {
+  background-color: #b31fbb;
+}
