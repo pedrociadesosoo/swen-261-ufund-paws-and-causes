@@ -1,0 +1,52 @@
+<div class="proposal-detail-container">
+  <h2>Proposal Details</h2>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="proposal">
+    <table>
+      <tr>
+        <th>Name</th>
+        <td>{{ proposal.name }}</td>
+      </tr>
+      <tr>
+        <th>Cost</th>
+        <td>{{ proposal.cost | currency }}</td>
+      </tr>
+      <tr>
+        <th>Quantity</th>
+        <td>{{ proposal.quantity }}</td>
+      </tr>
+      <tr>
+        <th>Type</th>
+        <td>{{ proposal.type }}</td>
+      </tr>
+      <tr>
+        <th>Organization</th>
+        <td>{{ proposal.organization }}</td>
+      </tr>
+      <tr>
+        <th>Submitted By</th>
+        <td>{{ proposal.username }}</td>
+      </tr>
+      <tr>
+        <th>Date</th>
+        <td>{{ proposal.creationDate | date }}</td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td>
+          <span class="status-badge" [ngClass]="'status-' + proposal.status">{{ proposal.status }}</span>
+        </td>
+      </tr>
+      <tr>
+        <th>Votes</th>
+        <td>{{ netVotes() }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <button (click)="goBack()">Back to Proposals</button>
+</div>

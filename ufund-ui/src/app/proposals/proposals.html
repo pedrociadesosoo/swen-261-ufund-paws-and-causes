@@ -18,14 +18,16 @@
          <th *ngFor="let title of NeedsValues">
             {{ title }}
          </th>
+         <th *ngIf="isManager()">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let proposal of proposals">
+      <tr *ngFor="let proposal of proposals" (click)="onRowClick(proposal)" style="cursor: pointer;">
       <ng-container *ngIf="selectedProposal?.id !== proposal.id">
         <td *ngFor="let field of proposalValues">
           <ng-container [ngSwitch]="field">
             <span *ngSwitchCase="'creationDate'">{{ proposal[field] | date }}</span>
+            <span *ngSwitchCase="'status'" class="status-badge" [ngClass]="'status-' + proposal.status">{{ proposal.status }}</span>
             <span *ngSwitchCase="'votes'">
               <span *ngIf="isHelper()" class="vote-controls">
                 <button
@@ -44,13 +46,11 @@
           </ng-container>
         </td>
       </ng-container>
-        <td *ngIf="selectedProposal?.id !== proposal.id">
-          <div  *ngIf="isManager()" >
-            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); editProposal(proposal)">Edit</button>
-            <button (click)="$event.stopPropagation(); deleteProposal(proposal)">Delete</button>
-            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); approveProposal(proposal)">Approve</button>
-            <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); rejectProposal(proposal)">Reject</button>
-          </div>
+        <td *ngIf="selectedProposal?.id !== proposal.id && isManager()">
+          <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); editProposal(proposal)">Edit</button>
+          <button (click)="$event.stopPropagation(); deleteProposal(proposal)">Delete</button>
+          <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); approveProposal(proposal)">Approve</button>
+          <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); rejectProposal(proposal)">Reject</button>
         </td>
 
         <ng-container *ngIf="selectedProposal?.id === proposal.id">
@@ -82,6 +82,9 @@
           </div>
           <span *ngIf="!isHelper()">{{ netVotes(proposal) }}</span>
         </td>
+          <td>
+            <span class="status-badge" [ngClass]="'status-' + proposal.status">{{ proposal.status }}</span>
+          </td>
           <td>
             <button type="button" (click)="saveEditedProposal(selectedProposal)">Save</button>
             <button type="button" (click)="cancelEdit()">Cancel</button>
