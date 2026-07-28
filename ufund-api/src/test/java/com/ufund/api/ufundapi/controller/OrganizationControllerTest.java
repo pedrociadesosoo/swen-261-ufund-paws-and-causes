@@ -136,6 +136,12 @@ public class OrganizationControllerTest {
     }
 
     @Test
+    public void testDeleteOrganizationNull() throws IOException{
+        ResponseEntity<Boolean> response = orgCont.deleteOrganization(null);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
     public void testDeleteOrganizationNotFound() throws IOException{
         Organization o = sampleOrganization();
         when(orgService.deleteOrganization(o.getName())).thenReturn(false);
@@ -240,5 +246,8 @@ public class OrganizationControllerTest {
         ResponseEntity<Boolean> response = orgCont.deleteNeed(o.getName(), need.getId());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
+
+    
+    
 
 }

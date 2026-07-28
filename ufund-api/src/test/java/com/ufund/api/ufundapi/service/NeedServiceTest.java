@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -189,6 +190,13 @@ class NeedServiceTest {
         assertEquals(0, result.size());       
     }
 
+    @Test
+    public void testFindNeedsAll() throws IOException {
+        service.findNeeds("a", NeedType.VOLUNTEERING, "org");
+        verify(mockDao, times(1)).findNeeds("a", NeedType.VOLUNTEERING, "org");
+
+    }    
+
     @Test 
     public void testGetNeedById() throws IOException{
         int testId = 1;
@@ -212,6 +220,44 @@ class NeedServiceTest {
     public void testGetNeedArrayNameAndType() throws IOException{
         service.getNeedArray("test", NeedType.ITEM_DONATION);
         verify(mockDao).findNeeds("test", NeedType.ITEM_DONATION);
+    }
+
+    /**
+     * Tests if NeedService.deleteNeed() returns null when NeedDao.getNeedById() returns
+     * null.
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedNull() throws IOException {
+        //set up test data
+        Need testNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
+        //force mockDao.getNeedById() to return null 
+        when(mockDao.getNeedById(testNeed.getId())).thenReturn(null);
+
+        //check if method returns null
+        Need deletedNeed = service.deleteNeed(testNeed.getId());
+        assertEquals(null, deletedNeed);
+    }
+
+    /**
+     * Tests if NeedService.deleteNeed() returns the test need when NeedDao.getNeedById()
+     * returns null.
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedExists() throws IOException {
+        //set up test data
+        Need testNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
+        
+        //force mockDao.getNeedById() to return test need
+        when(mockDao.getNeedById(testNeed.getId())).thenReturn(testNeed);
+        when(mockDao.deleteNeed(testNeed.getId())).thenReturn(true);
+
+        //check if method returns deleted need
+        Need deletedNeed = service.deleteNeed(testNeed.getId());
+        assertEquals(testNeed, deletedNeed);
     }
 
 }
