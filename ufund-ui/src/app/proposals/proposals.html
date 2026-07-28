@@ -4,6 +4,27 @@
 
   <button *ngIf="isHelper()" routerLink="/create-proposal">Propose a New Need</button>
 
+  <div class="search-bar">
+    <input
+      type="text"
+      name="search"
+      [(ngModel)]="searchTerm"
+      (keyup)="applyFilters()"
+      placeholder="Search proposals by name"
+    />
+    <select name="filterType" [(ngModel)]="filterType" (change)="applyFilters()">
+      <option [ngValue]="NeedType.SELECT">Any Type</option>
+      <option [ngValue]="NeedType.ITEM_DONATION">Item</option>
+      <option [ngValue]="NeedType.MONETARY">Monetary</option>
+      <option [ngValue]="NeedType.VOLUNTEERING">Volunteering</option>
+    </select>
+    <select name="filterOrg" [(ngModel)]="filterOrg" (change)="applyFilters()">
+      <option [ngValue]="''">Any Org</option>
+      <option *ngFor="let org of orgOptions" [ngValue]="org">{{ org }}</option>
+    </select>
+    <button (click)="clearFilters()">Clear</button>
+  </div>
+
   <div *ngIf="errorMessage" class="error">
     {{ errorMessage }}
   </div>
@@ -12,17 +33,25 @@
     <p>No proposals have been made yet.</p>
   </div>
 
-  <table *ngIf="proposals.length > 0">
+  <div *ngIf="proposals.length > 0 && filteredProposals.length === 0">
+    <p>No proposals match your search.</p>
+  </div>
+
+  <table *ngIf="filteredProposals.length > 0">
     <thead>
       <tr>
-         <th *ngFor="let title of NeedsValues">
+         <th *ngFor="let title of NeedsValues; let i = index"
+             (click)="setSort(proposalValues[i])"
+             [class.sortable]="isSortable(proposalValues[i])"
+             [style.cursor]="isSortable(proposalValues[i]) ? 'pointer' : 'default'">
             {{ title }}
+            <span *ngIf="sortField === proposalValues[i]">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span>
          </th>
          <th *ngIf="isManager()">Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let proposal of proposals" (click)="onRowClick(proposal)" style="cursor: pointer;">
+      <tr *ngFor="let proposal of filteredProposals" (click)="onRowClick(proposal)" style="cursor: pointer;">
       <ng-container *ngIf="selectedProposal?.id !== proposal.id">
         <td *ngFor="let field of proposalValues">
           <ng-container [ngSwitch]="field">
