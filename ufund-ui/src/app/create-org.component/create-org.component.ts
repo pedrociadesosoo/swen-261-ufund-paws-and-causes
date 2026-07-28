@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Organization } from '../organization';
 import { OrganizationService } from '../organization.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Need } from '../need.model';
 
 @Component({
   selector: 'app-create-org.component',
@@ -11,10 +12,11 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './create-org.component.css',
 })
 export class CreateOrgComponent implements OnInit{
+  map: Map<number, Need> = new Map<number, Need>;
   org: Organization = {
     name: '',
     description: '',
-    needs: {}
+    needs: this.map
     };
   errorMessage: string = '';
   successMessage: string = '';
@@ -68,7 +70,6 @@ export class CreateOrgComponent implements OnInit{
     this.errorMessage = '';
     if (!this.validate()) return;
   
-
     if (this.isEditMode) {
       this.orgService.updateOrganization(this.org, this.org.name).subscribe({
         next: (updated) => {

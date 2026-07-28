@@ -31,13 +31,13 @@ public class OrganizationFileDAOTest {
 
     private Need[] sampleNeeds() {
         return new Need[] {
-                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION)
+                new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+                new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+                new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test")
         };
     }
 
-        private Organization sampleOrganization(){
+    private Organization sampleOrganization(){
         Need[] needs = sampleNeeds();
         Map<Integer, Need> needMap = new HashMap<>();
 
@@ -115,17 +115,37 @@ public class OrganizationFileDAOTest {
     @Test
     void testAddNeed() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
+
+        Map<Integer, Need> saveNeeds = o.getNeeds();
 
         boolean added = oDao.addNeed(o, newNeed);
         assertTrue(added);
         assertEquals(4, oDao.getOrganization("General Humanities").getNeeds().size());
+        assertEquals(sampleOrganization().getNeeds().size()+1, oDao.getOrganization("General Humanities").getNeeds().size());
+        assertTrue(oDao.getOrganization("General Humanities").getNeeds().containsValue(newNeed));
+        assertTrue(oDao.getOrganization("General Humanities").getNeeds().containsKey(newNeed.getId()));
+        assertEquals(
+            newNeed, 
+            oDao.getOrganization("General Humanities").getNeeds().get(newNeed.getId()));
+        assertEquals(
+            newNeed, 
+            oDao.getOrganization("General Humanities").getNeeds().get(4));
+        assertEquals(
+            saveNeeds.get(1), 
+            oDao.getOrganization("General Humanities").getNeeds().get(1));
+        assertEquals(
+            saveNeeds.get(2), 
+            oDao.getOrganization("General Humanities").getNeeds().get(2));
+            assertEquals(
+            saveNeeds.get(3), 
+            oDao.getOrganization("General Humanities").getNeeds().get(3));
     }
 
     @Test
     void testAddNeedConflict() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
-        Need newNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
 
         boolean added = oDao.addNeed(o, newNeed);
         assertFalse(added);
@@ -135,7 +155,7 @@ public class OrganizationFileDAOTest {
     @Test
     void testAddNeedSaveFail() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
-        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need newNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
         doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
 
         boolean added = oDao.addNeed(o, newNeed);
@@ -145,7 +165,7 @@ public class OrganizationFileDAOTest {
     @Test
     void testDeleteNeed() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
-        Need deletedNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION);
+        Need deletedNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
 
         boolean deleted = oDao.deleteNeed(o, deletedNeed);
         assertTrue(deleted);
@@ -155,7 +175,7 @@ public class OrganizationFileDAOTest {
     @Test
     void testDeleteNeedNotFound() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
-        Need deletedNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION);
+        Need deletedNeed = new Need(4, "Shoes", 12.00, 20, NeedType.ITEM_DONATION, "test");
 
         boolean deleted = oDao.deleteNeed(o, deletedNeed);
         assertFalse(deleted);
@@ -165,7 +185,7 @@ public class OrganizationFileDAOTest {
     @Test
     void testDeleteNeedHandleException() throws IOException{
         Organization o = oDao.getOrganization("General Humanities");
-        Need deletedNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION);
+        Need deletedNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
         doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
 
         boolean deleted = oDao.deleteNeed(o, deletedNeed);

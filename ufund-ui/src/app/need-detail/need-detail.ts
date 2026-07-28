@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
+import { Organization } from '../organization';
+import { OrganizationService } from '../organization.service';
 
 @Component({
   selector: 'app-need-detail',

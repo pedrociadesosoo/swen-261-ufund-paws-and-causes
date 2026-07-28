@@ -12,8 +12,11 @@ public interface NeedDAO {
     List<Need> getAllNeeds();
     List<Need> findNeeds(String containsText);
     List<Need> findNeeds(String containsText, NeedType type);
-    List<Need> findNeeds(NeedType type);
-    
+    List<Need> findNeedsWithType(NeedType type);
+    List<Need> findNeeds(String containsText, NeedType type, String org);
+    List<Need> findNeeds(NeedType type, String org);
+    List<Need> findNeeds(String containsText, String org);
+    List<Need> findNeedsWithOrg(String org);
 
     Need getNeedById(int id);
     Need[] getNeedArray(String name) throws IOException;
@@ -37,5 +40,7 @@ public interface NeedDAO {
      * @throws IOException if an issue with storage access occurs
      */
     boolean deleteNeed(int id) throws IOException;
+    
+    
     
 }

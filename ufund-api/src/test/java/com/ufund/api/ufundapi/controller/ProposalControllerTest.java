@@ -1,23 +1,23 @@
 package com.ufund.api.ufundapi.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -29,7 +29,6 @@ import com.ufund.api.ufundapi.model.Proposal;
 import com.ufund.api.ufundapi.service.AccountService;
 import com.ufund.api.ufundapi.service.NeedService;
 import com.ufund.api.ufundapi.service.ProposalService;
-import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -74,7 +73,7 @@ public class ProposalControllerTest {
         Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
-        when(needService.findNeeds("Corn", null)).thenReturn(List.of());
+        when(needService.findNeeds("Corn", null, null)).thenReturn(List.of());
         when(proposalService.approveProposal(3)).thenReturn(proposal);
 
         ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);
@@ -94,10 +93,10 @@ public class ProposalControllerTest {
     @Test
     public void testApprovalSucceedsEvenWhenMatchingNeedAlreadyExists() throws Exception {
         Proposal proposal = new Proposal(3, "Corn", 10.97, 100, "food", "moss", "moss inc", new HashMap<>(), "pending");
-        Need existingNeed = new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION);
+        Need existingNeed = new Need(1, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
 
         when(proposalService.getProposalById(3)).thenReturn(proposal);
-        when(needService.findNeeds("Corn", null)).thenReturn(List.of(existingNeed));
+        when(needService.findNeeds("Corn", null, null)).thenReturn(List.of(existingNeed));
         when(proposalService.approveProposal(3)).thenReturn(proposal);
 
         ResponseEntity<?> response = proposalController.ApprovalProposal("manager", 3);

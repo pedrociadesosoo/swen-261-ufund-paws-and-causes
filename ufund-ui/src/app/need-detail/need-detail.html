@@ -27,6 +27,11 @@
         <th>Type</th>
         <td>{{ need.type }}</td>
       </tr>
+      <tr>
+        <th>Organization</th>
+        <td><a [routerLink]="['/organization', need.organization]">{{ need.organization }}</a> </td>
+       
+      </tr>
     </table>
   </div>
 

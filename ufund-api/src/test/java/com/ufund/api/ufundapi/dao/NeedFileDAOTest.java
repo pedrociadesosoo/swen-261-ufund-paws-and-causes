@@ -23,9 +23,9 @@ class NeedFileDAOTest {
 
     private Need[] sampleNeeds() {
         return new Need[] {
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test")
         };
     }
 
@@ -36,8 +36,8 @@ class NeedFileDAOTest {
         when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
         NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
 
-        Need n = dao.createNeed(new Need(3, "Coat", 15.00, 25, NeedType.ITEM_DONATION));
-        Need expected = new Need(4, "Coat", 15.00, 25, NeedType.ITEM_DONATION);
+        Need n = dao.createNeed(new Need(3, "Coat", 15.00, 25, NeedType.ITEM_DONATION, "test"));
+        Need expected = new Need(4, "Coat", 15.00, 25, NeedType.ITEM_DONATION, "test");
 
         assertEquals(expected.getId(), n.getId());
         assertEquals(expected.getName(), n.getName());
@@ -54,7 +54,7 @@ class NeedFileDAOTest {
         when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
         NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
 
-        Need n = dao.createNeed(new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION));
+        Need n = dao.createNeed(new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"));
         assertEquals(null, n);
     }
 
@@ -78,9 +78,9 @@ class NeedFileDAOTest {
     void testGetAllNeedsReturnsNeedsOrderedById() throws IOException {
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] unordered = {
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test")
         };
         when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(unordered);
 
@@ -114,7 +114,7 @@ class NeedFileDAOTest {
         NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
 
         Need result = dao.getNeedById(1);
-        Need expected = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION);
+        Need expected = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
         assertEquals(expected.getName(), result.getName());
         assertEquals(expected.getType(), result.getType());
         assertEquals(expected.getId(), result.getId());
@@ -208,12 +208,12 @@ class NeedFileDAOTest {
         //set up test data
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] needs = new Need[] {
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         };
         
 
@@ -222,7 +222,7 @@ class NeedFileDAOTest {
         NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
 
         //test that only needs with item are returned
-        List<Need> result = dao.findNeeds(NeedType.ITEM_DONATION);
+        List<Need> result = dao.findNeedsWithType(NeedType.ITEM_DONATION);
         assertEquals(4, result.size());
         for(Need need : result){
             assertEquals(NeedType.ITEM_DONATION, need.getType());
@@ -234,12 +234,12 @@ class NeedFileDAOTest {
         //set up test data
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] needs = new Need[] {
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         };
 
         //force mockmapper to return needs
@@ -247,7 +247,7 @@ class NeedFileDAOTest {
         NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
 
         //test that only needs with monetary are returned
-        List<Need> result = dao.findNeeds(NeedType.MONETARY);
+        List<Need> result = dao.findNeedsWithType(NeedType.MONETARY);
         assertEquals(1, result.size());
         for(Need need : result){
             assertEquals(NeedType.MONETARY, need.getType());
@@ -259,12 +259,12 @@ class NeedFileDAOTest {
         //set up test data
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] needs = new Need[] {
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         };
 
         //force mockmapper to return needs
@@ -272,7 +272,7 @@ class NeedFileDAOTest {
         NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
 
         //test that only needs with volunteering are returned
-        List<Need> result = dao.findNeeds(NeedType.VOLUNTEERING);
+        List<Need> result = dao.findNeedsWithType(NeedType.VOLUNTEERING);
         assertEquals(1, result.size());
         for(Need need : result){
             assertEquals(NeedType.VOLUNTEERING, need.getType());
@@ -284,11 +284,11 @@ class NeedFileDAOTest {
         //set up test data
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] needs = new Need[] {
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         };
 
         //force mockmapper to return needs
@@ -296,7 +296,7 @@ class NeedFileDAOTest {
         NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
 
         //test that only needs with volunteering are returned
-        List<Need> result = dao.findNeeds(NeedType.VOLUNTEERING);
+        List<Need> result = dao.findNeedsWithType(NeedType.VOLUNTEERING);
         assertEquals(0, result.size());
     }
 
@@ -305,12 +305,12 @@ class NeedFileDAOTest {
         //set up test data
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] needs = new Need[] {
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         };
 
         //force mockmapper to return needs
@@ -331,12 +331,12 @@ class NeedFileDAOTest {
         //set up test data
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] needs = new Need[] {
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         };
 
         //force mockmapper to return needs
@@ -358,12 +358,12 @@ class NeedFileDAOTest {
         //set up test data
         ObjectMapper mockMapper = mock(ObjectMapper.class);
         Need[] needs = new Need[] {
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         };
 
         //force mockmapper to return needs

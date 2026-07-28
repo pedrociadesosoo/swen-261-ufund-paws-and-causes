@@ -65,7 +65,7 @@ public class NeedServiceImpl implements NeedService {
      * {@inheritDoc}
      */
     public Need[] getNeedArray(NeedType type) {
-        return needDao.findNeeds(type).toArray(new Need[0]);
+        return needDao.findNeedsWithType(type).toArray(new Need[0]);
     }
 
     /**
@@ -106,17 +106,33 @@ public class NeedServiceImpl implements NeedService {
     /**
      * {@inheritDoc}
      */
-    public List<Need> findNeeds(String containsText, NeedType type) throws IOException{
-        if (containsText != null && type != null) {
-            return needDao.findNeeds(containsText, type);
-        } else {
-            if(containsText != null){
-                return needDao.findNeeds(containsText);
-            } else if (type != null){
-                return needDao.findNeeds(type);
+    public List<Need> findNeeds(String containsText, NeedType type, String org) throws IOException{
+        if (org != null) {
+            if (containsText != null && type != null) {
+                return needDao.findNeeds(containsText, type, org);
             } else {
-                return getAllNeeds();
+                if(containsText != null){
+                    return needDao.findNeeds(containsText, org);
+                } else if (type != null){
+                    return needDao.findNeeds(type, org);
+                } else {
+                    return needDao.findNeedsWithOrg(org);
+                }
+            }
+        } else {
+            if (containsText != null && type != null) {
+                return needDao.findNeeds(containsText, type);
+            } else {
+                if(containsText != null){
+                    return needDao.findNeeds(containsText);
+                } else if (type != null){
+                    return needDao.findNeedsWithType(type);
+                } else {
+                    return getAllNeeds();
+                }
             }
         }
+
+        
     }
 }

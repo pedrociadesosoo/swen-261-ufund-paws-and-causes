@@ -24,6 +24,7 @@ import com.ufund.api.ufundapi.model.Account;
 import com.ufund.api.ufundapi.model.ManagerAccount;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedType;
+import com.ufund.api.ufundapi.service.OrganizationService;
 
 @RestController
 @RequestMapping("needs")
@@ -31,6 +32,7 @@ public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
     private NeedService needService;
     private AccountService accountService;
+    private OrganizationService organizationService;
 
     /**
      * Creates a REST API controller for responding to requests
@@ -40,9 +42,11 @@ public class NeedController {
      * that the caller is a manager before allowing needs to be created, edited, or deleted
      * This dependency is injected by Spring framework
      */
-    public NeedController(NeedService needService, AccountService accountService) {
+    public NeedController(NeedService needService, AccountService accountService, OrganizationService organizationService) {
         this.needService = needService;
         this.accountService = accountService;
+        this.organizationService = organizationService;
+
     }
 
     /**
@@ -95,10 +99,20 @@ public class NeedController {
     @GetMapping("")
     public ResponseEntity<Need[]> getNeeds(
         @RequestParam(required = false) String name,
-        @RequestParam(required = false) NeedType type) {
-        LOG.info("GET /needs" + (name != null ? "?name=" + name : ""));
+        @RequestParam(required = false) NeedType type,
+        @RequestParam(required = false) String org
+    ) {
+        if (org != null) {
+            org.replaceAll("_", " ");
+        }
+
+        LOG.info("GET /needs" + (name != null ? "?name=" + name : "") +
+            (type != null ? "&type=" + type : "") +
+            (org != null ? "&org=" + org : "")
+        );
+
         try {
-            List<Need> needs = needService.findNeeds(name, type);         
+            List<Need> needs = needService.findNeeds(name, type, org);         
             return new ResponseEntity<>(needs.toArray(new Need[0]), HttpStatus.OK);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
@@ -125,6 +139,7 @@ public class NeedController {
             Need[] existing = needService.getNeedArray(need.getName());
             if (existing != null && existing.length > 0)
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
+            organizationService.addNeed(organizationService.getOrganization(need.getOrganization()), need);
             return new ResponseEntity<>(needService.createNeed(need), HttpStatus.CREATED);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
@@ -149,10 +164,15 @@ public class NeedController {
         try {
             if (!isManager(username))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            Need existing = needService.getNeedById(id);
             Need updated = needService.updateNeed(id, need);
-            if (updated != null)
+            if (updated != null){
+                if (existing.getOrganization().equals(updated.getOrganization())) {
+                    organizationService.addNeed(organizationService.getOrganization(updated.getOrganization()), updated);
+                    organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
+                }
                 return new ResponseEntity<>(updated, HttpStatus.OK);
-            else
+            }else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
@@ -176,6 +196,8 @@ public class NeedController {
         try {
             if (!isManager(username))
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            Need existing = needService.getNeedById(id);
+            //organizationService.deleteNeed(organizationService.getOrganization(existing.getOrganization()), existing);
             Need deletedNeed = needService.deleteNeed(id);
             if (deletedNeed != null)
                 return new ResponseEntity<Need>(deletedNeed, HttpStatus.OK);

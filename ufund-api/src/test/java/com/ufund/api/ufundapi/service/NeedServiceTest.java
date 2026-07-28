@@ -36,8 +36,8 @@ class NeedServiceTest {
     @Test
     void testGetAllNeedsReturnsAll() throws IOException {
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION));
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"));
         when(mockDao.getAllNeeds()).thenReturn(needs);
 
         List<Need> result = service.getAllNeeds();
@@ -66,10 +66,10 @@ class NeedServiceTest {
     @Test
     void testFindNeedsString() throws IOException {
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION));
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"));
         when(mockDao.findNeeds("Canned")).thenReturn(needs);
 
-        List<Need> result = service.findNeeds("Canned", null);
+        List<Need> result = service.findNeeds("Canned", null, null);
 
         assertEquals(1, result.size());
         assertEquals("Canned Soup", result.get(0).getName());
@@ -83,7 +83,7 @@ class NeedServiceTest {
     void testFindNeedsStringNoMatch() throws IOException {
         when(mockDao.findNeeds("xyz")).thenReturn(Collections.emptyList());
 
-        List<Need> result = service.findNeeds("xyz", null);
+        List<Need> result = service.findNeeds("xyz", null, null);
 
         assertTrue(result.isEmpty());
         verify(mockDao).findNeeds("xyz");
@@ -95,11 +95,11 @@ class NeedServiceTest {
     @Test
     void testFindNeedsStringMultipleMatches() throws IOException {
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Canned Beans", 1.99, 100, NeedType.ITEM_DONATION));
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Canned Beans", 1.99, 100, NeedType.ITEM_DONATION, "test"));
         when(mockDao.findNeeds("Canned")).thenReturn(needs);
 
-        List<Need> result = service.findNeeds("Canned", null);
+        List<Need> result = service.findNeeds("Canned", null, null);
 
         assertEquals(2, result.size());
         verify(mockDao).findNeeds("Canned");
@@ -109,12 +109,12 @@ class NeedServiceTest {
     void testFindNeedsType() throws IOException {
         //set up test data
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         );
         List<Need> expected = Arrays.asList(
             needs.get(0),
@@ -123,10 +123,10 @@ class NeedServiceTest {
             needs.get(5)
         );
 
-        when(mockDao.findNeeds(NeedType.ITEM_DONATION)).thenReturn(expected);
+        when(mockDao.findNeedsWithType(NeedType.ITEM_DONATION)).thenReturn(expected);
 
-        List<Need> result = service.findNeeds(null, NeedType.ITEM_DONATION);
-        verify(mockDao).findNeeds(NeedType.ITEM_DONATION);
+        List<Need> result = service.findNeeds(null, NeedType.ITEM_DONATION, null);
+        verify(mockDao).findNeedsWithType(NeedType.ITEM_DONATION);
         assertEquals(4, result.size());
         for(Need need: result){
             assertEquals(NeedType.ITEM_DONATION, need.getType());
@@ -137,17 +137,17 @@ class NeedServiceTest {
     void testFindNeedsNeither() throws IOException {
         //set up test data
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         );
 
         when(mockDao.getAllNeeds()).thenReturn(needs);
 
-        List<Need> result = service.findNeeds(null, null);
+        List<Need> result = service.findNeeds(null, null, null);
         verify(mockDao).getAllNeeds();
         assertEquals(6, result.size());       
     }
@@ -156,12 +156,12 @@ class NeedServiceTest {
     void testFindNeedsBoth() throws IOException {
         //set up test data
         List<Need> needs = Arrays.asList(
-            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION),
-            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION),
-            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION),
-            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY),
-            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING),
-            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION)
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
         );
         
         List<Need> expected = Arrays.asList(
@@ -171,7 +171,7 @@ class NeedServiceTest {
 
         when(mockDao.findNeeds("a", NeedType.ITEM_DONATION)).thenReturn(expected);
 
-        List<Need> result = service.findNeeds("a", NeedType.ITEM_DONATION);
+        List<Need> result = service.findNeeds("a", NeedType.ITEM_DONATION, null);
         //verify(this).getAllNeeds();
         assertEquals(2, result.size());       
     }
@@ -183,7 +183,7 @@ class NeedServiceTest {
 
         when(mockDao.findNeeds("a",NeedType.VOLUNTEERING)).thenReturn(expected);
 
-        List<Need> result = service.findNeeds("a", NeedType.VOLUNTEERING);
+        List<Need> result = service.findNeeds("a", NeedType.VOLUNTEERING, null);
         assertEquals(0, result.size());       
     }
 }

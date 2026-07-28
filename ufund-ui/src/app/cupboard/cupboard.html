@@ -3,11 +3,16 @@
 
   
   <div class="search-bar">
-    <select name = "type" [(ngModel)]="searchType">
+    <select name="type" [(ngModel)]="searchType">
         <option [ngValue]="NeedType.SELECT">Any Type</option>
         <option [ngValue]="NeedType.ITEM_DONATION">Item</option>
         <option [ngValue]="NeedType.MONETARY">Monetary</option>
         <option [ngValue]="NeedType.VOLUNTEERING">Volunteering</option>
+    </select>
+
+    <select name="org"[(ngModel)]="searchOrg">
+      <option [ngValue]="''">Any Org</option>
+      <option *ngFor="let org of this.orgList" [ngValue]="org.name">{{org.name}}</option>
     </select>
     
     <input
@@ -41,6 +46,7 @@
         <th>Cost</th>
         <th>Quantity</th>
         <th>Type</th>
+        <th>Organization</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -51,6 +57,7 @@
         <td>{{ need.cost | currency }}</td>
         <td>{{ need.quantity }}</td>
         <td>{{ need.type }}</td>
+        <td><a [routerLink]="['/organization', need.organization]">{{ need.organization }}</a> </td>
         <td>
           <!-- Helper-specific controls -->
           <span *ngIf="isHelper()">

@@ -6,4 +6,5 @@ export interface Need {
     cost: number;
     quantity: number;
     type: NeedType;
+    organization: string;
 }

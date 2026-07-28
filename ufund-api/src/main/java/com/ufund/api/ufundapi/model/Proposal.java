@@ -1,11 +1,11 @@
 package com.ufund.api.ufundapi.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Map;
-import java.util.HashMap;
-
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Proposal{
 
@@ -75,8 +75,6 @@ public class Proposal{
     public void setCost(double cost) {
         this.cost = cost;
     }
-
-
 
     public String getType() {
         return type;

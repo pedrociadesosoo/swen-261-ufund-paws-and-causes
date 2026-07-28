@@ -1,9 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { NgForm } from '@angular/forms';
 import { NeedType } from '../need-type';
+import { Organization } from '../organization';
+import { OrganizationService } from '../organization.service';
+
+
 
 @Component({
   selector: 'app-add-need',
@@ -14,19 +18,20 @@ import { NeedType } from '../need-type';
 export class AddNeed implements OnInit {
   /** Exposed so the template's dropdown can bind to NeedType.ITEM_DONATION etc. */
   NeedType = NeedType;
+  orgList: Organization[] = [];
 
   need: Need = {
     id: 0,
     name: '',
     cost: 0,
     quantity: 0,
-    type: NeedType.SELECT
+    type: NeedType.SELECT,
+    organization: ''
   };
   errorMessage: string = '';
   successMessage: string = '';
 
   private submitted: boolean = false;
-
  
   @ViewChild('needForm') needForm?: NgForm;
   /** True when editing an existing need rather than creating a new one */
@@ -35,7 +40,9 @@ export class AddNeed implements OnInit {
   constructor(
     private needService: NeedService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private orgService: OrganizationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   /**
@@ -43,6 +50,16 @@ export class AddNeed implements OnInit {
    * existing need, so load its current values into the form.
    */
   ngOnInit(): void {
+    this.orgService.getOrganizationArray().subscribe({
+      next: (orgs) => {
+        this.orgList = orgs;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Loading failure';
+        this.cdr.detectChanges();
+      }
+    })
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam !== null) {
       this.isEditMode = true;
@@ -73,6 +90,10 @@ export class AddNeed implements OnInit {
     }
     if (this.need.type == NeedType.SELECT) {
       this.errorMessage = 'Type is required.';
+      return false;
+    }
+    if(!this.need.organization || this.need.organization.trim() === ''){
+      this.errorMessage = 'Organization is required.';
       return false;
     }
     return true;

@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { Router } from '@angular/router';
 import { AccountService } from '../account';
 import { FundingbasketService } from '../fundingbasket.service';
 import { NeedType } from '../need-type';
+import { Organization } from '../organization';
+import { OrganizationService } from '../organization.service';
 
 @Component({
   selector: 'app-cupboard',
@@ -23,23 +25,42 @@ export class Cupboard implements OnInit {
   /** Bound to the search box, filters the cupboard by partial name match */
   searchTerm: string = '';
   searchType: NeedType = NeedType.SELECT;
+  searchOrg: string = '';
+
+  orgList: Organization[] = [];
 
   constructor(
     private needService: NeedService,
     private router: Router,
     private accountService: AccountService,
-    private fbService: FundingbasketService
+    private fbService: FundingbasketService,
+    private orgService: OrganizationService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.loadNeeds();
+    this.orgService.getOrganizationArray().subscribe({
+      next: (orgs) => {
+        this.orgList = orgs;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.errorMessage = 'Loading failure';
+        this.cdr.detectChanges();
+      }
+    })
   }
 
   /**
    * Loads needs from the API, filtered by searchTerm when one is set
    */
   loadNeeds(): void {
-    this.needService.getNeeds(this.searchTerm || undefined, this.searchType || undefined).subscribe({
+    this.needService.getNeeds(
+      this.searchTerm || undefined, 
+      this.searchType || undefined, 
+      this.searchOrg || undefined
+    ).subscribe({
       next: (needs) => {
         this.needs = needs;
         this.errorMessage = '';
@@ -62,6 +83,7 @@ export class Cupboard implements OnInit {
     this.searchTerm = '';
     this.searchType = NeedType.SELECT;
     this.errorMessage = '';
+    this.searchOrg = '';
     this.loadNeeds();
   }
 
