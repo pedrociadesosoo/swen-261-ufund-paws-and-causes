@@ -110,6 +110,18 @@ public class ProposalServiceImpl implements ProposalService {
     }
 
     public Proposal updateProposal(Proposal updProposal) throws IOException {
+        Proposal existing = proposalDao.getProposalById(updProposal.getId());
+        if (existing == null) {
+            return null;
+        }
+
+        // check the stored status, not the one in the request body, so an edit
+        // can't revive a proposal that's already been approved or rejected
+        if (!"pending".equals(existing.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + existing.getStatus() + "; only pending proposals can be edited.");
+        }
+
         updProposal.setStatus("pending");
         return proposalDao.updateProposal(updProposal);
     }
