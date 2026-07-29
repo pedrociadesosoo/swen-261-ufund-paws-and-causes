@@ -149,7 +149,11 @@ public class ProposalController {
                 }
 
                 Proposal approved = proposalService.approveProposal(id);
-                approved.setStatus("approved");
+
+                // the proposal can go missing between the lookup and the approve
+                if (approved == null) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
 
                 return new ResponseEntity<>(approved, HttpStatus.OK);
             }
@@ -184,6 +188,10 @@ public class ProposalController {
                 updatedProposal.setId(id);
                 Proposal saved = proposalService.updateProposal(updatedProposal);
 
+                if (saved == null) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+
                 return new ResponseEntity<>(saved, HttpStatus.OK);
             }
 
@@ -191,6 +199,8 @@ public class ProposalController {
 
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
         catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
