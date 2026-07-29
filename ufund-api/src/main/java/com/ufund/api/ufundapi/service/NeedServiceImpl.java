@@ -46,8 +46,21 @@ public class NeedServiceImpl implements NeedService {
      * {@inheritDoc}
      */
     public Need createNeed(Need need) throws IOException {
+        String orgName = need.getOrganization();
+
+        // No organization specified is valid - the need just isn't tied to one.
+        if (orgName == null || orgName.isBlank()) {
+            return needDao.createNeed(need);
+        }
+
+        com.ufund.api.ufundapi.model.Organization org = orgService.getOrganization(orgName);
+        if (org == null) {
+            throw new IllegalArgumentException(
+                "Organization \"" + orgName + "\" does not exist; create it first or fix the spelling before approving.");
+        }
+
         Need created = needDao.createNeed(need);
-        orgService.addNeed(orgService.getOrganization(created.getOrganization()), created);
+        orgService.addNeed(org, created);
         return created;
     }
 
@@ -80,8 +93,39 @@ public class NeedServiceImpl implements NeedService {
         if (existing == null) {
             return null;
         }
+
+        String oldOrgName = existing.getOrganization();
+        String newOrgName = need.getOrganization();
+
+        // Validate the new organization if any before writing anything, so a
+        // typo doesn't leave the need updated but silently unlinked.
+        com.ufund.api.ufundapi.model.Organization newOrg = null;
+        boolean orgChanged = !java.util.Objects.equals(oldOrgName, newOrgName);
+        if (orgChanged && newOrgName != null && !newOrgName.isBlank()) {
+            newOrg = orgService.getOrganization(newOrgName);
+            if (newOrg == null) {
+                throw new IllegalArgumentException(
+                    "Organization \"" + newOrgName + "\" does not exist; create it first or fix the spelling before assigning it.");
+            }
+        }
+
         need.setId(id);
-        return needDao.updateNeed(need);
+        Need updated = needDao.updateNeed(need);
+        if (updated == null) {
+            return null;
+        }
+
+        if (orgChanged) {
+            if (oldOrgName != null && !oldOrgName.isBlank()) {
+                com.ufund.api.ufundapi.model.Organization oldOrg = orgService.getOrganization(oldOrgName);
+                orgService.deleteNeed(oldOrg, updated);
+            }
+            if (newOrg != null) {
+                orgService.addNeed(newOrg, updated);
+            }
+        }
+
+        return updated;
     }
 
     /**
@@ -89,18 +133,10 @@ public class NeedServiceImpl implements NeedService {
      */
     public Need deleteNeed(int id) throws IOException {
         Need deletedNeed = needDao.getNeedById(id);
+        // Deleting a need is inventory management, it's a separate action from the original proposal
+        // decision, so the proposal that created this need if any keeps its
+        // "approved" status. It should never get silently flipped to "rejected".
         if (deletedNeed != null && needDao.deleteNeed(id)) {
-            if (proposalDao != null) {
-                for (Proposal proposal : proposalDao.getAllProposals()) {
-                        if (proposal.getName().equalsIgnoreCase(deletedNeed.getName()) &&
-                            proposal.getCost() == deletedNeed.getCost() &&
-                            proposal.getQuantity() == deletedNeed.getQuantity() &&
-                            proposal.getType().equalsIgnoreCase(deletedNeed.getType().name())) {
-                            proposal.setStatus("rejected");
-                            proposalDao.updateProposal(proposal);
-                        }
-                    }
-            }
             return deletedNeed;
         } else {
             return null;

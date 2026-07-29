@@ -16,7 +16,6 @@ import { OrganizationService } from '../organization.service';
   styleUrl: './add-need.css',
 })
 export class AddNeed implements OnInit {
-  /** Exposed so the template's dropdown can bind to NeedType.ITEM_DONATION etc. */
   NeedType = NeedType;
   orgList: Organization[] = [];
 
@@ -114,7 +113,7 @@ export class AddNeed implements OnInit {
 	  this.submitted = true; 
           this.router.navigate(['/cupboard']);
         },
-        error: () => this.errorMessage = 'Failed to update need. Please try again.'
+        error: (err: any) => this.errorMessage = err.error || 'Failed to update need. Please try again.'
       });
       return;
     }

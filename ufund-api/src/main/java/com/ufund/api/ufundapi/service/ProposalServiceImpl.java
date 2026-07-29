@@ -58,7 +58,16 @@ public class ProposalServiceImpl implements ProposalService {
 
     public Proposal deleteProposal(int id) throws IOException {
         Proposal deletedProposal = proposalDao.getProposalById(id);
-        if (deletedProposal != null && proposalDao.deleteProposal(id)) {
+        if (deletedProposal == null) {
+            return null;
+        }
+
+        if (!"pending".equals(deletedProposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + deletedProposal.getStatus() + "; only pending proposals can be deleted.");
+        }
+
+        if (proposalDao.deleteProposal(id)) {
             return deletedProposal;
         } else {
             return null;
@@ -101,6 +110,18 @@ public class ProposalServiceImpl implements ProposalService {
     }
 
     public Proposal updateProposal(Proposal updProposal) throws IOException {
+        Proposal existing = proposalDao.getProposalById(updProposal.getId());
+        if (existing == null) {
+            return null;
+        }
+
+        // check the stored status, not the one in the request body, so an edit
+        // can't revive a proposal that's already been approved or rejected
+        if (!"pending".equals(existing.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + existing.getStatus() + "; only pending proposals can be edited.");
+        }
+
         updProposal.setStatus("pending");
         return proposalDao.updateProposal(updProposal);
     }
@@ -127,6 +148,11 @@ public class ProposalServiceImpl implements ProposalService {
         Proposal proposal = proposalDao.getProposalById(proposalId);
         if (proposal == null)
             return null;
+
+        if (!"pending".equals(proposal.getStatus())) {
+            throw new IllegalStateException(
+                "Proposal has already been " + proposal.getStatus() + "; voting is only allowed while pending.");
+        }
 
         Integer current = proposal.getUserVoteStatus(username);
         if (current == null)            // user hasn't voted yet -> record it

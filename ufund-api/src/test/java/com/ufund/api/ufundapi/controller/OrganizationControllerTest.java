@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -136,6 +137,12 @@ public class OrganizationControllerTest {
     }
 
     @Test
+    public void testDeleteOrganizationNull() throws IOException{
+        ResponseEntity<Boolean> response = orgCont.deleteOrganization(null);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
     public void testDeleteOrganizationNotFound() throws IOException{
         Organization o = sampleOrganization();
         when(orgService.deleteOrganization(o.getName())).thenReturn(false);
@@ -240,5 +247,48 @@ public class OrganizationControllerTest {
         ResponseEntity<Boolean> response = orgCont.deleteNeed(o.getName(), need.getId());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
+
+    @Test
+    public void testUpdateOrgException() throws IOException{
+        Organization o = sampleOrganization();
+        doThrow(new IOException()).when(orgService).updateOrganization(o, o.getName());
+
+        ResponseEntity<Organization> newOrg = orgCont.updateOrganization(o, o.getName());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, newOrg.getStatusCode());
+    }
+
+    @Test
+    public void testUpdateOrganization() throws IOException{
+        Organization o = sampleOrganization();
+        when(orgService.getOrganization(o.getName())).thenReturn(o);
+        when(orgService.updateOrganization(o, o.getName())).thenReturn(o);
+
+        ResponseEntity<Organization> response = orgCont.updateOrganization(o, o.getName());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void testUpdateOrganizationNotFound() throws IOException{
+        Organization o = sampleOrganization();
+        when(orgCont.updateOrganization(o, o.getName())).thenReturn(null);
+
+        ResponseEntity<Organization> response = orgCont.updateOrganization(o, o.getName());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void testGetOrganizationArrayException() throws IOException {
+        doThrow(new IOException()).when(orgService).getOrganizationArray();
+
+        ResponseEntity<Organization[]> newOrg = orgCont.getOrganizationArray();
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, newOrg.getStatusCode());
+    }
+
+    @Test
+    public void testGetOrganizationArray() throws IOException {
+        ResponseEntity<Organization[]> newOrg = orgCont.getOrganizationArray();
+        assertEquals(HttpStatus.OK, newOrg.getStatusCode());
+    }
+    
 
 }

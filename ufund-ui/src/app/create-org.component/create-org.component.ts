@@ -74,7 +74,10 @@ export class CreateOrgComponent implements OnInit{
 
     this.errorMessage = '';
     if (!this.validate()) return;
-  
+
+    this.org.name = this.org.name.trim();
+    this.org.description = this.org.description.trim();
+
     if (this.isEditMode) {
       this.orgService.updateOrganization(this.org, this.org.name).subscribe({
         next: (updated) => {

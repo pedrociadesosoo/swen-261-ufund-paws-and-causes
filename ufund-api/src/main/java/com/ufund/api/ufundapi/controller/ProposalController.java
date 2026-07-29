@@ -115,7 +115,7 @@ public class ProposalController {
      * manager, NOT_FOUND if not found, INTERNAL_SERVER_ERROR otherwise
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Proposal> deleteProposal(@RequestHeader(value = "X-Username", required = false) String username,
+    public ResponseEntity<?> deleteProposal(@RequestHeader(value = "X-Username", required = false) String username,
                                             @PathVariable int id) {
         LOG.info("DELETE /Proposal/" + id);
         try {
@@ -128,6 +128,8 @@ public class ProposalController {
             }
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -147,7 +149,11 @@ public class ProposalController {
                 }
 
                 Proposal approved = proposalService.approveProposal(id);
-                approved.setStatus("approved");
+
+                // the proposal can go missing between the lookup and the approve
+                if (approved == null) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
 
                 return new ResponseEntity<>(approved, HttpStatus.OK);
             }
@@ -161,6 +167,9 @@ public class ProposalController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            LOG.log(Level.SEVERE, "Unexpected error approving proposal " + id, e);
+            return new ResponseEntity<>("Unexpected error approving proposal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -179,6 +188,10 @@ public class ProposalController {
                 updatedProposal.setId(id);
                 Proposal saved = proposalService.updateProposal(updatedProposal);
 
+                if (saved == null) {
+                    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                }
+
                 return new ResponseEntity<>(saved, HttpStatus.OK);
             }
 
@@ -186,9 +199,14 @@ public class ProposalController {
 
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
         catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            LOG.log(Level.SEVERE, "Unexpected error updating proposal " + id, e);
+            return new ResponseEntity<>("Unexpected error updating proposal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -216,6 +234,9 @@ public class ProposalController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (RuntimeException e) {
+            LOG.log(Level.SEVERE, "Unexpected error rejecting proposal " + id, e);
+            return new ResponseEntity<>("Unexpected error rejecting proposal: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -230,13 +251,15 @@ public class ProposalController {
      * @return ResponseEntity with the updated {@link Proposal proposal} 
      */
     @PostMapping("/{id}/vote")
-    public ResponseEntity<Proposal> voteUpdate(@PathVariable int id, @RequestBody VoteRequest req) {
+    public ResponseEntity<?> voteUpdate(@PathVariable int id, @RequestBody VoteRequest req) {
         LOG.info("PUT /proposal/" + id + "/vote");
         try {
             Proposal updated = proposalService.voteUpdate(id, req.getUsername(), req.getVote());
             if (updated == null)
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             return new ResponseEntity<>(updated, HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

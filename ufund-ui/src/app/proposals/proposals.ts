@@ -7,6 +7,8 @@ import { NeedService } from '../need';
 import { Need } from '../need.model';
 import { NeedType } from '../need-type';
 import { HostListener } from '@angular/core';
+import { OrganizationService } from '../organization.service';
+import { Organization } from '../organization';
 
 /**
  * Lists all pending proposals so any logged-in user can see what's been submitted for review.
@@ -24,6 +26,7 @@ export class Proposals implements OnInit {
   selectedProposal: any;
   originalProposal: any;
   NeedType = NeedType;
+  organizations: Organization[] = [];
 
   /** The proposals shown in the table, after filtering and sorting */
   filteredProposals: Proposal[] = [];
@@ -36,6 +39,10 @@ export class Proposals implements OnInit {
   filterOrg: string = '';
   /** The distinct organizations found in the proposals, for the Org dropdown */
   orgOptions: string[] = [];
+  /** Helper-only toggle: when true, only the logged-in helper's own proposals are shown */
+  showMyProposalsOnly: boolean = false;
+  /** Manager-only toggle: when true, approved/rejected proposals are hidden, leaving only pending ones */
+  hideDecidedProposals: boolean = false;
 
   /** Column currently sorted by; '' means unsorted (original order) */
   sortField: string = '';
@@ -48,11 +55,15 @@ export class Proposals implements OnInit {
     private proposalService: ProposalService,
     private accountService: AccountService,
     private needService: NeedService,
-    private router: Router
+    private router: Router,
+    private organizationService: OrganizationService
   ) {}
 
   ngOnInit(): void {
     this.loadProposals();
+    this.organizationService.getOrganizationArray().subscribe({
+      next: (orgs) => this.organizations = orgs
+    });
   }
 
   /**
@@ -79,11 +90,17 @@ export class Proposals implements OnInit {
   applyFilters(): void {
     const term = this.searchTerm.trim().toLowerCase();
 
+    const myUsername = this.accountService.getCurrentAccount()?.username;
+
+    // Actively searching by name should surface a match wherever it is,
+    // regardless of the "My Proposals Only" / "Clear Decided" toggles 
     let result = this.proposals.filter(p => {
       const matchesName = !term || p.name.toLowerCase().includes(term);
       const matchesType = !this.filterType || p.type === this.filterType;
       const matchesOrg = !this.filterOrg || p.organization === this.filterOrg;
-      return matchesName && matchesType && matchesOrg;
+      const matchesMine = !!term || !this.showMyProposalsOnly || p.username === myUsername;
+      const matchesDecided = !!term || !this.hideDecidedProposals || p.status === 'pending';
+      return matchesName && matchesType && matchesOrg && matchesMine && matchesDecided;
     });
 
     if (this.sortField) {
@@ -115,11 +132,21 @@ export class Proposals implements OnInit {
     return this.sortableFields.includes(field);
   }
 
-  /** Resets the search box and both dropdowns, then refreshes the list. */
+  /**
+   * Manager-only: toggles hiding approved/rejected proposals so only the
+   * pending queue is shown. Clicking again brings decided proposals back into view.
+   */
+  toggleHideDecided(): void {
+    this.hideDecidedProposals = !this.hideDecidedProposals;
+    this.applyFilters();
+  }
+
+  /** Resets the search box, both dropdowns, and the My Proposals toggle, then refreshes the list. */
   clearFilters(): void {
     this.searchTerm = '';
     this.filterType = '';
     this.filterOrg = '';
+    this.showMyProposalsOnly = false;
     this.applyFilters();
   }
 
@@ -306,7 +333,7 @@ export class Proposals implements OnInit {
         if (index !== -1) this.proposals[index] = updated;
         this.applyFilters();
       },
-      error: () => this.errorMessage = 'Failed to cast vote'
+      error: (err: any) => this.errorMessage = err.error || 'Failed to cast vote'
     });
   }
 

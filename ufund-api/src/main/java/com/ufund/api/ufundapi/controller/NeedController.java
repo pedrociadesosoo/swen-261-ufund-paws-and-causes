@@ -159,7 +159,7 @@ public class NeedController {
      * FORBIDDEN if the caller isn't a manager, NOT_FOUND if not found, INTERNAL_SERVER_ERROR otherwise
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Need> updateNeed(@RequestHeader(value = "X-Username", required = false) String username,
+    public ResponseEntity<?> updateNeed(@RequestHeader(value = "X-Username", required = false) String username,
                                             @PathVariable int id, @RequestBody Need need) {
         LOG.info("PUT /needs/" + id);
         try {
@@ -168,10 +168,12 @@ public class NeedController {
 
             Need updated = needService.updateNeed(id, need);
             if (updated != null){
-                
+
                 return new ResponseEntity<>(updated, HttpStatus.OK);
             }else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

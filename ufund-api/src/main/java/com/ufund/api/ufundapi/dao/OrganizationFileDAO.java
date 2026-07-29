@@ -158,6 +158,9 @@ public class OrganizationFileDAO implements OrganizationDAO{
      */
     @Override
     public boolean addNeed(Organization o, Need need) throws IOException {
+        if (o == null) {
+            return false;
+        }
         synchronized(organizations){
             try{
                 Map<Integer,Need> needs = o.getNeeds();
@@ -179,6 +182,9 @@ public class OrganizationFileDAO implements OrganizationDAO{
      */
     @Override
     public boolean deleteNeed(Organization o, Need need) throws IOException {
+        if (o == null) {
+            return false;
+        }
         synchronized(organizations){
             try{
                 Map<Integer,Need> needs = o.getNeeds();

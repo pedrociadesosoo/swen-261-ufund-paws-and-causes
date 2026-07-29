@@ -22,7 +22,11 @@
       <option [ngValue]="''">Any Org</option>
       <option *ngFor="let org of orgOptions" [ngValue]="org">{{ org }}</option>
     </select>
-    <button (click)="clearFilters()">Clear</button>
+    <label *ngIf="isHelper()" class="my-proposals-toggle">
+      <input type="checkbox" [(ngModel)]="showMyProposalsOnly" (change)="applyFilters()" />
+      My Proposals Only
+    </label>
+    <button *ngIf="isManager()" (click)="toggleHideDecided()">{{ hideDecidedProposals ? 'Show All' : 'Clear Decided' }}</button>
   </div>
 
   <div *ngIf="errorMessage" class="error">
@@ -62,11 +66,13 @@
                 <button
                   class="vote-btn"
                   [class.active]="myVote(proposal) === 1"
+                  [disabled]="proposal.status !== 'pending'"
                   (click)="$event.stopPropagation(); upvote(proposal)">&#9650;</button>
                 <span class="vote-count">{{ netVotes(proposal) }}</span>
                 <button
                   class="vote-btn"
                   [class.active]="myVote(proposal) === -1"
+                  [disabled]="proposal.status !== 'pending'"
                   (click)="$event.stopPropagation(); downvote(proposal)">&#9660;</button>
               </span>
               <span *ngIf="!isHelper()">{{ netVotes(proposal) }}</span>
@@ -77,7 +83,7 @@
       </ng-container>
         <td *ngIf="selectedProposal?.id !== proposal.id && isManager()">
           <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); editProposal(proposal)">Edit</button>
-          <button (click)="$event.stopPropagation(); deleteProposal(proposal)">Delete</button>
+          <button *ngIf="proposal?.status==='pending'" (click)="$event.stopPropagation(); deleteProposal(proposal)">Delete</button>
           <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); approveProposal(proposal)">Approve</button>
           <button [disabled]="proposal?.status!=='pending'" (click)="$event.stopPropagation(); rejectProposal(proposal)">Reject</button>
         </td>
@@ -94,7 +100,12 @@
               <option [ngValue]="NeedType.VOLUNTEERING">Volunteering</option>
             </select>
           </td>
-          <td>{{ proposal.organization }}</td>
+          <td>
+            <select name="organization" [(ngModel)]="selectedProposal.organization">
+              <option value="" disabled>Select an organization</option>
+              <option *ngFor="let org of organizations" [value]="org.name">{{ org.name }}</option>
+            </select>
+          </td>
           <td>{{ proposal.username }}</td>
           <td>{{ proposal.creationDate | date }}</td>
           <td>
@@ -102,11 +113,13 @@
             <button
               class="vote-btn"
               [class.active]="myVote(proposal) === 1"
+              [disabled]="proposal.status !== 'pending'"
               (click)="upvote(proposal)">&#9650;</button>
             <span class="vote-count">{{ netVotes(proposal) }}</span>
             <button
               class="vote-btn"
               [class.active]="myVote(proposal) === -1"
+              [disabled]="proposal.status !== 'pending'"
               (click)="downvote(proposal)">&#9660;</button>
           </div>
           <span *ngIf="!isHelper()">{{ netVotes(proposal) }}</span>

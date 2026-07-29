@@ -28,6 +28,7 @@ public class OrganizationFileDAOTest {
 
     private ObjectMapper mockMapper;
     private OrganizationFileDAO oDao;
+    private Map<Integer, Organization> mockOrgs;
 
     private Need[] sampleNeeds() {
         return new Need[] {
@@ -56,6 +57,7 @@ public class OrganizationFileDAOTest {
         when(mockMapper.readValue(any(File.class), eq(Organization[].class)))
             .thenReturn(new Organization[] { sampleOrganization() });
         oDao = new OrganizationFileDAO("data/organizations.json", mockMapper);
+        mockOrgs = mock(Map.class);
     }
 
     @Test
@@ -189,6 +191,36 @@ public class OrganizationFileDAOTest {
         doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
 
         boolean deleted = oDao.deleteNeed(o, deletedNeed);
+        assertFalse(deleted);
+    }
+
+    @Test
+    public void testUpdateOrgKey() throws IOException {
+        //setting up test data
+        Organization o = oDao.getOrganization("General Humanities");
+        Organization testOrg = new Organization("test", "description", null);
+
+        //force 
+        when(mockOrgs.containsKey("General Humanities")).thenReturn(true);
+        
+        //test
+        Organization result = oDao.updateOrganization(testOrg, o.getName());
+        assertEquals(testOrg, result);
+    }
+
+    @Test
+    void testUpdateOrgFail() throws IOException{
+        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
+
+        Organization updated = oDao.updateOrganization(new Organization("Forest Fighters", "We fight forests", new HashMap<>()), "General Humanities");
+        assertNull(updated);
+    }
+
+    @Test
+    void testDeleteOrgFail() throws IOException{
+        doThrow(new IOException("write failed")).when(mockMapper).writeValue(any(File.class), any(Organization[].class));
+
+        boolean deleted = oDao.deleteOrganization("General Humanities");
         assertFalse(deleted);
     }
 

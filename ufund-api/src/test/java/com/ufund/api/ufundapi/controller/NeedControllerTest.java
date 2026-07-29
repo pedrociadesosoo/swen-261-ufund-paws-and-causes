@@ -88,10 +88,26 @@ public class NeedControllerTest {
     }
 
     @Test
+    void testCreateNeedBlankUser() throws IOException {
+        Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION, "test");
+        ResponseEntity<Need> response = needController.createNeed("", need);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(needService, never()).createNeed(any());
+    }
+
+    @Test
+    void testCreateNeedNullUser() throws IOException {
+        Need need = new Need(999, "corn", 10.37, 3, NeedType.ITEM_DONATION, "test");
+        ResponseEntity<Need> response = needController.createNeed(null, need);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        verify(needService, never()).createNeed(any());
+    }
+
+    @Test
     public void testUpdateNeedGetNeedFailed() throws Exception {
         Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
         when(needService.updateNeed(need.getId(), need)).thenReturn(null);
-        ResponseEntity<Need> response = needController.updateNeed("manager", need.getId(), need);
+        ResponseEntity<?> response = needController.updateNeed("manager", need.getId(), need);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
@@ -99,7 +115,7 @@ public class NeedControllerTest {
     public void testUpdateNeedHandleException() throws Exception {
         Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
         doThrow(new IOException()).when(needService).updateNeed(need.getId(), need);
-        ResponseEntity<Need> response = needController.updateNeed("manager", need.getId(), need);
+        ResponseEntity<?> response = needController.updateNeed("manager", need.getId(), need);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
@@ -109,7 +125,7 @@ public class NeedControllerTest {
     @Test
     public void testUpdateNeedForbiddenForNonManager() throws Exception {
         Need need = new Need(3, "Corn", 10.97, 100, NeedType.ITEM_DONATION, "test");
-        ResponseEntity<Need> response = needController.updateNeed("helper", need.getId(), need);
+        ResponseEntity<?> response = needController.updateNeed("helper", need.getId(), need);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         verify(needService, never()).updateNeed(any(int.class), any());
     }

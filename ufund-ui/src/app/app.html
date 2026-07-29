@@ -5,6 +5,7 @@
   <a *ngIf="isHelper()" routerLink="/basket">My Basket</a>
   <a routerLink="/organization">Organizations</a>
   <span style="flex: 1;"></span>
+  <span *ngIf="isLoggedIn()">Signed in as <strong>{{ currentUsername() }}</strong> ({{ currentAccountTypeLabel() }})</span>
   <a *ngIf="!isLoggedIn()" routerLink="/login">Login</a>
   <button *ngIf="isLoggedIn()" (click)="logout()">Logout</button>
 </nav>

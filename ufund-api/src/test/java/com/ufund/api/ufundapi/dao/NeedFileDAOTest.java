@@ -3,10 +3,12 @@ package com.ufund.api.ufundapi.dao;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,6 +22,28 @@ import com.ufund.api.ufundapi.model.NeedType;
 
 @Tag("Persistence-tier")
 class NeedFileDAOTest {
+
+    private NeedFileDAO needFileDAO;
+    private Need[] testNeeds;
+    private ObjectMapper mockObjectMapper;
+    private Map<Integer, Need> mockNeeds;
+
+    /**
+     * Before each test, we will create and inject a Mock Object Mapper to
+     * isolate the tests from the underlying file
+     * @throws IOException
+     */
+    @BeforeEach
+    public void setupNeedFileDAO() throws IOException {
+        mockObjectMapper = mock(ObjectMapper.class);
+        testNeeds = sampleNeeds();
+        mockNeeds = mock(Map.class);
+
+        when(mockObjectMapper
+            .readValue(new File("testfile.txt"),Need[].class))
+                .thenReturn(testNeeds);
+        needFileDAO = new NeedFileDAO("testfile.txt",mockObjectMapper);
+    }
 
     private Need[] sampleNeeds() {
         return new Need[] {
@@ -199,10 +223,6 @@ class NeedFileDAOTest {
         assertEquals(3, result.size());
     }
 
-
-
-
-
     @Test
     void testFindNeedsTypeItem() throws IOException {
         //set up test data
@@ -228,6 +248,134 @@ class NeedFileDAOTest {
             assertEquals(NeedType.ITEM_DONATION, need.getType());
         }
     }
+
+    @Test
+    void testFindNeedsTypeAll() throws IOException {
+        //set up test data
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = new Need[] {
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
+        };
+        
+        //force mockmapper to return needs
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        //test that only needs with item are returned
+        List<Need> result = dao.findNeeds("a", NeedType.ITEM_DONATION, "test");
+        assertEquals(2, result.size());
+        for(Need need : result){
+            assertEquals(NeedType.ITEM_DONATION, need.getType());
+            assertTrue(need.getName().contains("a"));
+            assertEquals("test", need.getOrganization());
+        }
+    }
+
+    @Test
+    void testFindNeedsTypeNoType() throws IOException {
+        //set up test data
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = new Need[] {
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
+        };
+        
+        //force mockmapper to return needs
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        //test that only needs with item are returned
+        List<Need> result = dao.findNeeds("e", "test");
+        for(Need need : result){
+            assertTrue(need.getName().contains("e"));
+            assertEquals("test", need.getOrganization());
+        }
+    }
+
+    @Test
+    void testFindNeedsNoName() throws IOException {
+        //set up test data
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = new Need[] {
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "test"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "test")
+        };
+        
+        //force mockmapper to return needs
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        //test that only needs with item are returned
+        List<Need> result = dao.findNeeds(NeedType.ITEM_DONATION, "test");
+        for(Need need : result){
+            assertEquals(NeedType.ITEM_DONATION, need.getType());
+            assertEquals("test", need.getOrganization());
+        }
+    }
+
+    @Test
+    void testFindNeedsNoOrg() throws IOException {
+        //set up test data
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = new Need[] {
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "e"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "e")
+        };
+        
+        //force mockmapper to return needs
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        //test that only needs with item are returned
+        List<Need> result = dao.findNeeds("a", NeedType.ITEM_DONATION);
+        assertEquals(2, result.size());
+        for(Need need : result){
+            assertEquals(NeedType.ITEM_DONATION, need.getType());
+            assertTrue(need.getName().contains("a"));
+        }
+    }
+
+    @Test
+    void testFindNeedsName() throws IOException {
+        //set up test data
+        ObjectMapper mockMapper = mock(ObjectMapper.class);
+        Need[] needs = new Need[] {
+            new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test"),
+            new Need(2, "Rice", 1.99, 100, NeedType.ITEM_DONATION, "test"),
+            new Need(3, "Blankets", 15.00, 25, NeedType.ITEM_DONATION, "e"),
+            new Need(4, "Monetary Test", 10, 10, NeedType.MONETARY, "test"),
+            new Need(5, "Volunteering Test", 10, 10, NeedType.VOLUNTEERING, "test"),
+            new Need(6, "Item Test", 1.99, 100, NeedType.ITEM_DONATION, "e")
+        };
+        
+        //force mockmapper to return needs
+        when(mockMapper.readValue(any(File.class), eq(Need[].class))).thenReturn(needs);
+        NeedFileDAO dao = new NeedFileDAO("data/needs.json", mockMapper);
+
+        //test that only needs with item are returned
+        List<Need> result = dao.findNeedsWithOrg("a");
+        for(Need need : result){
+            assertTrue(need.getName().contains("a"));
+        }
+    }
+
 
     @Test
     void testFindNeedsTypeMonetary() throws IOException {
@@ -374,5 +522,83 @@ class NeedFileDAOTest {
         List<Need> result = dao.findNeeds("a", NeedType.VOLUNTEERING);
         assertEquals(0, result.size());
     }  
+
+    /**
+     * Tests if NeedDao.deleteNeed() returns false when the map of needs does not contain the 
+     * specified id
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedFalse() throws IOException {
+        //setting up test data
+        int needTestId = 10;
+
+        //force 
+        when(mockNeeds.containsKey(needTestId)).thenReturn(false);
+        
+        //test
+        boolean result = needFileDAO.deleteNeed(needTestId);
+        assertEquals(false, result);
+    }
+
+    /**
+     * Tests if NeedDao.deleteNeed() returns true when the map of needs contains the 
+     * specified id
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testDeleteNeedExists() throws IOException {
+        //setting up test data
+        int needTestId = 1;
+
+        //force 
+        when(mockNeeds.containsKey(needTestId)).thenReturn(true);
+
+        //test
+        boolean result = needFileDAO.deleteNeed(needTestId);
+        assertEquals(true, result);
+    }
+
+    /**
+     * Tests if NeedDao.updateNeed() returns false when the map of needs does not contain the 
+     * specified id
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testUpdateNeedNoKey() throws IOException {
+        //setting up test data
+        int needTestId = 10;
+        Need testNeed =  new Need(needTestId, "test", 0, 0, NeedType.ITEM_DONATION, "test");
+
+        //force 
+        when(mockNeeds.containsKey(needTestId)).thenReturn(false);
+        
+        //test
+        Need result = needFileDAO.updateNeed(testNeed);
+        assertEquals(null, result);
+    }
+
+    /**
+     * Tests if NeedDao.updateNeed() returns true when the map of needs contains the 
+     * specified id
+     * 
+     * @throws IOException
+     */
+    @Test
+    public void testUpdateNeedKey() throws IOException {
+        //setting up test data
+        int needTestId = 1;
+        Need testNeed =  new Need(needTestId, "test", 0, 0, NeedType.ITEM_DONATION, "test");
+
+        //force 
+        when(mockNeeds.containsKey(needTestId)).thenReturn(true);
+
+        //test
+        Need result = needFileDAO.updateNeed(testNeed);
+        assertEquals(testNeed, result);
+    }
 
 }
