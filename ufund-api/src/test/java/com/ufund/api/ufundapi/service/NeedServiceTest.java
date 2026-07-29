@@ -19,6 +19,7 @@ import com.ufund.api.ufundapi.dao.NeedDAO;
 import com.ufund.api.ufundapi.dao.ProposalDAO;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedType;
+import com.ufund.api.ufundapi.model.Organization;
 
 @Tag("Service-tier")
 class NeedServiceTest {
@@ -277,6 +278,67 @@ class NeedServiceTest {
         //check if method returns deleted need
         Need deletedNeed = service.deleteNeed(testNeed.getId());
         assertEquals(testNeed, deletedNeed);
+    }
+
+    @Test
+    public void testCreateNeedNullOrg() throws IOException{
+        Need newNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, null);
+        when(mockDao.createNeed(newNeed)).thenReturn(newNeed);
+
+        Need created = service.createNeed(newNeed);
+        assertEquals(newNeed, created);
+    }
+
+    @Test
+    public void testCreateBlank() throws IOException{
+        Need newNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "");
+        when(mockDao.createNeed(newNeed)).thenReturn(newNeed);
+        
+        Need created = service.createNeed(newNeed);
+        assertEquals(newNeed, created);
+    }
+
+    @Test
+    public void testCreateNeed() throws IOException{
+        Need newNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
+        
+        when(mockOService.getOrganization(newNeed.getOrganization())).thenReturn(new Organization("test", "test", null));
+        when(mockDao.createNeed(newNeed)).thenReturn(newNeed);
+
+        Need created = service.createNeed(newNeed);
+        assertEquals(newNeed, created);
+    }
+
+    @Test
+    public void testUpdateNeed() throws IOException{
+        Need oldNeed = new Need(1, "test", 2.50, 50, NeedType.ITEM_DONATION, "test");
+
+        Need newNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
+        when(mockDao.getNeedById(1)).thenReturn(oldNeed);
+        when(mockDao.updateNeed(newNeed)).thenReturn(newNeed);
+
+        Need updated = service.updateNeed(newNeed.getId(), newNeed);
+        assertEquals(newNeed, updated);
+    }
+
+    @Test
+    public void testUpdateNeedNull() throws IOException{
+        Need newNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
+        
+        when(mockDao.updateNeed(newNeed)).thenReturn(null);
+
+        Need updated = service.updateNeed(newNeed.getId(), newNeed);
+        assertEquals(null, updated);
+    }
+
+    @Test
+    public void testUpdatedNull() throws IOException{
+        Need newNeed = new Need(1, "Canned Soup", 2.50, 50, NeedType.ITEM_DONATION, "test");
+        
+        when(mockDao.updateNeed(newNeed)).thenReturn(null);
+
+        Need updated = service.updateNeed(newNeed.getId(), newNeed);
+        assertEquals(null, updated);
     }
 
 }
