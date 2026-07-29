@@ -194,8 +194,27 @@ class NeedServiceTest {
     public void testFindNeedsAll() throws IOException {
         service.findNeeds("a", NeedType.VOLUNTEERING, "org");
         verify(mockDao, times(1)).findNeeds("a", NeedType.VOLUNTEERING, "org");
-
+    }   
+    
+    @Test
+    public void testFindNeedsNoName() throws IOException {
+        service.findNeeds(null, NeedType.VOLUNTEERING, "org");
+        verify(mockDao, times(1)).findNeeds(NeedType.VOLUNTEERING, "org");
     }    
+
+    @Test
+    public void testFindNeedsNoType() throws IOException {
+        service.findNeeds("a", null, "org");
+        verify(mockDao, times(1)).findNeeds("a", "org");
+    }  
+    
+    @Test
+    public void testFindNeedsOrg() throws IOException {
+        service.findNeeds(null, null, "org");
+        verify(mockDao, times(1)).findNeedsWithOrg("org");
+    }   
+
+    
 
     @Test 
     public void testGetNeedById() throws IOException{
