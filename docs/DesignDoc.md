@@ -169,10 +169,17 @@ This section describes the web interface and flow; this is how the user views an
 > high-fidelity UI._
 
 Every user lands on **Login**. Once authenticated, the nav bar shows who's signed in and their role, and the routes available differ by role via route guards (`authGuard`, `managerGuard`, `helperGuard`). From there:
+<img width="1896" height="250" alt="image" src="https://github.com/user-attachments/assets/eb7915fe-83d3-4d50-a392-6fcf36803b24" />
 
 * **Any logged-in user** can browse the **Cupboard** (search/filter Needs) and the **Proposals** list (search/filter/sort, with a status badge per proposal), and open a proposal's **Detail** page.
+  <img width="1910" height="618" alt="image" src="https://github.com/user-attachments/assets/95744da9-9fcf-47ef-8446-4324873e9dff" />
+
 * **Helpers** additionally see "Propose a New Need" (submits a Proposal), can vote on pending proposals, can add Needs to their **Funding Basket** and proceed through **Checkout**, and can filter the Proposals list to just their own submissions.
+  <img width="1909" height="431" alt="image" src="https://github.com/user-attachments/assets/93f82c16-7880-4670-a8dd-0891aaa3236e" />
+
 * **Managers** additionally see "Add Need" and the **Organizations** list (create/edit/delete an organization, view its affiliated Needs), and on the Proposals page can edit/approve/reject/delete a pending proposal, or hide decided proposals to focus on the pending queue.
+<img width="1914" height="917" alt="image" src="https://github.com/user-attachments/assets/fb9851fd-78c3-4de0-863d-d2d84be3e744" />
+<img width="1901" height="419" alt="image" src="https://github.com/user-attachments/assets/eeac8f9b-e871-41b1-a11c-d2222b3770d9" />
 
 `unsavedChangesGuard`/`unsavedProposalGuard` warn the user before navigating away from an in-progress edit.
 
