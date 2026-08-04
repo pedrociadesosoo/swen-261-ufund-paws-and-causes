@@ -334,16 +334,19 @@ This section documents four OO design principles, each demonstrated on **both** 
 
 ## Static Code Analysis
 
-> _TODO (team): this section needs real SonarQube findings, not test coverage
-> numbers (coverage belongs under Unit Testing and Code Coverage below, and
-> is already filled in there). Per the Static Code Analysis Exercise: run
-> `mvn clean test sonar:sonar -Dsonar.token=<token>` against the backend and
-> SonarScanner against the Angular frontend, then from the SonarQube "Issues"
-> view, identify 3-4 flagged areas — pick from whatever mix of severity
-> (major/critical/blocker) and type (bug/vulnerability/code smell) actually
-> shows up, plus anything flagged for Cognitive Complexity — with a
-> screenshot of each. This can't be filled in remotely since SonarQube runs
-> against `localhost:9000` on whoever's machine ran the scan._
+The team ran SonarQube against both `ufund-api` (Java) and `ufund-ui` (TypeScript/HTML). `ufund-api` passed its quality gate with 0 Security issues, 2 Reliability issues, and 321 Maintainability issues; `ufund-ui` passed with 0 Security issues and 3 Reliability issues. Four representative findings, spanning both severity types and both tiers, are analyzed below.
+
+**1. Cognitive Complexity too high — `NeedServiceImpl.findNeeds()` (Maintainability, High)**
+`findNeeds()` (line 149) scored a Cognitive Complexity of 20 against SonarQube's limit of 15 (rule `java:S3776`). The method picks one of several DAO calls depending on which combination of three optional filters (`containsText`, `type`, `org`) was passed in, using nested `if`/`else` blocks four levels deep. SonarQube's Cognitive Complexity metric penalizes nesting depth specifically, not just branch count, so the nesting — not the number of cases — was the actual problem. *Fix applied:* since every branch already ends in a `return`, the `else` blocks were unnecessary; flattening the method into sequential guard-clause `if (...) return ...;` statements (grouped by whether `org` is present) removes the nesting entirely while calling the exact same DAO methods, bringing the score back under the limit.
+
+**2. Generic wildcard type in a return type — `NeedController.updateNeed()` (Maintainability, High)**
+`updateNeed()` (line 162) declares its return type as `ResponseEntity<?>` (rule `java:S1452`), which hides the real payload type from both callers and the compiler. *Analysis:* this was originally done because one error path in the method needed to return a different body type than the success path. *Recommendation:* narrow the signature to the most specific shared type the method actually returns (`ResponseEntity<Need>` if every path can be made to agree, or `ResponseEntity<Object>` if an error path still needs to return a message string) — confirmed on a case-by-case basis per controller method rather than defaulting to `?`.
+
+**3. Missing keyboard equivalent for a clickable row — `cupboard.html` (Reliability, Low, accessibility)**
+Line 54 binds `(click)="viewNeed(need.id)"` directly to a `<tr>` with no corresponding keyboard handler (`Web:MouseEventWithoutKeyboardEquivalentCheck`). *Analysis:* a user navigating by keyboard only (including screen-reader users) has no way to open a need's details from this table — the action is mouse-only. *Recommendation:* add a `(keydown.enter)` handler alongside the existing `(click)`, and give the row `tabindex="0"` so it's reachable via keyboard navigation in the first place.
+
+**4. String reference comparison — `OrganizationFileDAO.createOrganization()` (Reliability, Medium)**
+Line 101 compares organization names with `x.getName() == o.getName()` instead of `.equals()` (rule `java:S4973`). *Analysis:* `==` compares object references, not string content — two `String` objects holding the same name are not guaranteed to be `==`, so this duplicate-name check can silently fail to catch a real duplicate. *Recommendation:* change to `x.getName().equals(o.getName())`; SonarQube offers this as a one-click Quick Fix.
 
 ## Recommendations for Improvement
 
@@ -351,7 +354,7 @@ This section documents four OO design principles, each demonstrated on **both** 
 2. **Organization identified by name, not a stable ID.** Every reference to an organization (from Needs and Proposals) is by name, so an organization's name currently cannot be changed without breaking those references — it's locked as read-only after creation as a stopgap, which is a usability regression for managers. *Recommendation:* give Organization a stable identifier independent of its display name, consistent with how every other entity (Need, Proposal, Account) is already keyed by ID rather than a mutable field.
 3. **Need types don't meaningfully differ in structure.** The different Need types share one generic shape with no type-specific fields or behavior, which weakens the Single Responsibility of the `Need` model. *Recommendation:* revisit whether type-specific fields/behavior (or a small type hierarchy) would better represent the differences between item donations, monetary needs, and volunteering needs.
 4. **Service-layer branch coverage.** Directly tied to the coverage data under Unit Testing and Code Coverage below: the newer validation/guard logic in the service layer is the least-covered area in the codebase. *Recommendation:* prioritize tests for the exception paths (invalid organization, already-decided proposal, duplicate need name) before further feature work.
-5. _TODO (team): add 1-2 more recommendations once the real SonarQube findings above are in, tied to whatever it actually flags._
+5. **String identity comparison in `OrganizationFileDAO`.** Flagged directly by SonarQube (see Static Code Analysis above): comparing organization names with `==` instead of `.equals()` risks a false-negative duplicate check. *Recommendation:* apply the one-click Quick Fix SonarQube offers, then audit the rest of the DAO layer for the same pattern.
 
 **Process improvements already made this sprint, worth continuing:** this sprint's work moved to feature branches with pull requests instead of direct commits to `main` (a specific issue called out in review), and reduced backend crashes caused by unhandled null/edge cases surfacing as raw 500 errors instead of clear messages — both are architecture/design-principle wins (Low Coupling, clear layer responsibilities) as much as they are process wins.
 
