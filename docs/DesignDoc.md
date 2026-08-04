@@ -334,11 +334,7 @@ The team ran SonarQube against both `ufund-api` (Java) and `ufund-ui` (TypeScrip
 
 **1. Cognitive Complexity too high — `NeedServiceImpl.findNeeds()` (Maintainability, High)**
 
-
 ![Code Coverage](SonarIssue1.png)`findNeeds()` (line 149) scored a Cognitive Complexity of 20 against SonarQube's limit of 15 (rule `java:S3776`). The method picks one of several DAO calls depending on which combination of three optional filters (`containsText`, `type`, `org`) was passed in, using nested `if`/`else` blocks four levels deep. SonarQube's Cognitive Complexity metric penalizes nesting depth specifically, not just branch count, so the nesting — not the number of cases — was the actual problem. *Fix applied:* since every branch already ends in a `return`, the `else` blocks were unnecessary; flattening the method into sequential guard-clause `if (...) return ...;` statements (grouped by whether `org` is present) removes the nesting entirely while calling the exact same DAO methods, bringing the score back under the limit. 
-
-
-
 
 **2. Generic wildcard type in a return type — `NeedController.updateNeed()` (Maintainability, High)**
 ![Code Coverage](SonarIssue2.png)
@@ -351,7 +347,7 @@ The team ran SonarQube against both `ufund-api` (Java) and `ufund-ui` (TypeScrip
 Line 54 binds `(click)="viewNeed(need.id)"` directly to a `<tr>` with no corresponding keyboard handler (`Web:MouseEventWithoutKeyboardEquivalentCheck`). *Analysis:* a user navigating by keyboard only (including screen-reader users) has no way to open a need's details from this table — the action is mouse-only. *Recommendation:* add a `(keydown.enter)` handler alongside the existing `(click)`, and give the row `tabindex="0"` so it's reachable via keyboard navigation in the first place.
 
 **4. String reference comparison — `OrganizationFileDAO.createOrganization()` (Reliability, Medium)**
-![Code Coverage](SonarIssue2.png)Line 101 compares organization names with `x.getName() == o.getName()` instead of `.equals()` (rule `java:S4973`). *Analysis:* `==` compares object references, not string content — two `String` objects holding the same name are not guaranteed to be `==`, so this duplicate-name check can silently fail to catch a real duplicate. *Recommendation:* change to `x.getName().equals(o.getName())`; SonarQube offers this as a one-click Quick Fix.
+![Code Coverage](SonarIssue4.png)Line 101 compares organization names with `x.getName() == o.getName()` instead of `.equals()` (rule `java:S4973`). *Analysis:* `==` compares object references, not string content — two `String` objects holding the same name are not guaranteed to be `==`, so this duplicate-name check can silently fail to catch a real duplicate. *Recommendation:* change to `x.getName().equals(o.getName())`; SonarQube offers this as a one-click Quick Fix.
 
 ## Recommendations for Improvement
 
