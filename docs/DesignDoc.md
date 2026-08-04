@@ -327,7 +327,38 @@ This section documents four OO design principles, each demonstrated on **both** 
 
 ## Static Code Analysis
 
-Current coverage per the JaCoCo report: **93% instruction coverage** (285 of 4,426 instructions missed) and **82% branch coverage** (62 of 364 branches missed), broken down by package:
+> _TODO (team): this section needs real SonarQube findings, not test coverage
+> numbers (coverage belongs under Unit Testing and Code Coverage below, and
+> is already filled in there). Per the Static Code Analysis Exercise: run
+> `mvn clean test sonar:sonar -Dsonar.token=<token>` against the backend and
+> SonarScanner against the Angular frontend, then from the SonarQube "Issues"
+> view, identify 3-4 flagged areas — pick from whatever mix of severity
+> (major/critical/blocker) and type (bug/vulnerability/code smell) actually
+> shows up, plus anything flagged for Cognitive Complexity — with a
+> screenshot of each. This can't be filled in remotely since SonarQube runs
+> against `localhost:9000` on whoever's machine ran the scan._
+
+## Recommendations for Improvement
+
+1. **Proposal edit auto-approves on save.** Saving an edited proposal as a manager currently also approves it in the same action, so a manager can't correct a typo or bad data without immediately approving the request — this breaks the Single Responsibility separation between "editing" and "deciding" that the rest of the proposal workflow follows. *Recommendation:* decouple "save" from "approve" into two distinct actions.
+2. **Organization identified by name, not a stable ID.** Every reference to an organization (from Needs and Proposals) is by name, so an organization's name currently cannot be changed without breaking those references — it's locked as read-only after creation as a stopgap, which is a usability regression for managers. *Recommendation:* give Organization a stable identifier independent of its display name, consistent with how every other entity (Need, Proposal, Account) is already keyed by ID rather than a mutable field.
+3. **Need types don't meaningfully differ in structure.** The different Need types share one generic shape with no type-specific fields or behavior, which weakens the Single Responsibility of the `Need` model. *Recommendation:* revisit whether type-specific fields/behavior (or a small type hierarchy) would better represent the differences between item donations, monetary needs, and volunteering needs.
+4. **Service-layer branch coverage.** Directly tied to the coverage data under Unit Testing and Code Coverage below: the newer validation/guard logic in the service layer is the least-covered area in the codebase. *Recommendation:* prioritize tests for the exception paths (invalid organization, already-decided proposal, duplicate need name) before further feature work.
+5. _TODO (team): add 1-2 more recommendations once the real SonarQube findings above are in, tied to whatever it actually flags._
+
+**Process improvements already made this sprint, worth continuing:** this sprint's work moved to feature branches with pull requests instead of direct commits to `main` (a specific issue called out in review), and reduced backend crashes caused by unhandled null/edge cases surfacing as raw 500 errors instead of clear messages — both are architecture/design-principle wins (Low Coupling, clear layer responsibilities) as much as they are process wins.
+
+## Testing
+
+### Acceptance Testing
+
+Per the team's Acceptance Test Plan, all 33 user stories (108 individual acceptance criteria across them) currently pass, with no known failing or untested criteria as of the most recent recorded test pass (7/27). This covers the full MVP plus enhancements: authentication, cupboard search/filter, funding basket and checkout, needs management, organizations (view/create/edit/delete, need affiliation), and the proposals workflow (create, view/search/sort, status, votes, approve/reject).
+
+In addition, the following were manually re-verified end-to-end this sprint after being fixed, ahead of the next formal test pass: proposal submission, edit, approve, reject, and delete (each correctly restricted to pending-only where applicable); voting and vote-locking on decided proposals; organization create/edit/delete with cascading need removal; need create/edit/delete including organization sync; and the Proposals page filters (My Proposals Only, Clear Decided, and search overriding both).
+
+### Unit Testing and Code Coverage
+
+Unit tests are written per layer using JUnit 5 and Mockito, covering controllers, services, and DAOs. Current coverage per the JaCoCo report: **93% instruction coverage** (285 of 4,426 instructions missed) and **82% branch coverage** (62 of 364 branches missed), broken down by package:
 
 | Package | Instruction Cov. | Branch Cov. |
 |---|---|---|
@@ -345,27 +376,6 @@ Current coverage per the JaCoCo report: **93% instruction coverage** (285 of 4,4
 **Outlier explained, not a gap:** the `ufundapi` root package shows 0%, but that's only the Spring Boot `Application` bootstrap class, which has no logic to test — it's not a real coverage gap, just a single trivial class dragging that one row down.
 
 **Before/after correction:** last sprint's design doc reported 55% coverage, which didn't match the actual JaCoCo report at the time (93%/82%) — that was a transcription error, not a real regression. This submission uses the verified numbers pulled directly from the report above.
-
-## Recommendations for Improvement
-
-1. **Proposal edit auto-approves on save.** Saving an edited proposal as a manager currently also approves it in the same action, so a manager can't correct a typo or bad data without immediately approving the request — this breaks the Single Responsibility separation between "editing" and "deciding" that the rest of the proposal workflow follows. *Recommendation:* decouple "save" from "approve" into two distinct actions.
-2. **Organization identified by name, not a stable ID.** Every reference to an organization (from Needs and Proposals) is by name, so an organization's name currently cannot be changed without breaking those references — it's locked as read-only after creation as a stopgap, which is a usability regression for managers. *Recommendation:* give Organization a stable identifier independent of its display name, consistent with how every other entity (Need, Proposal, Account) is already keyed by ID rather than a mutable field.
-3. **Need types don't meaningfully differ in structure.** The different Need types share one generic shape with no type-specific fields or behavior, which weakens the Single Responsibility of the `Need` model. *Recommendation:* revisit whether type-specific fields/behavior (or a small type hierarchy) would better represent the differences between item donations, monetary needs, and volunteering needs.
-4. **Service-layer branch coverage.** Directly tied to the metric data above: the newer validation/guard logic in the service layer is the least-covered area in the codebase. *Recommendation:* prioritize tests for the exception paths (invalid organization, already-decided proposal, duplicate need name) before further feature work.
-
-**Process improvements already made this sprint, worth continuing:** this sprint's work moved to feature branches with pull requests instead of direct commits to `main` (a specific issue called out in review), and reduced backend crashes caused by unhandled null/edge cases surfacing as raw 500 errors instead of clear messages — both are architecture/design-principle wins (Low Coupling, clear layer responsibilities) as much as they are process wins.
-
-## Testing
-
-### Acceptance Testing
-
-Per the team's Acceptance Test Plan, all 33 user stories (108 individual acceptance criteria across them) currently pass, with no known failing or untested criteria as of the most recent recorded test pass (7/27). This covers the full MVP plus enhancements: authentication, cupboard search/filter, funding basket and checkout, needs management, organizations (view/create/edit/delete, need affiliation), and the proposals workflow (create, view/search/sort, status, votes, approve/reject).
-
-In addition, the following were manually re-verified end-to-end this sprint after being fixed, ahead of the next formal test pass: proposal submission, edit, approve, reject, and delete (each correctly restricted to pending-only where applicable); voting and vote-locking on decided proposals; organization create/edit/delete with cascading need removal; need create/edit/delete including organization sync; and the Proposals page filters (My Proposals Only, Clear Decided, and search overriding both).
-
-### Unit Testing and Code Coverage
-
-Current status: **93% instruction coverage, 82% branch coverage** (see the Static Code Analysis section above for the full breakdown and screenshot). Unit tests are written per layer using JUnit 5 and Mockito, covering controllers, services, and DAOs. The service layer has the most room for improvement, specifically around the newer validation/guard-clause branches added this sprint.
 
 ## Ongoing Rationale
 
