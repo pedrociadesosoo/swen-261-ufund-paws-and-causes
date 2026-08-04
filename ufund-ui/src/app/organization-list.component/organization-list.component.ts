@@ -34,7 +34,7 @@ export class OrganizationListComponent {
 
   createOrganization(org: Organization): void{
     this.orgService.createOrganization(org).subscribe({
-      next: (success) => {
+      next: (success: any) => {
         if (success) {
           this.getOrganizationArray();
         } else {
@@ -51,7 +51,7 @@ export class OrganizationListComponent {
   deleteOrganization(name: string): void{
     if (!confirm(`Delete organization ${name}?`)) return
     this.orgService.deleteOrganization(name).subscribe({
-      next: (success) => {
+      next: (success: any) => {
         if (success) {
           this.getOrganizationArray();
         } else {
@@ -74,7 +74,7 @@ export class OrganizationListComponent {
 
   getOrganizationArray(): void {
     this.orgService.getOrganizationArray().subscribe({
-      next: (orgs) => {
+      next: (orgs: any) => {
         this.orgs = orgs;
         this.cdr.detectChanges();
       },
@@ -87,10 +87,10 @@ export class OrganizationListComponent {
 
   getOrganization(name: string): void {
     this.orgService.getOrganizationArray().subscribe({
-      next: (orgs) => {
-          const updated = orgs.find(o => o.name === name);
+      next: (orgs: any) => {
+          const updated = orgs.find((o: any) => o.name === name);
           if (updated) {
-            const index = this.orgs.findIndex(o => o.name === name);
+            const index = this.orgs.findIndex((o: any) => o.name === name);
             if (index !== -1) {
               this.orgs[index] = updated;
             }
@@ -105,8 +105,8 @@ export class OrganizationListComponent {
 
   updateOrganization(name: string): void {
     this.orgService.getOrganizationArray().subscribe({
-      next: (orgs) => {
-          const updated = orgs.find(o => o.name === name);
+      next: (orgs: any) => {
+          const updated = orgs.find((o: any) => o.name === name);
           if (updated) {
             const index = this.orgs.findIndex(o => o.name === name);
             if (index !== -1) {
@@ -124,7 +124,7 @@ export class OrganizationListComponent {
 
   addNeed(name: string, id: number): void {
     this.orgService.addNeed(name,id).subscribe({
-      next: (success) => {
+      next: (success: any) => {
         if (success){
           this.getOrganizationArray();
         } else {
@@ -139,7 +139,7 @@ export class OrganizationListComponent {
 
   deleteNeed(name: string, id: number): void {
     this.orgService.deleteNeed(name,id).subscribe({
-      next: (success) => {
+      next: (success: any) => {
         if (success) {
           this.getOrganizationArray();
         } else {

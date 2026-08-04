@@ -23,7 +23,7 @@ export class OrganizationDetailsComponent {
   ngOnInit(): void {
     const name = String(this.route.snapshot.paramMap.get('name'));
     this.orgService.getOrganization(name).subscribe({
-      next: (org) => this.org = org,
+      next: (org: any) => this.org = org,
       error: () => this.errorMessage = 'Failed to load need details'
     });
   }
