@@ -13,6 +13,7 @@
 > the system **as it is right now**._
 
 ## Team Information
+
 * Team name: SWEN-261-01-Summer
 * Team members
   * Charlie Gorczyca
@@ -27,22 +28,23 @@
 This is a summary of the project.
 
 ### Purpose
+
 The UFund project is a nonprofit website for the express purpose of funding the needed resources for animal shelter and rescue operations. Users will either help fund needs by interacting with the website, or manage the needs as an administrator. These users will be those who truly care about helping animals and the organizations who work with them directly.
 
 ### Glossary and Acronyms
 
-| Term | Definition |
-|------|------------|
-| SPA | Single Page Application |
-| API | Application Programming Interface |
-| DAO | Data Access Object |
-| Need | An item the cupboard is collecting (id, name, cost, quantity, type, organization) |
-| Cupboard | The full collection of Needs managed by the U-Fund |
-| Helper | The user who funds needs and interacts with the project at a surface level |
-| Manager | The user who organizes the needs presented to Helpers and oversees the operations on the website |
+| Term           | Definition                                                                                              |
+| -------------- | ------------------------------------------------------------------------------------------------------- |
+| SPA            | Single Page Application                                                                                 |
+| API            | Application Programming Interface                                                                       |
+| DAO            | Data Access Object                                                                                      |
+| Need           | An item the cupboard is collecting (id, name, cost, quantity, type, organization)                       |
+| Cupboard       | The full collection of Needs managed by the U-Fund                                                      |
+| Helper         | The user who funds needs and interacts with the project at a surface level                              |
+| Manager        | The user who organizes the needs presented to Helpers and oversees the operations on the website        |
 | Funding Basket | The collection of needs present in a Helper's collection, so they can check out their needs effectively |
-| Proposal | A request submitted by a Helper for a new Need, pending Manager approval or rejection |
-| Organization | An entity that needs can be affiliated with, managed independently from individual needs |
+| Proposal       | A request submitted by a Helper for a new Need, pending Manager approval or rejection                   |
+| Organization   | An entity that needs can be affiliated with, managed independently from individual needs                |
 
 ## Requirements
 
@@ -52,24 +54,28 @@ This section describes the features of the application.
 
 A Minimum Viable Product consists of the following:
 
--   **Minimal Authentication for Helper/U-fund Manager login & logout**
-    -   The server will (admittedly insecurely) trust the browser of who the user is. A simple login is all that is minimally required.
-    -   A user (helper or U-fund Manager) can login and logout of the application.
-    -   A U-fund Manager logs in using the reserved username **admin**.
-    -   Any other username can be assumed to be a helper.
+- **Minimal Authentication for Helper/U-fund Manager login & logout**
+  
+  - The server will (admittedly insecurely) trust the browser of who the user is. A simple login is all that is minimally required.
+  - A user (helper or U-fund Manager) can login and logout of the application.
+  - A U-fund Manager logs in using the reserved username **admin**.
+  - Any other username can be assumed to be a helper.
 
--   **Helper functionality**
-    -   Helper can see list of needs
-    -   Helper can search for a need
-    -   Helper can add/remove a need to their funding basket
-    -   Helper can proceed to **check-out** and fund all needs they are supporting
+- **Helper functionality**
+  
+  - Helper can see list of needs
+  - Helper can search for a need
+  - Helper can add/remove a need to their funding basket
+  - Helper can proceed to **check-out** and fund all needs they are supporting
 
--   **Needs Management**
-    -   U-fund Manager(s) can add, remove and edit the data of all their needs stored in their needs cupboard
-    -   A U-fund Manager cannot see contents of funding basket(s)
+- **Needs Management**
+  
+  - U-fund Manager(s) can add, remove and edit the data of all their needs stored in their needs cupboard
+  - A U-fund Manager cannot see contents of funding basket(s)
 
--   **Data Persistence**
-    -   The system must save everything to files such that the next user will see a change in the needs cupboard based on the previous user's actions.
+- **Data Persistence**
+  
+  - The system must save everything to files such that the next user will see a change in the needs cupboard based on the previous user's actions.
 
 ### MVP Features
 
@@ -172,14 +178,17 @@ Every user lands on **Login**. Once authenticated, the nav bar shows who's signe
 <img width="1896" height="250" alt="image" src="https://github.com/user-attachments/assets/eb7915fe-83d3-4d50-a392-6fcf36803b24" />
 
 * **Any logged-in user** can browse the **Cupboard** (search/filter Needs) and the **Proposals** list (search/filter/sort, with a status badge per proposal), and open a proposal's **Detail** page.
+  
   <img width="1910" height="618" alt="image" src="https://github.com/user-attachments/assets/95744da9-9fcf-47ef-8446-4324873e9dff" />
 
 * **Helpers** additionally see "Propose a New Need" (submits a Proposal), can vote on pending proposals, can add Needs to their **Funding Basket** and proceed through **Checkout**, and can filter the Proposals list to just their own submissions.
+  
   <img width="1909" height="431" alt="image" src="https://github.com/user-attachments/assets/93f82c16-7880-4670-a8dd-0891aaa3236e" />
 
 * **Managers** additionally see "Add Need" and the **Organizations** list (create/edit/delete an organization, view its affiliated Needs), and on the Proposals page can edit/approve/reject/delete a pending proposal, or hide decided proposals to focus on the pending queue.
-<img width="1914" height="917" alt="image" src="https://github.com/user-attachments/assets/fb9851fd-78c3-4de0-863d-d2d84be3e744" />
-<img width="1901" height="419" alt="image" src="https://github.com/user-attachments/assets/eeac8f9b-e871-41b1-a11c-d2222b3770d9" />
+  
+  <img width="1914" height="917" alt="image" src="https://github.com/user-attachments/assets/fb9851fd-78c3-4de0-863d-d2d84be3e744" />
+  <img width="1901" height="419" alt="image" src="https://github.com/user-attachments/assets/eeac8f9b-e871-41b1-a11c-d2222b3770d9" />
 
 `unsavedChangesGuard`/`unsavedProposalGuard` warn the user before navigating away from an in-progress edit.
 
@@ -313,22 +322,26 @@ The Data tier is the actual storage mechanism: JSON files under `data/`, one per
 
 This section documents four OO design principles, each demonstrated on **both** the frontend (Presentation tier) and backend (Application/Data tiers), per the Sprint 4 rubric. See the API/Business/Persistence Layer class diagrams and the architecture diagram in the Architecture and Design section above for the supporting structure referenced below.
 
--   **Controller**
-    -   *Backend:* the Controller principle assigns responsibility for receiving and coordinating a system operation to a class outside the business logic itself. Each REST controller owns one resource's HTTP handling — e.g. `ProposalController.rejectProposal()` verifies the caller is a manager and returns the appropriate HTTP status, but does not implement the rejection rule itself; that's delegated to `ProposalServiceImpl`.
-    -   *Frontend:* Angular components play the same coordinating role for the UI. `Proposals` (the component) receives the user's click on "Approve," but doesn't know how approval works — it calls `ProposalService.approveProposal(id)` and reacts to the result. The component coordinates the interaction; it doesn't implement the business rule.
-    -   This keeps both the REST controllers and the Angular components focused only on receiving/coordinating an action and reporting the outcome, not deciding how the action itself works.
+- **Controller**
+  
+  - *Backend:* the Controller principle assigns responsibility for receiving and coordinating a system operation to a class outside the business logic itself. Each REST controller owns one resource's HTTP handling — e.g. `ProposalController.rejectProposal()` verifies the caller is a manager and returns the appropriate HTTP status, but does not implement the rejection rule itself; that's delegated to `ProposalServiceImpl`.
+  - *Frontend:* Angular components play the same coordinating role for the UI. `Proposals` (the component) receives the user's click on "Approve," but doesn't know how approval works — it calls `ProposalService.approveProposal(id)` and reacts to the result. The component coordinates the interaction; it doesn't implement the business rule.
+  - This keeps both the REST controllers and the Angular components focused only on receiving/coordinating an action and reporting the outcome, not deciding how the action itself works.
 
--   **Single Responsibility**
-    -   *Backend:* each class has one reason to change — `AccountServiceImpl` handles only account validation, `FundingBasketImpl` exclusively manages basket operations, `NeedServiceImpl` handles need creation/update and delegates persistence to `NeedDAO`.
-    -   *Frontend:* the same split exists per component and per service. `CreateProposal` only handles the proposal submission form; it doesn't know how to render the proposals list or handle voting — that's `Proposals`' job. Each Angular service is scoped to one domain entity (`ProposalService` only makes proposal-related HTTP calls, `OrganizationService` only organization-related calls), so a component never has to reach into an unrelated service to get its data.
+- **Single Responsibility**
+  
+  - *Backend:* each class has one reason to change — `AccountServiceImpl` handles only account validation, `FundingBasketImpl` exclusively manages basket operations, `NeedServiceImpl` handles need creation/update and delegates persistence to `NeedDAO`.
+  - *Frontend:* the same split exists per component and per service. `CreateProposal` only handles the proposal submission form; it doesn't know how to render the proposals list or handle voting — that's `Proposals`' job. Each Angular service is scoped to one domain entity (`ProposalService` only makes proposal-related HTTP calls, `OrganizationService` only organization-related calls), so a component never has to reach into an unrelated service to get its data.
 
--   **Low Coupling**
-    -   *Backend:* the layered Controller → Service → DAO architecture keeps each layer's responsibility focused without depending on another layer's internals. The Service layer checks for invalid states and returns clear errors (e.g. rejecting an already-decided proposal) rather than letting failures propagate as unhandled exceptions the Controller has to interpret.
-    -   *Frontend:* components never call `HttpClient` directly — always through an injected service. If a backend endpoint's URL or request shape changes, only the corresponding Angular service needs to change; every component using it is unaffected. This mirrors exactly why the backend never lets a controller talk to a DAO directly.
+- **Low Coupling**
+  
+  - *Backend:* the layered Controller → Service → DAO architecture keeps each layer's responsibility focused without depending on another layer's internals. The Service layer checks for invalid states and returns clear errors (e.g. rejecting an already-decided proposal) rather than letting failures propagate as unhandled exceptions the Controller has to interpret.
+  - *Frontend:* components never call `HttpClient` directly — always through an injected service. If a backend endpoint's URL or request shape changes, only the corresponding Angular service needs to change; every component using it is unaffected. This mirrors exactly why the backend never lets a controller talk to a DAO directly.
 
--   **Dependency Injection**
-    -   *Backend:* high-level classes depend on abstractions Spring supplies at runtime — `NeedController` depends on `NeedService`, not a concrete implementation.
-    -   *Frontend:* the identical pattern exists in Angular. Every component declares its dependencies (`ProposalService`, `AccountService`, `Router`, etc.) as constructor parameters rather than constructing them itself; Angular's injector supplies the instances. This is what makes each Angular service a single shared source of truth (e.g. `AccountService` holding the current logged-in account) instead of every component managing its own copy of that state.
+- **Dependency Injection**
+  
+  - *Backend:* high-level classes depend on abstractions Spring supplies at runtime — `NeedController` depends on `NeedService`, not a concrete implementation.
+  - *Frontend:* the identical pattern exists in Angular. Every component declares its dependencies (`ProposalService`, `AccountService`, `Router`, etc.) as constructor parameters rather than constructing them itself; Angular's injector supplies the instances. This is what makes each Angular service a single shared source of truth (e.g. `AccountService` holding the current logged-in account) instead of every component managing its own copy of that state.
 
 **Improvements made in response to Sprint 3 feedback:** two issues flagged in the previous review directly undermined how well these principles could be demonstrated, and both are fixed in this submission. The architecture diagram was outdated and didn't reflect the current layered structure that the Controller/Low Coupling principles above rely on — it's been replaced with a diagram showing all five current domain entities across all three tiers. The previously reported unit test coverage number (55%) didn't match the actual JaCoCo report (93%/82%) — the corrected, verified numbers are now used throughout, which matters here because test coverage is direct evidence that the Single Responsibility boundaries between layers actually hold up under testing.
 
@@ -336,17 +349,28 @@ This section documents four OO design principles, each demonstrated on **both** 
 
 The team ran SonarQube against both `ufund-api` (Java) and `ufund-ui` (TypeScript/HTML). `ufund-api` passed its quality gate with 0 Security issues, 2 Reliability issues, and 321 Maintainability issues; `ufund-ui` passed with 0 Security issues and 3 Reliability issues. Four representative findings, spanning both severity types and both tiers, are analyzed below.
 
+![Code Coverage](SonarAnalysis.png)
+
 **1. Cognitive Complexity too high — `NeedServiceImpl.findNeeds()` (Maintainability, High)**
-`findNeeds()` (line 149) scored a Cognitive Complexity of 20 against SonarQube's limit of 15 (rule `java:S3776`). The method picks one of several DAO calls depending on which combination of three optional filters (`containsText`, `type`, `org`) was passed in, using nested `if`/`else` blocks four levels deep. SonarQube's Cognitive Complexity metric penalizes nesting depth specifically, not just branch count, so the nesting — not the number of cases — was the actual problem. *Fix applied:* since every branch already ends in a `return`, the `else` blocks were unnecessary; flattening the method into sequential guard-clause `if (...) return ...;` statements (grouped by whether `org` is present) removes the nesting entirely while calling the exact same DAO methods, bringing the score back under the limit.
+
+
+![Code Coverage](SonarIssue1.png)`findNeeds()` (line 149) scored a Cognitive Complexity of 20 against SonarQube's limit of 15 (rule `java:S3776`). The method picks one of several DAO calls depending on which combination of three optional filters (`containsText`, `type`, `org`) was passed in, using nested `if`/`else` blocks four levels deep. SonarQube's Cognitive Complexity metric penalizes nesting depth specifically, not just branch count, so the nesting — not the number of cases — was the actual problem. *Fix applied:* since every branch already ends in a `return`, the `else` blocks were unnecessary; flattening the method into sequential guard-clause `if (...) return ...;` statements (grouped by whether `org` is present) removes the nesting entirely while calling the exact same DAO methods, bringing the score back under the limit. 
+
+
+
 
 **2. Generic wildcard type in a return type — `NeedController.updateNeed()` (Maintainability, High)**
+![Code Coverage](SonarIssue2.png)
+
 `updateNeed()` (line 162) declares its return type as `ResponseEntity<?>` (rule `java:S1452`), which hides the real payload type from both callers and the compiler. *Analysis:* this was originally done because one error path in the method needed to return a different body type than the success path. *Recommendation:* narrow the signature to the most specific shared type the method actually returns (`ResponseEntity<Need>` if every path can be made to agree, or `ResponseEntity<Object>` if an error path still needs to return a message string) — confirmed on a case-by-case basis per controller method rather than defaulting to `?`.
 
 **3. Missing keyboard equivalent for a clickable row — `cupboard.html` (Reliability, Low, accessibility)**
+![Code Coverage](SonarIssue3.png)
+
 Line 54 binds `(click)="viewNeed(need.id)"` directly to a `<tr>` with no corresponding keyboard handler (`Web:MouseEventWithoutKeyboardEquivalentCheck`). *Analysis:* a user navigating by keyboard only (including screen-reader users) has no way to open a need's details from this table — the action is mouse-only. *Recommendation:* add a `(keydown.enter)` handler alongside the existing `(click)`, and give the row `tabindex="0"` so it's reachable via keyboard navigation in the first place.
 
 **4. String reference comparison — `OrganizationFileDAO.createOrganization()` (Reliability, Medium)**
-Line 101 compares organization names with `x.getName() == o.getName()` instead of `.equals()` (rule `java:S4973`). *Analysis:* `==` compares object references, not string content — two `String` objects holding the same name are not guaranteed to be `==`, so this duplicate-name check can silently fail to catch a real duplicate. *Recommendation:* change to `x.getName().equals(o.getName())`; SonarQube offers this as a one-click Quick Fix.
+![Code Coverage](SonarIssue2.png)Line 101 compares organization names with `x.getName() == o.getName()` instead of `.equals()` (rule `java:S4973`). *Analysis:* `==` compares object references, not string content — two `String` objects holding the same name are not guaranteed to be `==`, so this duplicate-name check can silently fail to catch a real duplicate. *Recommendation:* change to `x.getName().equals(o.getName())`; SonarQube offers this as a one-click Quick Fix.
 
 ## Recommendations for Improvement
 
@@ -370,16 +394,16 @@ In addition, the following were manually re-verified end-to-end this sprint afte
 
 Unit tests are written per layer using JUnit 5 and Mockito, covering controllers, services, and DAOs. Current coverage per the JaCoCo report: **93% instruction coverage** (285 of 4,426 instructions missed) and **82% branch coverage** (62 of 364 branches missed), broken down by package:
 
-| Package | Instruction Cov. | Branch Cov. |
-|---|---|---|
-| `service` | 82% | 72% |
-| `controller` | 94% | 88% |
-| `dao` | 98% | 84% |
-| `model` | 96% | 80% |
-| `ufundapi` (root/`Application` bootstrap class) | 0% | n/a |
-| **Total** | **93%** | **82%** |
+| Package                                         | Instruction Cov. | Branch Cov. |
+| ----------------------------------------------- | ---------------- | ----------- |
+| `service`                                       | 82%              | 72%         |
+| `controller`                                    | 94%              | 88%         |
+| `dao`                                           | 98%              | 84%         |
+| `model`                                         | 96%              | 80%         |
+| `ufundapi` (root/`Application` bootstrap class) | 0%               | n/a         |
+| **Total**                                       | **93%**          | **82%**     |
 
-![Code Coverage](CodeCoverage.png)
+![Code Coverage](Sprint4CodeCoverage.png)
 
 **Missed-target area:** the service layer is the clear outlier at 82%/72%, well below every other package. This is consistent with the newer guard-clause logic added this sprint — status checks on approve/reject/vote/delete, organization-existence validation, and null-checks for missing organizations. These conditional branches (the "if it doesn't exist, throw" paths) are the direct cause of the 72% branch number and are the highest-priority target for new unit tests.
 
