@@ -1,17 +1,5 @@
 # U-Fund Design Documentation
 
-> _The following template provides the headings for your Design
-> Documentation.  As you edit each section make sure you remove these
-> commentary 'blockquotes'; the lines that start with a > character
-> and appear in the generated PDF in italics but do so only **after** all team members agree that the requirements for that section and current Sprint have been met. **Do not** delete future Sprint expectations._
-
-> _This is now the single, current design document for the project. It
-> replaces the separate `DesignDocSprint2.md` and `DesignDocSprint3.md.md`
-> files, which described the system's state at those points in time rather
-> than its current state. Version control (git history) is the record of how
-> the design evolved sprint to sprint — this document should only describe
-> the system **as it is right now**._
-
 ## Team Information
 
 * Team name: SWEN-261-01-Summer
@@ -171,24 +159,17 @@ Both the Application and Data tiers are implemented using Java and the Spring Fr
 
 This section describes the web interface and flow; this is how the user views and interacts with the web application.
 
-> _TODO (team): replace with representative screenshots of the current
-> high-fidelity UI._
-
 Every user lands on **Login**. Once authenticated, the nav bar shows who's signed in and their role, and the routes available differ by role via route guards (`authGuard`, `managerGuard`, `helperGuard`). From there:
-<img width="1896" height="250" alt="image" src="https://github.com/user-attachments/assets/eb7915fe-83d3-4d50-a392-6fcf36803b24" />
+![Login page](ui-login.png)
 
 * **Any logged-in user** can browse the **Cupboard** (search/filter Needs) and the **Proposals** list (search/filter/sort, with a status badge per proposal), and open a proposal's **Detail** page.
-  
-  <img width="1910" height="618" alt="image" src="https://github.com/user-attachments/assets/95744da9-9fcf-47ef-8446-4324873e9dff" />
+  ![Cupboard view, any logged-in user](ui-cupboard-anyuser.png)
 
 * **Helpers** additionally see "Propose a New Need" (submits a Proposal), can vote on pending proposals, can add Needs to their **Funding Basket** and proceed through **Checkout**, and can filter the Proposals list to just their own submissions.
-  
-  <img width="1909" height="431" alt="image" src="https://github.com/user-attachments/assets/93f82c16-7880-4670-a8dd-0891aaa3236e" />
+  ![Proposals view, Helper](ui-proposals-helper.png)
 
 * **Managers** additionally see "Add Need" and the **Organizations** list (create/edit/delete an organization, view its affiliated Needs), and on the Proposals page can edit/approve/reject/delete a pending proposal, or hide decided proposals to focus on the pending queue.
-  
-  <img width="1914" height="917" alt="image" src="https://github.com/user-attachments/assets/fb9851fd-78c3-4de0-863d-d2d84be3e744" />
-  <img width="1901" height="419" alt="image" src="https://github.com/user-attachments/assets/eeac8f9b-e871-41b1-a11c-d2222b3770d9" />
+  ![Cupboard view with Edit/Delete/Add Need, Manager](ui-cupboard-manager.png)
 
 `unsavedChangesGuard`/`unsavedProposalGuard` warn the user before navigating away from an in-progress edit.
 
@@ -262,7 +243,7 @@ sequenceDiagram
         PSvc-->>PC: exception propagates (proposal left "pending")
         PC-->>PS: 400 Bad Request + error message
         PS-->>UI: Observable error
-        UI-->>Manager: "Organization X does not exist; fix the spelling before approving"
+        UI-->>Manager: "Organization X does not exist, fix the spelling before approving"
     end
 ```
 
