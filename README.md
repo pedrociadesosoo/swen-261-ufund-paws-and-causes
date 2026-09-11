@@ -10,7 +10,7 @@ Paws & Causes is a U-Fund web application that lets organizations post funding "
 
 - **Backend:** Java, Spring Boot (REST API)
 - **Frontend:** Angular
-- **Version Control / Process:** Git, GitHub, Agile/Scrum, Kanban board
+- **Version Control / Process:** GitHub, Agile/Scrum, Trello
 
 ## My Contributions
 
