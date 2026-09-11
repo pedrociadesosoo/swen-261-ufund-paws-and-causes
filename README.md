@@ -4,7 +4,7 @@ A full-stack charitable giving platform built as a team project for SWEN-261 (So
 
 ## Overview
 
-Paws & Causes is a U-Fund web application that lets organizations post funding "needs" and allows donors to browse, add needs to a basket, and check out to fulfill them — modeled after a nonprofit crowdfunding platform, with a focus on animal welfare organizations.
+Paws & Causes is a U-Fund web application that lets organizations post funding "needs" and allows donors to browse, add needs to a basket, and check out to fulfill them; modeled after a nonprofit crowdfunding platform, with a focus on animal welfare organizations.
 
 ## Tech Stack
 
